@@ -1,0 +1,31 @@
+body {
+    margin: 0;
+}
+
+nav {
+    height: 10vh; 
+    background-color:white;
+    display: flex;
+}
+
+nav li {
+    list-style-type: none;
+    transition: all 0.3s;
+    cursor: pointer;
+    background-color: antiquewhite;
+    padding: 10px;
+}
+
+a {
+    user-select: none;
+}
+
+nav li:hover {
+    transform: scale(1.1);
+}
+
+#scene-container {
+    height: 90vh;
+    overflow: hidden; 
+    position: relative;
+}
