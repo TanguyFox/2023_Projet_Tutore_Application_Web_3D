@@ -29,7 +29,6 @@ sceneContrainer.appendChild(renderer.domElement);
 // const cube = new THREE.Mesh( geometry, material );
 
 
-
 //Ambient Light
 const ambientLight = new THREE.AmbientLight(0x404040);
 scene.add(ambientLight);
@@ -47,11 +46,8 @@ gridHelper.rotation.x = Math.PI / 2;
 scene.add(gridHelper); 
 
 
-//Render 
 //Camera Control
 const oribitcontrols = new OrbitControls(camera, renderer.domElement);
-oribitcontrols.update();
-oribitcontrols.addEventListener('change', render );
 
 //fonction deplacement
 const transformControls = new TransformControls(camera, renderer.domElement);
@@ -59,16 +55,46 @@ transformControls.addEventListener('change', render);
 transformControls.addEventListener('dragging-changed', function(event){
     oribitcontrols.enabled = ! event.value;
 });
-
 scene.add(transformControls);
 
+//Raycaster
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
 
+function onPointerMove( event ){
+    pointer.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    pointer.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    raycaster.setFromCamera(pointer, camera);
+}
+
+function onPointerClick( event ){
+    const intersects = raycaster.intersectObjects( scene.children );
+    // intersects[0].object.material.color.set(0xff0000);
+    for(let i = 0; i < intersects.length; i ++ ){
+        if(!intersects[i] instanceof THREE.GridHelper){
+            transformControls.attach(intersects[i]);    
+        }
+    }
+
+}
+// window.addEventListener('pointermove', onPointerMove);
+// window.addEventListener('click', onPointerClick);
+
+//Render
 function render(){
+
+    //Render page
     renderer.render(scene, camera);
 }
 
-render();
+//Animation
+function animate(){
+    requestAnimationFrame(animate);
+    oribitcontrols.update();
+    render();
+}
 
+animate();
 
 
 
@@ -100,14 +126,16 @@ function handleFileSelect(event) {
             } 
 
             mesh_stl = new THREE.Mesh(geometry, material);
+            // mesh_stl.position.set(10, 10, 10);
             mesh_stl.receiveShadow = true;
             mesh_stl.castShadow = true;
-            scene.add(mesh_stl);
 
-            //rendre objet deplacable
-            transformControls.attach(mesh_stl);
+            transformControls.attach(mesh_stl); // a traiter
+
+            scene.add(mesh_stl);
             
         });
+
     } else {
         
         if (mesh_stl) {

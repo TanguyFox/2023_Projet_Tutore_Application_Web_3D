@@ -14,6 +14,7 @@ Ce projet a pour but la visualisation et la manipulation de fichiers STL au sein
   - Créer des triangles autour d'un point
 
 #### Lancer l'application (Version développement) :
+Utiliser la commande ```npm install``` à la racine du projet pour installer les dépendances
 
-Utiliser la commande ```npx vite``` à la racine du projet
+Utiliser ensuite la commande ```npx vite``` à la racine du projet pour lancer le projet
 
