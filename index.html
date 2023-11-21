@@ -9,12 +9,17 @@
 <body>
     <nav>
         <ul>
-            <li id="import"><a>Importer</a></li>
+            <li id="home"><a>Home</a></li>
         </ul>
     </nav>
-    <section id="scene-container"></section>
+    <div id="content">
+        <button type="button" id="import">
+            <label for="inputfile">Upload</label>
+            <input type="file" hidden id="inputfile" accept=".stl"/>
+        </button>
+        <section id="scene-container"></section>
 
-    
+    </div>
 
     <script type="module" src="js/main.js"></script>
 </body>

@@ -78,14 +78,8 @@ let mesh_stl;
 //import event 
 const importButton = document.getElementById('import');
 
-importButton.addEventListener('click', function() {
-    
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.stl'; 
-    input.addEventListener('change', handleFileSelect, false);
-    input.click(); 
-});
+var input = document.getElementById("inputfile");
+input.addEventListener('change', handleFileSelect, false);
 
 function handleFileSelect(event) {
     const file = event.target.files[0]; 
@@ -120,6 +114,8 @@ function handleFileSelect(event) {
             scene.remove(mesh_stl);
         }
     }
+    importButton.style.display = "none";
+    sceneContrainer.style.display = "block";
 
 }
 
