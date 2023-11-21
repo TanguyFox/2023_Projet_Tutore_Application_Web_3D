@@ -43,7 +43,7 @@ const gridHelper = new THREE.GridHelper(50, 50);
 gridHelper.position.set(0, 0, 0); 
 gridHelper.material.color.set(0x000000);
 gridHelper.rotation.x = Math.PI / 2; 
-scene.add(gridHelper); 
+scene.add(gridHelper);
 
 
 //Camera Control
@@ -68,17 +68,36 @@ function onPointerMove( event ){
 }
 
 function onPointerClick( event ){
+    let clickOnObject = false;
+
     const intersects = raycaster.intersectObjects( scene.children );
+    // console.log(scene.children);
     // intersects[0].object.material.color.set(0xff0000);
-    for(let i = 0; i < intersects.length; i ++ ){
-        if(!intersects[i] instanceof THREE.GridHelper){
-            transformControls.attach(intersects[i]);    
+
+    if(mesh_stl != null){
+
+        for(let i = 0; i < intersects.length; i ++ ){
+            // console.log(intersects[i].object);
+
+            // console.log(intersects[i].object.uuid);
+            if(intersects[i].object.uuid === mesh_stl.uuid){
+                // console.log(intersects[i].object.uuid);
+                // console.log(mesh_stl.uuid);
+                transformControls.attach(mesh_stl);
+                clickOnObject = true;
+                break;
+            }
         }
+
+        if(!clickOnObject){
+            transformControls.detach();
+        }
+
     }
 
 }
-// window.addEventListener('pointermove', onPointerMove);
-// window.addEventListener('click', onPointerClick);
+window.addEventListener('pointermove', onPointerMove);
+window.addEventListener('click', onPointerClick);
 
 //Render
 function render(){
@@ -118,6 +137,8 @@ function handleFileSelect(event) {
         const stlloader = new STLLoader();
         stlloader.load(URL.createObjectURL(file), function(geometry) {
 
+            geometry.center();
+
             let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
             
             //For binary STLs geometry might contain colors for vertices.
@@ -126,14 +147,16 @@ function handleFileSelect(event) {
             } 
 
             mesh_stl = new THREE.Mesh(geometry, material);
+
             // mesh_stl.position.set(10, 10, 10);
             mesh_stl.receiveShadow = true;
             mesh_stl.castShadow = true;
 
-            transformControls.attach(mesh_stl); // a traiter
-
             scene.add(mesh_stl);
-            
+
+            // transformControls.attach(mesh_stl); // a traiter
+
+
         });
 
     } else {
