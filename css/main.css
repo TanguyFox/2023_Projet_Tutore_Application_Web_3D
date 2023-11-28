@@ -105,7 +105,17 @@ nav li
 #toolbar{
     display: none;
     position: absolute;
-    top: 42px;
-    left: 10px;
-    width: 32px;
+    top: 70px;
+    left: 15px;
+    border: #dde4e9 1px solid;
+    background-color: white;
+}
+
+.toolbar-button{
+    cursor: pointer;
+    user-select: none;
+}
+
+.toolbar-img{
+    pointer-events: none;
 }

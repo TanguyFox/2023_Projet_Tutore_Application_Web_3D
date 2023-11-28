@@ -20,28 +20,20 @@ camera.lookAt(0 ,0, 0);
 //Scene backgroud
 scene.background = new THREE.Color(0x888888); 
 
-//Renderer {antialias: false} pour améliorer la performance, on peut le changer quand on finit le projet
-const renderer = new THREE.WebGLRenderer({ antialias: false});
+//Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
+const renderer = new THREE.WebGLRenderer({ antialias: true});
 renderer.setSize( widthS, heightS );
 
 const sceneContrainer = document.getElementById('scene-container');
 sceneContrainer.appendChild(renderer.domElement);
 
-
-//Object
-// create an object need...
-// const geometry = new THREE.BoxGeometry( 1, 1, 1 );
-// const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-// const cube = new THREE.Mesh( geometry, material );
-
-
-//Ambient Light
-const ambientLight = new THREE.AmbientLight(0x404040);
+//Ambient Light 0x404040
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
 scene.add(ambientLight);
 
 //Directional Light
-const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-directionalLight.position.set(0, 0, 1);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+directionalLight.position.set(0, 1, 1);
 scene.add(directionalLight);
 
 //Grid
@@ -67,15 +59,11 @@ scene.add(transformControls);
 //Raycaster
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
+
+
+//Bounding Box
 let boundingBox;
-
 function createBoundingBox(object){
-    // const geometry = new THREE.BoxGeometry();
-    // const material = new THREE.LineBasicMaterial({color: 0xffff00});
-    // boundingBox = new THREE.LineSegments(geometry, material);
-    // object.add(boundingBox);
-
-    // object.geometry.computeBoundingBox();
     boundingBox = new THREE.BoxHelper(object, 0xffff00);
     scene.add(boundingBox);
 }
@@ -87,12 +75,15 @@ function removeBoundingBox(){
     }
 }
 
+//Raycaster function
 function onPointerMove( event ){
     pointer.x = ( event.clientX / widthS ) * 2 - 1;
 
-    //+0.16 pour mieux positionner le raycaster,
-    // et il faut mofidier si on change la taille de scene-container,
-    // En gros, c'est une méthode temporaire.
+    /*
+        +0.16 pour mieux positionner le raycaster,
+        et il faut mofidier si on change la taille de scene-container,
+        En gros, c'est une méthode temporaire.
+    */
     pointer.y = - ( event.clientY / heightS ) * 2 + 1 + 0.16;
 
 }
@@ -127,14 +118,17 @@ function onPointerClick( event ){
 
         if(!clickOnObject){
             removeBoundingBox();
-            transformControls.detach();
+
+            if(!transformControls.dragging){
+                transformControls.detach();
+            }
         }
 
     }
 
 }
 window.addEventListener('pointermove', onPointerMove);
-window.addEventListener('click', onPointerClick);
+sceneContrainer.addEventListener('click', onPointerClick);
 
 //Render
 function render(){
@@ -213,4 +207,16 @@ function handleFileSelect(event) {
     toolbar.style.display = "block";
 }
 
-
+//toolbar event
+toolbar.addEventListener('click', function(event){
+    console.log(event.target.id);
+    if(event.target.id === "rotate"){
+        transformControls.setMode("rotate");
+    }
+    else if(event.target.id === "translate"){
+        transformControls.setMode("translate");
+    }
+    else if(event.target.id === "scale"){
+        transformControls.setMode("scale");
+    }
+});
