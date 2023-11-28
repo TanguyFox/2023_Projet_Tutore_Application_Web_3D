@@ -97,7 +97,15 @@ nav li
 #scene-container {
     z-index: 0;
     height: 100%;
-    overflow: hidden; 
+    overflow: hidden;
     position: relative;
     display: none;
+}
+
+#toolbar{
+    display: none;
+    position: absolute;
+    top: 42px;
+    left: 10px;
+    width: 32px;
 }

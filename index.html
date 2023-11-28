@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
-    <nav>
+    <nav id="nav">
         <ul>
             <li id="home"><a>Home</a></li>
         </ul>
@@ -18,7 +18,12 @@
             <input type="file" hidden id="inputfile" accept=".stl"/>
         </button>
         <section id="scene-container"></section>
+    </div>
 
+    <div id="toolbar">
+        <button class="toolbar-button" id="translate">1</button>
+        <button class="toolbar-button" id="rotate">2</button>
+        <button class="toolbar-button" id="scale">3</button>
     </div>
 
     <script type="module" src="js/main.js"></script>
