@@ -2,6 +2,11 @@ import * as THREE from 'three';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { Face } from './structure/Face.js';
+import { Mesh } from "./structure/Mesh";
+import { HalfEdge } from "./structure/HalfEdge";
+import { Vertex } from "./structure/Vertex";
+import { Point } from "./structure/Point";
 
 //Scene
 const scene = new THREE.Scene();
@@ -21,7 +26,7 @@ camera.lookAt(0 ,0, 0);
 scene.background = new THREE.Color(0x888888); 
 
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
-const renderer = new THREE.WebGLRenderer({ antialias: true});
+const renderer = new THREE.WebGLRenderer({ antialias: false});
 renderer.setSize( widthS, heightS );
 
 const sceneContrainer = document.getElementById('scene-container');
@@ -128,6 +133,8 @@ function onPointerClick( event ){
 
 }
 window.addEventListener('pointermove', onPointerMove);
+
+//A Améliorer
 sceneContrainer.addEventListener('click', onPointerClick);
 
 //Render

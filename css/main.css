@@ -114,8 +114,11 @@ nav li
 .toolbar-button{
     cursor: pointer;
     user-select: none;
+    text-align: center;
 }
 
 .toolbar-img{
     pointer-events: none;
+    width: 15px;
+    height: 15px;
 }
