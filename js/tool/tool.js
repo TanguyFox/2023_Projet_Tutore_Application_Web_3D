@@ -1,35 +1,58 @@
 import { Vertex } from "../structure/Vertex";
 import { HalfEdge } from "../structure/HalfEdge";
 import {Face} from "../structure/Face";
+import {Point} from "../structure/Point.js";
 
 function convertirSTLtoDonnees(stl){
+    console.log("RENTREE TOOL");
     let points = [];
     let vertices = [];
     let faces = [];
 
-    let positions = stl.geometry.attributes.position.array;
+    let positions = stl.getAttribute("position").array;
+    console.log(positions);
     // let normals = stl.geometry.attributes.normal.array;
 
-    for(let i = 0; i < positions.length; i+=3){
-        let p1 = positions[i];
-        let p2 = positions[i+1];
-        let p3 = positions[i+2];
+    for(let i = 0; i < positions.length; i+=9){
+        let x1 = positions[i];
+        let y1 = positions[i+1];
+        let z1 = positions[i+2];
+        let p1 = new Point(x1, y1, z1);
+        console.log("p1 : " + p1.toString());
+        let x2 = positions[i+3];
+        let y2 = positions[i+4];
+        let z2 = positions[i+5];
+        let p2 = new Point(x2, y2, z2);
+        console.log("p2 : " + p2.toString());
+        let x3 = positions[i+6];
+        let y3 = positions[i+7];
+        let z3 = positions[i+8];
+        let p3 = new Point(x3, y3, z3);
+        console.log("p3 : " + p3.toString());
+
+
 
         //A modifier apres - function includes et indexOf est null ici
-        if(!points.includes(p1)){
+        console.log("p1include : " + isPointInList(p1, points));
+        if(!isPointInList(p1, points)){
             points.push(p1);
+            console.log('ajout de ' + p1 + 'dans points');
         }else{
             p1 = points[points.indexOf(p1)];
         }
 
-        if(!points.includes(p2)){
+        console.log("p2include : " + isPointInList(p2, points));
+        if(!isPointInList(p2, points)){
             points.push(p2);
+            console.log('ajout de ' + p2 + 'dans points');
         }else{
             p2 = points[points.indexOf(p2)];
         }
 
-        if(!points.includes(p3)){
+        console.log("p3include : " + isPointInList(p3, points));
+        if(!isPointInList(p3, points)){
             points.push(p3);
+            console.log('ajout de ' + p3 + 'dans points');
         }else{
             p3 = points[points.indexOf(p3)];
         }
@@ -107,6 +130,9 @@ function convertirSTLtoDonnees(stl){
 
     }
 
+    points = trierPoints(points);
+
+
     //TODO
     /**
      * points ← trierPoints(points)
@@ -135,15 +161,19 @@ function vertexDegree(vertex){
 
 //A changer !
 function trierPoints(points){
-    for(let i = 0; i < points.length - 1; i++){
+    /*for(let i = 0; i < points.length - 1; i++){
         let pointCourant = points[i];
         let j = i - 1;
-        while(j > 0 && comparePoints(pointCourant, points[j] < 0)){
+        while(j > 0 && pointCourant.compare(points[j])){
             points[j + 1] = points[j];
             j = j - 1;
         }
         points[j + 1] = pointCourant;
-    }
+    }*/
+    points.sort((a,b) => (
+        a.compare(b)
+    ));
+    return points;
 }
 
 function comparePoints(pointA, pointB){
@@ -155,3 +185,8 @@ function comparePoints(pointA, pointB){
         return pointA.z - pointB.z
     }
 }
+function isPointInList(newPoint, pointList) {
+    return pointList.some(existingPoint => existingPoint.equals(newPoint));
+}
+
+export {convertirSTLtoDonnees}
