@@ -17,4 +17,38 @@ export class Face {
         return count;
     }
 
+    getAdjHole() {
+        if (this.edge === null) {
+            return [];
+        }
+        let adj = [];
+        let p = this.edge.next;
+        while(p !== this.edge) {
+            if(p.opposite.face === null) {
+                adj.push(p.opposite.face);
+            }
+            p = p.next;
+        }
+        return adj.length;
+    }
+
+    isWellOriented() {
+        let h1 = this.edge;
+        let p1 = h1.vertex.point;
+
+        let h2 = h1.next;
+        let p2 = h2.vertex.point;
+
+        let h3 = h2.next;
+        let p3 = h3.vertex.point;
+
+        let crossProductX = ((p2.y - p1.y) * (p3.z - p1.z)) - ((p2.z - p1.z) * (p3.y - p1.y));
+        let crossProductY = ((p2.z - p1.z) * (p3.x - p1.x)) - ((p2.x - p1.x) * (p3.z - p1.z));
+        let crossProductZ = ((p2.x - p1.x) * (p3.y - p1.y)) - ((p2.y - p1.y) * (p3.x - p1.x));
+
+        let crossProduct = crossProductX + crossProductY + crossProductZ;
+
+        return crossProduct > 0;
+    }
+
 }
