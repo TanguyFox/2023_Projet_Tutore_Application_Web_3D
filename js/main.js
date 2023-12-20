@@ -13,7 +13,8 @@ import { Point } from "./structure/Point";
 const scene = new THREE.Scene();
 
 //width / height Scene / a modifier temps en temps pour la Précision de RayCaster
-const widthS = window.innerWidth;
+const sceneContrainer = document.getElementById('scene-container');
+const widthS =window.innerWidth;
 const heightS = window.innerHeight;
 
 
@@ -30,7 +31,7 @@ scene.background = new THREE.Color(0x888888);
 const renderer = new THREE.WebGLRenderer({ antialias: false});
 renderer.setSize( widthS, heightS );
 
-const sceneContrainer = document.getElementById('scene-container');
+
 sceneContrainer.appendChild(renderer.domElement);
 
 //Ambient Light 0x404040
