@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { convertirSTLtoDonnees } from './tool/tool.js';
 import { Face } from './structure/Face.js';
 import { Mesh } from "./structure/Mesh";
 import { HalfEdge } from "./structure/HalfEdge";
@@ -200,6 +201,8 @@ function handleFileSelect(event) {
             console.log(mesh_stl);//
 
             scene.add(mesh_stl);
+            //TODO ici
+            convertirSTLtoDonnees(geometry);
         });
 
     } else {
@@ -212,6 +215,7 @@ function handleFileSelect(event) {
     importButton.style.display = "none";
     sceneContrainer.style.display = "block";
     toolbar.style.display = "block";
+
 }
 
 //toolbar event
@@ -227,3 +231,5 @@ toolbar.addEventListener('click', function(event){
         transformControls.setMode("scale");
     }
 });
+
+
