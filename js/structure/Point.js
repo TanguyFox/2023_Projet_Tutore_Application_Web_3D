@@ -1,6 +1,4 @@
-import {func} from "three/addons/nodes/code/FunctionNode";
-
-export class Point{
+class Point{
     constructor(x, y, z){
         this.x = x;
         this.y = y;

@@ -1,6 +1,4 @@
-import {Vertex} from "./Vertex";
-
-export class HalfEdge {
+class HalfEdge {
     constructor(vertex) {
         this.vertex = vertex;
         this.face = null;

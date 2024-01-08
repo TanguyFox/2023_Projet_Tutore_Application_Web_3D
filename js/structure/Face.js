@@ -1,6 +1,4 @@
-import {Vertex} from "./Vertex";
-
-export class Face {
+class Face {
     constructor(edge) {
         this.edge = edge;
     }
@@ -81,7 +79,7 @@ Face.prototype.has3FaceAdjacentes = function() {
     let faces = this.getAdjacentes();
     let result = false;
 
-    if(faces.length == 3) {
+    if(faces.length === 3) {
         result = true;
     }
 

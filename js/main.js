@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
-import { convertirSTLtoDonnees } from './tool/DataStructureImplementation.js';
 import {createBoundingBox, removeBoundingBox} from "./vue/BoundingBoxHandler";
 
 
@@ -171,52 +170,80 @@ let menuMD = document.getElementById('menuModification');
 //panel
 let panel = document.getElementById('panel');
 
+
+
+//Utilsisation d'un WORKER pour parallelisé l'affichage du modèle 3D ainsi que le remplissage des données
+//Tous les export ont été enlevés des classes pour le moment (car WORKER n'est pas compatible avec)
+//Si besoin des export, il faudra qu'on regarde pour une autre solution
+let dataFiller = new Worker("js/tool/DataStructureImplementation.js")
+
+//Fonction de chargement du fichier STL
 function handleFileSelect(event) {
 
     const file = event.target.files[0];
     if (file) {
-        
+
+        //S'il y a déjà un model 3D de chargé, on l'enlève
         if (lineModel) {
             scene.remove(lineModel);
         }
-        const stlloader = new STLLoader();
-        stlloader.load(URL.createObjectURL(file), function(geometry) {
 
-            geometry.center();
-            /*let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+        const loadingmg = new THREE.LoadingManager()
+        const stlloader = new STLLoader(loadingmg);
+        try {
+            stlloader.load(URL.createObjectURL(file), function (geometry) {
 
-            //For binary STLs geometry might contain colors for vertices.
-            if (geometry.hasColors) {
-                material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
-            }*/
+                geometry.center();
+                /*let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
 
-            let wireframe = new THREE.WireframeGeometry(geometry);
-            lineModel = new THREE.LineSegments(wireframe);
-            lineModel.material.depthTest = false;
-            lineModel.material.opacity = 0.25;
-            lineModel.material.transparent = true;
+                //For binary STLs geometry might contain colors for vertices.
+                if (geometry.hasColors) {
+                    material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
+                }*/
 
+                //Affichage seulement des arrètes du modèle 3D
+                let wireframe = new THREE.WireframeGeometry(geometry);
 
-            lineModel.receiveShadow = true;
-            lineModel.castShadow = true;
+                lineModel = new THREE.LineSegments(wireframe);
+                lineModel.material.depthTest = false;
+                lineModel.material.opacity = 0.25;
+                lineModel.material.transparent = true;
+                lineModel.receiveShadow = true;
+                lineModel.castShadow = true;
 
-            console.log(lineModel);
+                //Affichage pour l'utilisateur
+                scene.add(lineModel);
 
-            scene.add(lineModel);
-            //TODO ici
-        });
+                /*
+                TODO : remplir la structure de données à partir de l'objet obtenu avec le STLLoader (geometry) de manière
+                 - relativement - rapide dans le cas où un grand nombre de points est fourni
+                 */
+                dataFiller.postMessage(geometry.getAttribute("position").array);
+
+            });
+        } catch(e) {
+            console.log(e.message)
+        }
         importButton.style.display = "none";
         sceneContrainer.style.display = "block";
         toolbar.style.display = "flex";
         menuMD.style.display = "block";
-    } else {
+        panel.style.display = "block";
+    } /*else {
 
         if (lineModel) {
             scene.remove(lineModel);
         }
-    }
+    }*/
 
 }
+let mesh;
+dataFiller.addEventListener("message", function (e) {
+    mesh = e.data
+    console.log(mesh)
+})
+
+
 
 //toolbar event
 toolbar.addEventListener('click', function(event){
