@@ -4,14 +4,14 @@ import {Face} from "../structure/Face";
 import {Point} from "../structure/Point.js";
 import {Mesh} from "../structure/Mesh.js";
 
-function convertirSTLtoDonnees(stl){
+function convertirSTLtoDonnees(positions){
+
     console.log("RENTREE TOOL");
     let points = [];
     let vertices = [];
     let faces = [];
 
-    let positions = stl.getAttribute("position").array;
-    console.log(positions);
+    //let positions = stl.getAttribute("position").array;
     // let normals = stl.geometry.attributes.normal.array;
 
     for(let i = 0; i < positions.length; i+=9){
@@ -19,17 +19,17 @@ function convertirSTLtoDonnees(stl){
         let y1 = positions[i+1];
         let z1 = positions[i+2];
         let p1 = new Point(x1, y1, z1);
-        console.log("p1 : " + p1.toString());
+        //console.log("p1 : " + p1.toString());
         let x2 = positions[i+3];
         let y2 = positions[i+4];
         let z2 = positions[i+5];
         let p2 = new Point(x2, y2, z2);
-        console.log("p2 : " + p2.toString());
+        //console.log("p2 : " + p2.toString());
         let x3 = positions[i+6];
         let y3 = positions[i+7];
         let z3 = positions[i+8];
         let p3 = new Point(x3, y3, z3);
-        console.log("p3 : " + p3.toString());
+        //console.log("p3 : " + p3.toString());
 
 
 
@@ -91,10 +91,10 @@ function convertirSTLtoDonnees(stl){
 
         // détection des arêtes opposées pour compléter la structure de données
         let vertexP1 = vertices.filter(e => e.point.equals(p1));
-        console.log("vertexP1 : " + vertexP1);
+        //console.log("vertexP1 : " + vertexP1);
         if(vertexP1.length !== 0){
             let halfedgeOppose = vertexP1.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p2))[0];
-            console.log("halfedgeOpposee p1 : " + halfedgeOppose);
+            //console.log("halfedgeOpposee p1 : " + halfedgeOppose);
             if(typeof halfedgeOppose !== 'undefined'){
                 if(halfedgeOppose.opposite == null){
                     halfedgeOppose.setOpposite(h1);
@@ -140,6 +140,8 @@ function convertirSTLtoDonnees(stl){
     points = trierPoints(points);
     vertices = trierVertex(vertices);
     faces = trierFaces(faces);
+
+    console.log("Data filled")
 
     return new Mesh(vertices, faces, points);
 }

@@ -12,8 +12,8 @@ const sceneContrainer = document.getElementById('scene-container');
 const scene = new THREE.Scene();
 
 //width / height Scene / a modifier temps en temps pour la Précision de RayCaster
-let widthS = window.outerWidth - 300;
-let heightS = window.innerHeight;
+const widthS = window.innerWidth - 300;
+const heightS = window.innerHeight;
 //Scene backgroud
 scene.background = new THREE.Color(0x888888);
 //------------------------------------------
@@ -31,11 +31,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: false });
 renderer.setSize( widthS, heightS );
 
 
-
-
 sceneContrainer.appendChild(renderer.domElement);
-
-
 
 //Ambient Light 0x404040
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
@@ -209,16 +205,17 @@ function handleFileSelect(event) {
             scene.add(lineModel);
             //TODO ici
         });
+        importButton.style.display = "none";
+        sceneContrainer.style.display = "block";
+        toolbar.style.display = "flex";
+        menuMD.style.display = "block";
     } else {
-        
+
         if (lineModel) {
             scene.remove(lineModel);
         }
     }
-    importButton.style.display = "none";
-    sceneContrainer.style.display = "block";
-    toolbar.style.display = "flex";
-    menuMD.style.display = "block";
+
 }
 
 //toolbar event
