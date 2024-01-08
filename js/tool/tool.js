@@ -2,6 +2,7 @@ import { Vertex } from "../structure/Vertex";
 import { HalfEdge } from "../structure/HalfEdge";
 import {Face} from "../structure/Face";
 import {Point} from "../structure/Point.js";
+import {Mesh} from "../structure/Mesh.js";
 
 function convertirSTLtoDonnees(stl){
     console.log("RENTREE TOOL");
@@ -33,40 +34,43 @@ function convertirSTLtoDonnees(stl){
 
 
         //A modifier apres - function includes et indexOf est null ici
-        console.log("p1include : " + isPointInList(p1, points));
         if(!isPointInList(p1, points)){
             points.push(p1);
-            console.log('ajout de ' + p1 + 'dans points');
+            //console.log('ajout de ' + p1 + 'dans points');
         }else{
-            p1 = points[points.indexOf(p1)];
+            p1 = getPointInList(points, p1);
+            //console.log("p1 recup dans liste : " + p1);
         }
 
-        console.log("p2include : " + isPointInList(p2, points));
         if(!isPointInList(p2, points)){
             points.push(p2);
-            console.log('ajout de ' + p2 + 'dans points');
+            //console.log('ajout de ' + p2 + 'dans points');
         }else{
-            p2 = points[points.indexOf(p2)];
+            p2 = getPointInList(points, p2);
+            //console.log("p2 recup dans liste : " + p2);
         }
 
-        console.log("p3include : " + isPointInList(p3, points));
         if(!isPointInList(p3, points)){
             points.push(p3);
-            console.log('ajout de ' + p3 + 'dans points');
+            //console.log('ajout de ' + p3 + 'dans points');
         }else{
-            p3 = points[points.indexOf(p3)];
+            p3 = getPointInList(points, p3);
+            //console.log("p3 recup dans liste : " + p3);
         }
 
         let v1 = new Vertex(p1);
         let h1 = new HalfEdge(v1);
+        //console.log("h1 : " + h1.toString());
         v1.setEdge(h1);
 
         let v2 = new Vertex(p2);
         let h2 = new HalfEdge(v2);
+        //console.log("h2 : " + h2.toString());
         v2.setEdge(h2);
 
         let v3 = new Vertex(p3);
         let h3 = new HalfEdge(v3);
+        //console.log("h3 : " + h3.toString());
         v3.setEdge(h3);
 
         h1.setNext(h2);
@@ -85,41 +89,44 @@ function convertirSTLtoDonnees(stl){
 
         faces.push(newFace);
 
-        let vertexP1 = vertices.filter(e => e.point === p1);
+        // détection des arêtes opposées pour compléter la structure de données
+        let vertexP1 = vertices.filter(e => e.point.equals(p1));
+        console.log("vertexP1 : " + vertexP1);
         if(vertexP1.length !== 0){
-            let halfedgeOppose = vertexP1.map(e => e.edge.prev).filter(e => e.vertex.point === p2)[0];
-            if(halfedgeOppose != null){
+            let halfedgeOppose = vertexP1.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p2))[0];
+            console.log("halfedgeOpposee p1 : " + halfedgeOppose);
+            if(typeof halfedgeOppose !== 'undefined'){
                 if(halfedgeOppose.opposite == null){
                     halfedgeOppose.setOpposite(h1);
                     h1.setOpposite(halfedgeOppose);
                 }else{
-                    throw new Error("Erreur de topologie");
+                    throw new Error("Erreur de topologie p1");
                 }
             }
         }
 
-        let vertexP2 = vertices.filter(e => e.point === p2);
+        let vertexP2 = vertices.filter(e => e.point.equals(p2));
         if(vertexP2.length !== 0){
-            let halfedgeOppose = vertexP2.map(e => e.edge.prev).filter(e => e.vertex.point === p3)[0];
-            if(halfedgeOppose != null){
+            let halfedgeOppose = vertexP2.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p3))[0];
+            if(typeof halfedgeOppose !== 'undefined'){
                 if(halfedgeOppose.opposite == null){
                     halfedgeOppose.setOpposite(h2);
                     h2.setOpposite(halfedgeOppose);
                 }else{
-                    throw new Error("Erreur de topologie");
+                    throw new Error("Erreur de topologie p2");
                 }
             }
         }
 
-        let vertexP3 = vertices.filter(e => e.point === p3);
+        let vertexP3 = vertices.filter(e => e.point.equals(p3));
         if(vertexP3.length !== 0){
-            let halfedgeOppose = vertexP3.map(e => e.edge.prev).filter(e => e.vertex.point === p1)[0];
-            if(halfedgeOppose != null){
+            let halfedgeOppose = vertexP3.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p1))[0];
+            if(typeof halfedgeOppose !== 'undefined'){
                 if(halfedgeOppose.opposite == null){
                     halfedgeOppose.setOpposite(h3);
                     h3.setOpposite(halfedgeOppose);
                 }else{
-                    throw new Error("Erreur de topologie");
+                    throw new Error("Erreur de topologie p3");
                 }
             }
         }
@@ -142,7 +149,8 @@ function convertirSTLtoDonnees(stl){
      * mesh ← Mesh(faces, vertices, points)
      * retourne mesh
      */
-    // points.forEach(point => point.trierPoints(points));
+
+    return new Mesh(vertices, faces, points);
 
 
 }
@@ -159,34 +167,19 @@ function vertexDegree(vertex){
 }
 
 
-//A changer !
 function trierPoints(points){
-    /*for(let i = 0; i < points.length - 1; i++){
-        let pointCourant = points[i];
-        let j = i - 1;
-        while(j > 0 && pointCourant.compare(points[j])){
-            points[j + 1] = points[j];
-            j = j - 1;
-        }
-        points[j + 1] = pointCourant;
-    }*/
     points.sort((a,b) => (
         a.compare(b)
     ));
     return points;
 }
 
-function comparePoints(pointA, pointB){
-    if(pointA.x !== pointB.x){
-        return pointA.x - pointB.x;
-    }else if(pointA.y !== pointB.y){
-        return pointA.y - pointB.y;
-    }else if(pointA.z !== pointB.z){
-        return pointA.z - pointB.z
-    }
-}
 function isPointInList(newPoint, pointList) {
     return pointList.some(existingPoint => existingPoint.equals(newPoint));
+}
+
+function getPointInList(list, point){
+    return list.filter(e => e.equals(point))[0];
 }
 
 export {convertirSTLtoDonnees}
