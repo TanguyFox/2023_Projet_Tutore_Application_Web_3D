@@ -3,30 +3,28 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { convertirSTLtoDonnees } from './tool/tool.js';
-import { Face } from './structure/Face.js';
-import { Mesh } from "./structure/Mesh";
-import { HalfEdge } from "./structure/HalfEdge";
-import { Vertex } from "./structure/Vertex";
-import { Point } from "./structure/Point";
-import {System} from "three/addons/libs/ecsy.module";
+import {createBoundingBox, removeBoundingBox} from "./vue/BoundingBoxHandler";
+
 
 //Scene
+//------------------------------------------
+const sceneContrainer = document.getElementById('scene-container');
 const scene = new THREE.Scene();
 
 //width / height Scene / a modifier temps en temps pour la Précision de RayCaster
-const sceneContrainer = document.getElementById('scene-container');
 const widthS = window.innerWidth - 300;
 const heightS = window.innerHeight;
+//Scene backgroud
+scene.background = new THREE.Color(0x888888);
+//------------------------------------------
 
 
 //Camera
-// const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+//------------------------------------------
 const camera = new THREE.PerspectiveCamera(75, widthS / heightS, 0.1, 1000);
 camera.position.set(5, 5, 10);
 camera.lookAt(0 ,0, 0);
-
-//Scene backgroud
-scene.background = new THREE.Color(0x888888); 
+//------------------------------------------
 
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
 const renderer = new THREE.WebGLRenderer({ antialias: false });
@@ -45,8 +43,8 @@ directionalLight.position.set(0, 1, 1);
 scene.add(directionalLight);
 
 //Grid
-const gridHelper = new THREE.GridHelper(50, 50); 
-gridHelper.position.set(0, 0, 0); 
+const gridHelper = new THREE.GridHelper(50, 50);
+gridHelper.position.set(0, 0, 0);
 gridHelper.material.color.set(0x000000);
 scene.add(gridHelper);
 
@@ -76,17 +74,6 @@ const pointer = new THREE.Vector2();
 
 //Bounding Box
 let boundingBox;
-function createBoundingBox(object){
-    boundingBox = new THREE.BoxHelper(object, 0xffff00);
-    scene.add(boundingBox);
-}
-
-function removeBoundingBox(){
-    if(boundingBox && boundingBox.parent){
-        boundingBox.parent.remove(boundingBox);
-        boundingBox = null;
-    }
-}
 
 //Raycaster function
 function onPointerMove( event ){
@@ -111,20 +98,20 @@ function onPointerClick( event ){
     const intersects = raycaster.intersectObjects( scene.children );
     // console.log(scene.children);
 
-    if(mesh_stl != null){
+    if(lineModel != null){
 
         for(let i = 0; i < intersects.length; i ++ ){
 
             // console.log(intersects[i].object.uuid);
-            if(intersects[i].object.uuid === mesh_stl.uuid){
+            if(intersects[i].object.uuid === lineModel.uuid){
                 // console.log(intersects[i].object.uuid);
                 // console.log(mesh_stl.uuid);
 
                 //Bounding Box
                 removeBoundingBox();
-                createBoundingBox(mesh_stl)
+                createBoundingBox(lineModel, boundingBox, scene)
 
-                transformControls.attach(mesh_stl);
+                transformControls.attach(lineModel);
                 clickOnObject = true;
                 break;
             }
@@ -163,7 +150,7 @@ function animate(){
 }
 
 //STL file | Pour l'instant, on peut seulement importer un seul fichier STL, A modifier. Pour le demo, c'est suffisant.
-let mesh_stl;
+let lineModel;
 
 animate();
 
@@ -190,51 +177,45 @@ let panel = document.getElementById('panel');
 
 function handleFileSelect(event) {
 
-    const file = event.target.files[0]; 
+    const file = event.target.files[0];
     if (file) {
         
-        if (mesh_stl) {
-            scene.remove(mesh_stl);
+        if (lineModel) {
+            scene.remove(lineModel);
         }
-
         const stlloader = new STLLoader();
         stlloader.load(URL.createObjectURL(file), function(geometry) {
 
             geometry.center();
+            /*let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
 
-            let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
-            
             //For binary STLs geometry might contain colors for vertices.
             if (geometry.hasColors) {
                 material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
-            } 
+            }*/
 
-            mesh_stl = new THREE.Mesh(geometry, material);
+            let wireframe = new THREE.WireframeGeometry(geometry);
+            lineModel = new THREE.LineSegments(wireframe);
+            lineModel.material.depthTest = false;
+            lineModel.material.opacity = 0.25;
+            lineModel.material.transparent = true;
 
-            mesh_stl.receiveShadow = true;
-            mesh_stl.castShadow = true;
+            console.log(lineModel);
 
-            console.log(mesh_stl);//
+            lineModel.receiveShadow = true;
+            lineModel.castShadow = true;
 
-            const edges = new THREE.WireframeGeometry(geometry);
-            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
-            scene.add(line);
+            console.log(lineModel);//
 
-
-            //afficher le mesh
-            scene.add(mesh_stl);
-
+            scene.add(lineModel);
             //TODO ici
-            convertirSTLtoDonnees(geometry);
         });
-
     } else {
         
-        if (mesh_stl) {
-            scene.remove(mesh_stl);
+        if (lineModel) {
+            scene.remove(lineModel);
         }
     }
-
     importButton.style.display = "none";
     sceneContrainer.style.display = "block";
     toolbar.style.display = "block";
