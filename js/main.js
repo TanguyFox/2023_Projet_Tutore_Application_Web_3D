@@ -26,9 +26,8 @@ camera.position.set(5, 5, 10);
 camera.lookAt(0 ,0, 0);
 //------------------------------------------
 
-
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
-const renderer = new THREE.WebGLRenderer({ antialias: false});
+const renderer = new THREE.WebGLRenderer({ antialias: false });
 renderer.setSize( widthS, heightS );
 
 
@@ -56,17 +55,16 @@ const oribitcontrols = new OrbitControls(camera, renderer.domElement);
 //fonction deplacement
 const transformControls = new TransformControls(camera, renderer.domElement);
 transformControls.addEventListener('change', render);
+
 transformControls.addEventListener('dragging-changed', function(event){
     oribitcontrols.enabled = ! event.value;
 });
+
 scene.add(transformControls);
-
-
 
 //Raycaster
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
-
 
 //Bounding Box
 let boundingBoxObject = {
@@ -89,6 +87,7 @@ function onPointerMove( event ){
 function onPointerClick( event ){
 
     // console.log(pointer.x + " " + pointer.y);
+
     let clickOnObject = false;
     raycaster.setFromCamera(pointer, camera);
 
@@ -132,7 +131,6 @@ sceneContrainer.addEventListener('click', onPointerClick);
 
 //Render
 function render(){
-
     //Render page
     renderer.render(scene, camera);
 }
@@ -158,7 +156,6 @@ animate();
 
 //import event 
 const importButton = document.getElementById('import');
-
 var input = document.getElementById("inputfile");
 input.addEventListener('change', handleFileSelect);
 importButton.addEventListener('click', function(){input.click();});
@@ -175,7 +172,8 @@ let menuMD = document.getElementById('menuModification');
 let panel = document.getElementById('panel');
 
 function handleFileSelect(event) {
-    const file = event.target.files[0]; 
+
+    const file = event.target.files[0];
     if (file) {
         
         if (lineModel) {
@@ -202,7 +200,7 @@ function handleFileSelect(event) {
             lineModel.receiveShadow = true;
             lineModel.castShadow = true;
 
-
+            console.log(lineModel);
 
             scene.add(lineModel);
             //TODO ici
@@ -213,7 +211,7 @@ function handleFileSelect(event) {
         menuMD.style.display = "block";
         panel.style.display = "block";
     } else {
-        
+
         if (lineModel) {
             scene.remove(lineModel);
         }

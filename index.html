@@ -5,46 +5,49 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>STL Viewer</title>
     <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/content.css">
+
 </head>
 <body>
-    <nav id="nav">
-        <ul>
-            <li id="home"><a>Home</a></li>
-        </ul>
-    </nav>
-    <div id="content">
+<nav id="nav">
+    <ul>
+        <li id="home"><a>Home</a></li>
+    </ul>
+</nav>
+<div id="content">
 
-        <button type="button" id="import">
-            <label style="cursor: pointer">Upload</label>
-            <input type="file" hidden id="inputfile" accept=".stl"/>
-        </button>
+    <button type="button" id="import">
+        <label style="cursor: pointer">Upload</label>
+        <input type="file" hidden id="inputfile" accept=".stl"/>
+    </button>
 
-        <div id="scene-container"></div>
-
-        <div id="menuModification"></div>
-    </div>
-
+    <div id="scene-container"></div>
     <div id="toolbar">
-        <button class="toolbar-button" id="translate">
-            <img class="toolbar-img" src="resources/img/toolbar/translate.svg" alt="translate">
-        </button>
-        <button class="toolbar-button" id="rotate">
-            <img class="toolbar-img" src="resources/img/toolbar/rotate.svg" alt="rotate">
-        </button>
-        <button class="toolbar-button" id="scale">
-            <img class="toolbar-img" src="resources/img/toolbar/scale.svg" alt="scale">
-        </button>
-    </div>
-
-    <div id="panel">
-        <span>
-            <label>
+        <div>
+            <button class="toolbar-button" id="translate">
+                <img class="toolbar-img" src="resources/img/toolbar/translate.svg" alt="translate">
+            </button>
+            <button class="toolbar-button" id="rotate">
+                <img class="toolbar-img" src="resources/img/toolbar/rotate.svg" alt="rotate">
+            </button>
+            <button class="toolbar-button" id="scale">
+                <img class="toolbar-img" src="resources/img/toolbar/scale.svg" alt="scale">
+            </button>
+        </div>
+        <div>
+            <label id="panel">
                 Grid
                 <input type="checkbox" id="grid-check" checked>
             </label>
-        </span>
+        </div>
+
     </div>
 
-    <script type="module" src="js/main.js"></script>
+
+    <div id="menuModification"></div>
+</div>
+
+
+<script type="module" src="js/main.js"></script>
 </body>
 </html>

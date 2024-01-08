@@ -1,0 +1,44 @@
+#scene-container {
+    /*z-index: 0;*/
+    height: 100%;
+    width: 90%;
+    overflow: hidden;
+    display: none;
+}
+
+#toolbar{
+    display: none;
+    position: absolute;
+    top: 55px;
+    left: 15px;
+    background-color: transparent;
+    user-select: none;
+    width: calc(100% - 350px);
+    justify-content: space-between;
+}
+
+.toolbar-button{
+    cursor: pointer;
+    user-select: none;
+    text-align: center;
+}
+
+.toolbar-img{
+    pointer-events: none;
+    width: 15px;
+    height: 15px;
+}
+#panel{
+    user-select: none;
+}
+
+
+/**MENU MODIFICATION**/
+#menuModification{
+    display: none;
+    right: 0;
+    width: 350px;
+    height: 100%;
+    background-color: #cbcbcb;
+}
+
