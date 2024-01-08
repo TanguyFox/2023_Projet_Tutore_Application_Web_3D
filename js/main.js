@@ -150,10 +150,6 @@ let lineModel;
 
 animate();
 
-
-
-
-
 //import event 
 const importButton = document.getElementById('import');
 
@@ -166,7 +162,6 @@ let toolbar = document.getElementById('toolbar');
 function handleFileSelect(event) {
     const file = event.target.files[0]; 
     if (file) {
-        
         if (lineModel) {
             scene.remove(lineModel);
         }
@@ -182,31 +177,28 @@ function handleFileSelect(event) {
             }*/
 
             let wireframe = new THREE.WireframeGeometry(geometry);
+
             lineModel = new THREE.LineSegments(wireframe);
             lineModel.material.depthTest = false;
             lineModel.material.opacity = 0.25;
             lineModel.material.transparent = true;
-
-            console.log(lineModel);
-
             lineModel.receiveShadow = true;
             lineModel.castShadow = true;
 
-            console.log(lineModel);//
 
             scene.add(lineModel);
             //TODO ici
         });
+        importButton.style.display = "none";
+        sceneContrainer.style.display = "block";
+        toolbar.style.display = "block";
+
+
     } else {
-        
         if (lineModel) {
             scene.remove(lineModel);
         }
     }
-    importButton.style.display = "none";
-    sceneContrainer.style.display = "block";
-    toolbar.style.display = "block";
-
 }
 
 //toolbar event
