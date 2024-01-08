@@ -213,9 +213,9 @@ function handleFileSelect(event) {
     }
     importButton.style.display = "none";
     sceneContrainer.style.display = "block";
-    toolbar.style.display = "block";
+    toolbar.style.display = "flex";
     menuMD.style.display = "block";
-    panel.style.display = "block";
+   // panel.style.display = "block";
 }
 
 //toolbar event
