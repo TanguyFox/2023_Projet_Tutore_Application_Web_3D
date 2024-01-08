@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
-import { convertirSTLtoDonnees } from './tool/tool.js';
+import { convertirSTLtoDonnees } from './tool/DataStructureImplementation.js';
 import {createBoundingBox, removeBoundingBox} from "./vue/BoundingBoxHandler";
 
 
@@ -12,7 +12,7 @@ const sceneContrainer = document.getElementById('scene-container');
 const scene = new THREE.Scene();
 
 //width / height Scene / a modifier temps en temps pour la Précision de RayCaster
-const widthS = window.innerWidth;
+const widthS = window.innerWidth - 300;
 const heightS = window.innerHeight;
 //Scene backgroud
 scene.background = new THREE.Color(0x888888);
@@ -69,18 +69,20 @@ const pointer = new THREE.Vector2();
 
 
 //Bounding Box
-let boundingBox;
+let boundingBoxObject = {
+    boundingBox: null
+};
 
 //Raycaster function
 function onPointerMove( event ){
     pointer.x = ( event.clientX / widthS ) * 2 - 1;
 
     /*
-        +0.16 pour mieux positionner le raycaster,
+        +0.11 pour mieux positionner le raycaster,
         et il faut mofidier si on change la taille de scene-container,
         En gros, c'est une méthode temporaire.
     */
-    pointer.y = - ( event.clientY / heightS ) * 2 + 1 + 0.16;
+    pointer.y = - ( event.clientY / heightS ) * 2 + 1 + 0.11;
 
 }
 
@@ -103,8 +105,8 @@ function onPointerClick( event ){
                 // console.log(mesh_stl.uuid);
 
                 //Bounding Box
-                removeBoundingBox();
-                createBoundingBox(lineModel, boundingBox, scene)
+                removeBoundingBox(boundingBoxObject);
+                createBoundingBox(lineModel, boundingBoxObject, scene)
 
                 transformControls.attach(lineModel);
                 clickOnObject = true;
@@ -113,7 +115,7 @@ function onPointerClick( event ){
         }
 
         if(!clickOnObject){
-            removeBoundingBox();
+            removeBoundingBox(boundingBoxObject);
 
             if(!transformControls.dragging){
                 transformControls.detach();
@@ -139,8 +141,8 @@ function render(){
 function animate(){
     requestAnimationFrame(animate);
     oribitcontrols.update();
-    if(boundingBox){
-        boundingBox.update();
+    if(boundingBoxObject.boundingBox){
+        boundingBoxObject.boundingBox.update();
     }
     render();
 }
@@ -150,18 +152,32 @@ let lineModel;
 
 animate();
 
+
+
+
+
 //import event 
 const importButton = document.getElementById('import');
 
 var input = document.getElementById("inputfile");
-input.addEventListener('change', handleFileSelect, false);
+input.addEventListener('change', handleFileSelect);
+importButton.addEventListener('click', function(){input.click();});
+
+
 
 //toolbar pour Rotation, Translation, Scale
 let toolbar = document.getElementById('toolbar');
 
+//menu de modification
+let menuMD = document.getElementById('menuModification');
+
+//panel
+let panel = document.getElementById('panel');
+
 function handleFileSelect(event) {
     const file = event.target.files[0]; 
     if (file) {
+        
         if (lineModel) {
             scene.remove(lineModel);
         }
@@ -177,13 +193,15 @@ function handleFileSelect(event) {
             }*/
 
             let wireframe = new THREE.WireframeGeometry(geometry);
-
             lineModel = new THREE.LineSegments(wireframe);
             lineModel.material.depthTest = false;
             lineModel.material.opacity = 0.25;
             lineModel.material.transparent = true;
+
+
             lineModel.receiveShadow = true;
             lineModel.castShadow = true;
+
 
 
             scene.add(lineModel);
@@ -192,13 +210,15 @@ function handleFileSelect(event) {
         importButton.style.display = "none";
         sceneContrainer.style.display = "block";
         toolbar.style.display = "block";
-
-
+        menuMD.style.display = "block";
+        panel.style.display = "block";
     } else {
+        
         if (lineModel) {
             scene.remove(lineModel);
         }
     }
+
 }
 
 //toolbar event
@@ -215,4 +235,7 @@ toolbar.addEventListener('click', function(event){
     }
 });
 
+document.getElementById('grid-check').addEventListener('change', function(event){
+    gridHelper.visible = event.target.checked;
+});
 
