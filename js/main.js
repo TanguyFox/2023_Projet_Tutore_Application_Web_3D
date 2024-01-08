@@ -56,16 +56,10 @@ const oribitcontrols = new OrbitControls(camera, renderer.domElement);
 const transformControls = new TransformControls(camera, renderer.domElement);
 transformControls.addEventListener('change', render);
 
-let count = 1;
 transformControls.addEventListener('dragging-changed', function(event){
     oribitcontrols.enabled = ! event.value;
-    console.log(count++);
-    console.log(mesh_stl);
-
-    transformControls.object.applyMatrix4(transformControls.matrix);
-    transformControls.matrix.identity();
-
 });
+
 scene.add(transformControls);
 
 //Raycaster
@@ -73,7 +67,9 @@ const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
 
 //Bounding Box
-let boundingBox;
+let boundingBoxObject = {
+    boundingBox: null
+};
 
 //Raycaster function
 function onPointerMove( event ){
@@ -90,7 +86,7 @@ function onPointerMove( event ){
 
 function onPointerClick( event ){
 
-    console.log(pointer.x + " " + pointer.y);
+    // console.log(pointer.x + " " + pointer.y);
 
     let clickOnObject = false;
     raycaster.setFromCamera(pointer, camera);
@@ -108,8 +104,8 @@ function onPointerClick( event ){
                 // console.log(mesh_stl.uuid);
 
                 //Bounding Box
-                removeBoundingBox();
-                createBoundingBox(lineModel, boundingBox, scene)
+                removeBoundingBox(boundingBoxObject);
+                createBoundingBox(lineModel, boundingBoxObject, scene)
 
                 transformControls.attach(lineModel);
                 clickOnObject = true;
@@ -118,7 +114,7 @@ function onPointerClick( event ){
         }
 
         if(!clickOnObject){
-            removeBoundingBox();
+            removeBoundingBox(boundingBoxObject);
 
             if(!transformControls.dragging){
                 transformControls.detach();
@@ -143,8 +139,8 @@ function render(){
 function animate(){
     requestAnimationFrame(animate);
     oribitcontrols.update();
-    if(boundingBox){
-        boundingBox.update();
+    if(boundingBoxObject.boundingBox){
+        boundingBoxObject.boundingBox.update();
     }
     render();
 }
@@ -200,12 +196,11 @@ function handleFileSelect(event) {
             lineModel.material.opacity = 0.25;
             lineModel.material.transparent = true;
 
-            console.log(lineModel);
 
             lineModel.receiveShadow = true;
             lineModel.castShadow = true;
 
-            console.log(lineModel);//
+            console.log(lineModel);
 
             scene.add(lineModel);
             //TODO ici
