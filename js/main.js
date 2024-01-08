@@ -263,3 +263,6 @@ document.getElementById('grid-check').addEventListener('change', function(event)
     gridHelper.visible = event.target.checked;
 });
 
+export{
+    renderer
+}

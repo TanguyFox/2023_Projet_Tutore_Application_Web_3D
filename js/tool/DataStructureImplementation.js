@@ -14,7 +14,7 @@ function convertirSTLtoDonnees(positions){
         let y1 = positions[i+1];
         let z1 = positions[i+2];
         let p1 = new Point(x1, y1, z1);
-        //console.log("p1 : " + p1.toString());
+        console.log("p1 : " + p1.toString());
         let x2 = positions[i+3];
         let y2 = positions[i+4];
         let z2 = positions[i+5];
