@@ -7,8 +7,6 @@ function convertirSTLtoDonnees(positions){
     let vertices = [];
     let faces = [];
 
-    //let positions = stl.getAttribute("position").array;
-
     for(let i = 0; i < positions.length; i+=9){
         let x1 = positions[i];
         let y1 = positions[i+1];
@@ -19,63 +17,30 @@ function convertirSTLtoDonnees(positions){
         let y2 = positions[i+4];
         let z2 = positions[i+5];
         let p2 = new Point(x2, y2, z2);
-        //console.log("p2 : " + p2.toString());
         let x3 = positions[i+6];
         let y3 = positions[i+7];
         let z3 = positions[i+8];
         let p3 = new Point(x3, y3, z3);
-        //console.log("p3 : " + p3.toString());
 
-
-
-        //A modifier apres - function includes et indexOf est null ici
-        if(!isPointInList(p1, points)){
-            points.push(p1);
-            //console.log('ajout de ' + p1 + 'dans points');
-        }else{
-            p1 = getPointInList(points, p1);
-            //console.log("p1 recup dans liste : " + p1);
-        }
-
-        if(!isPointInList(p2, points)){
-            points.push(p2);
-            //console.log('ajout de ' + p2 + 'dans points');
-        }else{
-            p2 = getPointInList(points, p2);
-            //console.log("p2 recup dans liste : " + p2);
-        }
-
-        if(!isPointInList(p3, points)){
-            points.push(p3);
-            //console.log('ajout de ' + p3 + 'dans points');
-        }else{
-            p3 = getPointInList(points, p3);
-            //console.log("p3 recup dans liste : " + p3);
-        }
+        ajouterPointAListe(p1, points);
+        ajouterPointAListe(p2, points);
+        ajouterPointAListe(p3, points);
 
         let v1 = new Vertex(p1);
         let h1 = new HalfEdge(v1);
-        //console.log("h1 : " + h1.toString());
         v1.setEdge(h1);
 
         let v2 = new Vertex(p2);
         let h2 = new HalfEdge(v2);
-        //console.log("h2 : " + h2.toString());
         v2.setEdge(h2);
 
         let v3 = new Vertex(p3);
         let h3 = new HalfEdge(v3);
-        //console.log("h3 : " + h3.toString());
         v3.setEdge(h3);
 
-        h1.setNext(h2);
-        h1.setPrev(h3);
-
-        h2.setPrev(h1);
-        h2.setNext(h3);
-
-        h3.setPrev(h2);
-        h3.setNext(h1);
+        setPrevAndNext(h1, h3, h2);
+        setPrevAndNext(h2, h1, h3);
+        setPrevAndNext(h3, h2, h1);
 
         let newFace = new Face(h1);
         h1.setFace(newFace);
@@ -85,46 +50,9 @@ function convertirSTLtoDonnees(positions){
         faces.push(newFace);
 
         // détection des arêtes opposées pour compléter la structure de données
-        let vertexP1 = vertices.filter(e => e.point.equals(p1));
-        //console.log("vertexP1 : " + vertexP1);
-        if(vertexP1.length !== 0){
-            let halfedgeOppose = vertexP1.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p2))[0];
-            //console.log("halfedgeOpposee p1 : " + halfedgeOppose);
-            if(typeof halfedgeOppose !== 'undefined'){
-                if(halfedgeOppose.opposite === null){
-                    halfedgeOppose.setOpposite(h1);
-                    h1.setOpposite(halfedgeOppose);
-                }else{
-                    throw new Error("Erreur de topologie p1");
-                }
-            }
-        }
-
-        let vertexP2 = vertices.filter(e => e.point.equals(p2));
-        if(vertexP2.length !== 0){
-            let halfedgeOppose = vertexP2.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p3))[0];
-            if(typeof halfedgeOppose !== 'undefined'){
-                if(halfedgeOppose.opposite === null){
-                    halfedgeOppose.setOpposite(h2);
-                    h2.setOpposite(halfedgeOppose);
-                }else{
-                    throw new Error("Erreur de topologie p2");
-                }
-            }
-        }
-
-        let vertexP3 = vertices.filter(e => e.point.equals(p3));
-        if(vertexP3.length !== 0){
-            let halfedgeOppose = vertexP3.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p1))[0];
-            if(typeof halfedgeOppose !== 'undefined'){
-                if(halfedgeOppose.opposite === null){
-                    halfedgeOppose.setOpposite(h3);
-                    h3.setOpposite(halfedgeOppose);
-                }else{
-                    throw new Error("Erreur de topologie p3");
-                }
-            }
-        }
+        detectionAretesOpposees(p1, p2, h1, "p1");
+        detectionAretesOpposees(p2, p3, h2, "p2");
+        detectionAretesOpposees(p3, p1, h3, "p3");
 
         vertices.push(v1);
         vertices.push(v2);
@@ -179,6 +107,34 @@ function trierFaces(faces){
         a.compare(b)
     ));
     return faces
+}
+
+function ajouterPointAListe (p, points) {
+    if (!isPointInList(p, points)){
+        points.push(p);
+    } else {
+        p = getPointInList(points, p);
+    }
+}
+
+function detectionAretesOpposees(p1, p2, h, nom) {
+    let vertex = vertices.filter(e => e.point.equals(p1));
+        if(vertex.length !== 0){
+            let halfedgeOppose = vertex.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p2))[0];
+            if(typeof halfedgeOppose !== 'undefined'){
+                if(halfedgeOppose.opposite == null){
+                    halfedgeOppose.setOpposite(h);
+                    h.setOpposite(halfedgeOppose);
+                }else{
+                    throw new Error("Erreur de topologie p" + nom);
+                }
+            }
+        }
+}
+
+function setPrevAndNext(h, hPrev, hNext) {
+    h.setNext(hNext);
+    h.setPrev(hPrev);
 }
 
 self.addEventListener("message", function (e) {
