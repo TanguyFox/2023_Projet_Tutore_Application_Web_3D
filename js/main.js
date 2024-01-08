@@ -8,13 +8,14 @@ import { Mesh } from "./structure/Mesh";
 import { HalfEdge } from "./structure/HalfEdge";
 import { Vertex } from "./structure/Vertex";
 import { Point } from "./structure/Point";
+import {System} from "three/addons/libs/ecsy.module";
 
 //Scene
 const scene = new THREE.Scene();
 
 //width / height Scene / a modifier temps en temps pour la Précision de RayCaster
 const sceneContrainer = document.getElementById('scene-container');
-const widthS =window.innerWidth;
+const widthS = window.innerWidth - 300;
 const heightS = window.innerHeight;
 
 
@@ -28,7 +29,7 @@ camera.lookAt(0 ,0, 0);
 scene.background = new THREE.Color(0x888888); 
 
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
-const renderer = new THREE.WebGLRenderer({ antialias: false});
+const renderer = new THREE.WebGLRenderer({ antialias: false });
 renderer.setSize( widthS, heightS );
 
 
@@ -56,17 +57,22 @@ const oribitcontrols = new OrbitControls(camera, renderer.domElement);
 //fonction deplacement
 const transformControls = new TransformControls(camera, renderer.domElement);
 transformControls.addEventListener('change', render);
+
+let count = 1;
 transformControls.addEventListener('dragging-changed', function(event){
     oribitcontrols.enabled = ! event.value;
+    console.log(count++);
+    console.log(mesh_stl);
+
+    transformControls.object.applyMatrix4(transformControls.matrix);
+    transformControls.matrix.identity();
+
 });
 scene.add(transformControls);
-
-
 
 //Raycaster
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
-
 
 //Bounding Box
 let boundingBox;
@@ -87,17 +93,18 @@ function onPointerMove( event ){
     pointer.x = ( event.clientX / widthS ) * 2 - 1;
 
     /*
-        +0.16 pour mieux positionner le raycaster,
+        +0.11 pour mieux positionner le raycaster,
         et il faut mofidier si on change la taille de scene-container,
         En gros, c'est une méthode temporaire.
     */
-    pointer.y = - ( event.clientY / heightS ) * 2 + 1 + 0.16;
+    pointer.y = - ( event.clientY / heightS ) * 2 + 1 + 0.11;
 
 }
 
 function onPointerClick( event ){
 
-    // console.log(pointer.x + " " + pointer.y);
+    console.log(pointer.x + " " + pointer.y);
+
     let clickOnObject = false;
     raycaster.setFromCamera(pointer, camera);
 
@@ -141,7 +148,6 @@ sceneContrainer.addEventListener('click', onPointerClick);
 
 //Render
 function render(){
-
     //Render page
     renderer.render(scene, camera);
 }
@@ -167,14 +173,23 @@ animate();
 
 //import event 
 const importButton = document.getElementById('import');
-
 var input = document.getElementById("inputfile");
-input.addEventListener('change', handleFileSelect, false);
+input.addEventListener('change', handleFileSelect);
+importButton.addEventListener('click', function(){input.click();});
+
+
 
 //toolbar pour Rotation, Translation, Scale
 let toolbar = document.getElementById('toolbar');
 
+//menu de modification
+let menuMD = document.getElementById('menuModification');
+
+//panel
+let panel = document.getElementById('panel');
+
 function handleFileSelect(event) {
+
     const file = event.target.files[0]; 
     if (file) {
         
@@ -201,7 +216,14 @@ function handleFileSelect(event) {
 
             console.log(mesh_stl);//
 
+            const edges = new THREE.WireframeGeometry(geometry);
+            const line = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({ color: 0x000000 }));
+            scene.add(line);
+
+
+            //afficher le mesh
             scene.add(mesh_stl);
+
             //TODO ici
             convertirSTLtoDonnees(geometry);
         });
@@ -216,7 +238,8 @@ function handleFileSelect(event) {
     importButton.style.display = "none";
     sceneContrainer.style.display = "block";
     toolbar.style.display = "block";
-
+    menuMD.style.display = "block";
+    panel.style.display = "block";
 }
 
 //toolbar event
@@ -233,4 +256,7 @@ toolbar.addEventListener('click', function(event){
     }
 });
 
+document.getElementById('grid-check').addEventListener('change', function(event){
+    gridHelper.visible = event.target.checked;
+});
 
