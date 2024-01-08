@@ -1,8 +1,4 @@
-import { Vertex } from "../structure/Vertex";
-import { HalfEdge } from "../structure/HalfEdge";
-import {Face} from "../structure/Face";
-import {Point} from "../structure/Point.js";
-import {Mesh} from "../structure/Mesh.js";
+importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face", "../structure/Point.js", "../structure/Mesh.js")
 
 function convertirSTLtoDonnees(positions){
 
@@ -12,7 +8,6 @@ function convertirSTLtoDonnees(positions){
     let faces = [];
 
     //let positions = stl.getAttribute("position").array;
-    // let normals = stl.geometry.attributes.normal.array;
 
     for(let i = 0; i < positions.length; i+=9){
         let x1 = positions[i];
@@ -96,7 +91,7 @@ function convertirSTLtoDonnees(positions){
             let halfedgeOppose = vertexP1.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p2))[0];
             //console.log("halfedgeOpposee p1 : " + halfedgeOppose);
             if(typeof halfedgeOppose !== 'undefined'){
-                if(halfedgeOppose.opposite == null){
+                if(halfedgeOppose.opposite === null){
                     halfedgeOppose.setOpposite(h1);
                     h1.setOpposite(halfedgeOppose);
                 }else{
@@ -109,7 +104,7 @@ function convertirSTLtoDonnees(positions){
         if(vertexP2.length !== 0){
             let halfedgeOppose = vertexP2.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p3))[0];
             if(typeof halfedgeOppose !== 'undefined'){
-                if(halfedgeOppose.opposite == null){
+                if(halfedgeOppose.opposite === null){
                     halfedgeOppose.setOpposite(h2);
                     h2.setOpposite(halfedgeOppose);
                 }else{
@@ -122,7 +117,7 @@ function convertirSTLtoDonnees(positions){
         if(vertexP3.length !== 0){
             let halfedgeOppose = vertexP3.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p1))[0];
             if(typeof halfedgeOppose !== 'undefined'){
-                if(halfedgeOppose.opposite == null){
+                if(halfedgeOppose.opposite === null){
                     halfedgeOppose.setOpposite(h3);
                     h3.setOpposite(halfedgeOppose);
                 }else{
@@ -134,7 +129,6 @@ function convertirSTLtoDonnees(positions){
         vertices.push(v1);
         vertices.push(v2);
         vertices.push(v3);
-
     }
 
     points = trierPoints(points);
@@ -187,4 +181,9 @@ function trierFaces(faces){
     return faces
 }
 
-export {convertirSTLtoDonnees}
+self.addEventListener("message", function (e) {
+    const positions = e.data;
+    const result = convertirSTLtoDonnees(positions);
+
+    self.postMessage(result);
+});
