@@ -138,21 +138,10 @@ function convertirSTLtoDonnees(stl){
     }
 
     points = trierPoints(points);
-
-
-    //TODO
-    /**
-     * points ← trierPoints(points)
-     * //Trier vertex par points
-     * //Trier face par vertex
-     *
-     * mesh ← Mesh(faces, vertices, points)
-     * retourne mesh
-     */
+    vertices = trierVertex(vertices);
+    faces = trierFaces(faces);
 
     return new Mesh(vertices, faces, points);
-
-
 }
 
 function vertexDegree(vertex){
@@ -180,6 +169,20 @@ function isPointInList(newPoint, pointList) {
 
 function getPointInList(list, point){
     return list.filter(e => e.equals(point))[0];
+}
+
+function trierVertex(vertices){
+    vertices.sort((a,b)=>(
+        a.compare(b)
+    ));
+    return vertices;
+}
+
+function trierFaces(faces){
+    faces.sort((a,b)=>(
+        a.compare(b)
+    ));
+    return faces
 }
 
 export {convertirSTLtoDonnees}

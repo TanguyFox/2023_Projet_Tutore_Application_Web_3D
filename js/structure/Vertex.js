@@ -13,5 +13,5 @@ Vertex.prototype.toString = function(){
 }
 
 Vertex.prototype.compare = function(vertex){
-
+    return this.point.compare(vertex.point);
 }

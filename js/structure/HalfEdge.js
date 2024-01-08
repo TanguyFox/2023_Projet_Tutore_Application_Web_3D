@@ -30,4 +30,8 @@ HalfEdge.prototype.toString = function(){
     return "HE{ "  + this.vertex +" }"
 }
 
+HalfEdge.prototype.compare = function(halfedge){
+    return this.vertex.compare(halfedge.vertex);
+}
+
 

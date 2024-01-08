@@ -1,3 +1,5 @@
+import {Vertex} from "./Vertex";
+
 export class Face {
     constructor(edge) {
         this.edge = edge;
@@ -50,4 +52,8 @@ Face.prototype.isWellOriented = function(){
     let crossProduct = crossProductX + crossProductY + crossProductZ;
 
     return crossProduct > 0;
+}
+
+Face.prototype.compare = function(face){
+    return this.edge.compare(face.edge);
 }
