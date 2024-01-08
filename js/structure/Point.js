@@ -15,13 +15,13 @@ Point.prototype.equals = function(point){
     return ((point.x === this.x)&&(point.y === this.y) && (point.z === this.z));
 }
 
-Point.prototype.compare = function (point){
-    if(pointA.x !== pointB.x){
-        return pointA.x - pointB.x;
-    }else if(pointA.y !== pointB.y){
-        return pointA.y - pointB.y;
-    }else if(pointA.z !== pointB.z){
-        return pointA.z - pointB.z
+Point.prototype.compare = function (pointB){
+    if(this.x !== pointB.x){
+        return this.x - pointB.x;
+    }else if(this.y !== pointB.y){
+        return this.y - pointB.y;
+    }else if(this.z !== pointB.z){
+        return this.z - pointB.z
     }
 }
 
