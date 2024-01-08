@@ -13,13 +13,14 @@
         </ul>
     </nav>
     <div id="content">
+
         <button type="button" id="import">
-            <label for="inputfile">Upload</label>
+            <label style="cursor: pointer">Upload</label>
             <input type="file" hidden id="inputfile" accept=".stl"/>
         </button>
-        <div id="scene-container">
 
-        </div>
+        <div id="scene-container"></div>
+
         <div id="menuModification"></div>
     </div>
 
@@ -33,6 +34,15 @@
         <button class="toolbar-button" id="scale">
             <img class="toolbar-img" src="resources/img/toolbar/scale.svg" alt="scale">
         </button>
+    </div>
+
+    <div id="panel">
+        <span>
+            <label>
+                Grid
+                <input type="checkbox" id="grid-check" checked>
+            </label>
+        </span>
     </div>
 
     <script type="module" src="js/main.js"></script>
