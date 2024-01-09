@@ -1,13 +1,17 @@
 importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face", "../structure/Point.js", "../structure/Mesh.js")
 
+var envoie = false;
+
 function convertirSTLtoDonnees(positions) {
 
     console.log("RENTREE TOOL");
     let points = [];
     let vertices = [];
     let faces = [];
+    var totalSize = positions.length;
+    for (let i = 0; i < totalSize; i += 9) {
+        progression(i, totalSize);
 
-    for (let i = 0; i < positions.length; i += 9) {
         let x1 = positions[i];
         let y1 = positions[i + 1];
         let z1 = positions[i + 2];
@@ -65,7 +69,7 @@ function convertirSTLtoDonnees(positions) {
     faces = trierFaces(faces);
 
     console.log("Data filled")
-
+    onProgress(100);
     return new Mesh(vertices, faces, points);
 }
 
@@ -137,8 +141,34 @@ function setPrevAndNext(h, hPrev, hNext) {
     h.setNext(hNext);
     h.setPrev(hPrev);
 }
+/*function onProgress(xhr) {
+    var progressBar = document.getElementById('progress-bar');
+    var loadingMessage = document.getElementById('loading-message');
+
+    if (xhr.lengthComputable) {
+        var percentComplete = xhr.loaded / xhr.total * 100;
+        progressBar.style.width = percentComplete + '%';
+
+        loadingMessage.innerHTML = 'Chargement en cours... ' + Math.round(percentComplete) + '%';
+    }
+}*/
+function onProgress(progress){
+    self.postMessage({type: 'progress', value: progress});
+}
+function progression(i, totalSize){
+    if(i%2===0){
+        if(envoie){
+            envoie = false;
+            onProgress((i/totalSize)*100);
+        } else {
+            envoie = true;
+        }
+
+    }
+}
 
 self.addEventListener("message", function (e) {
+    console.log(e.data);
     const positions = e.data;
     const result = convertirSTLtoDonnees(positions);
 

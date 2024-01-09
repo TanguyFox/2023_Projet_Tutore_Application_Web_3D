@@ -3,7 +3,7 @@ import { STLLoader } from 'three/addons/loaders/STLLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import {createBoundingBox, removeBoundingBox} from "./vue/BoundingBoxHandler";
-
+import * as loadBar from "./tool/loadBarData.js";
 
 //Scene
 //------------------------------------------
@@ -300,7 +300,7 @@ function handleFileSelect(event) {
         const stlloader = new STLLoader(loadingmg);
         try {
             stlloader.load(URL.createObjectURL(file), function (geometry) {
-
+                loadBar.showLoadingScreen();
                 geometry_model = geometry;
 
                 // configure the color
@@ -337,7 +337,11 @@ function handleFileSelect(event) {
                 */
                 dataFiller.postMessage(geometry.getAttribute("position").array);
 
-            });
+
+                loadBar.progressBarMajworker(dataFiller);
+
+                }
+            );
         } catch (e) {
             console.log(e.message);
         }
@@ -346,6 +350,7 @@ function handleFileSelect(event) {
         toolbar.style.display = "flex";
         menuMD.style.display = "block";
         panel.style.display = "block";
+
     } /*else {
 
         if (lineModel) {

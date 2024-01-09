@@ -6,7 +6,8 @@
     <title>STL Viewer</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/content.css">
-    <link rel="stylesheet" href="css/progressBar.css">
+    <link rel="stylesheet" href="css/progressBarData.css">
+    <link rel="stylesheet" href="css/ModificationMenu.css">
 
 
 </head>
@@ -36,27 +37,44 @@
                 <img class="toolbar-img" src="resources/img/toolbar/scale.svg" alt="scale">
             </button>
         </div>
-        <div>
-            <label id="panel">
-                Grid
-                <input type="checkbox" id="grid-check" checked>
-            </label>
-            <label>
-                Mode de selection d'une face(nom temporaire)
-                <input type="checkbox" id="face-mode-check">
-            </label>
-        </div>
+
     </div>
 
 
     <div id="menuModification">
+        <ul id="headerMenu">
+            <li id="visualisation_button">
+                Visualisation
+            </li>
+            <li id="modification_button">
+                Modification
+            </li>
+        </ul>
 
-        <div id="loading-screen">
-            <div id="progress-bar-container">
-                <div id="progress-bar"></div>
+        <div id="menuModifContent">
+            <div id="visualisation_content" class="contentModifMenu">
+                    <label id="panel">
+                        Grid
+                        <input type="checkbox" id="grid-check" checked>
+                    </label>
+                    <label>
+                        Mode de selection d'une face(nom temporaire)
+                        <input type="checkbox" id="face-mode-check">
+                    </label>
             </div>
-            <div id="loading-message">Chargement des données en cours...</div>
+            <div id="modification_content" class="contentModifMenu">
+                <div id="progressBarData">
+                    <label id="loading-message" class="loadingDataMessage">Chargement des données...</label>
+                    <div id="progress-bar-containerData">
+                        <div id="progress-barData"></div>
+                    </div>
+                    <label class="loadingDataMessage">Modification impossible durant cette opération</label>
+                </div>
+            </div>
         </div>
+
+
+
     </div>
 <!--</div>
     <div class="progress-bar-container">
@@ -71,6 +89,6 @@
 
 
 <script type="module" src="js/main.js"></script>
-<script type="module" src="js/tool/loadBar.js"></script>
+<script type="module" src="js/tool/loadBarData.js"></script>
 </body>
 </html>
