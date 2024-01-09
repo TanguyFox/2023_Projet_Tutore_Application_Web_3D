@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import { STLLoader } from 'three/addons/loaders/STLLoader.js'
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import {STLLoader} from 'three/addons/loaders/STLLoader.js'
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {TransformControls} from 'three/addons/controls/TransformControls.js';
 import {createBoundingBox, removeBoundingBox} from "./vue/BoundingBoxHandler";
 
 
@@ -22,12 +22,12 @@ scene.background = new THREE.Color(0x888888);
 //------------------------------------------
 const camera = new THREE.PerspectiveCamera(75, widthS / heightS, 0.1, 1000);
 camera.position.set(5, 5, 10);
-camera.lookAt(0 ,0, 0);
+camera.lookAt(0, 0, 0);
 //------------------------------------------
 
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
-const renderer = new THREE.WebGLRenderer({ antialias: false });
-renderer.setSize( widthS, heightS );
+const renderer = new THREE.WebGLRenderer({antialias: false});
+renderer.setSize(widthS, heightS);
 
 
 sceneContrainer.appendChild(renderer.domElement);
@@ -55,8 +55,8 @@ const oribitcontrols = new OrbitControls(camera, renderer.domElement);
 const transformControls = new TransformControls(camera, renderer.domElement);
 transformControls.addEventListener('change', render);
 
-transformControls.addEventListener('dragging-changed', function(event){
-    oribitcontrols.enabled = ! event.value;
+transformControls.addEventListener('dragging-changed', function (event) {
+    oribitcontrols.enabled = !event.value;
 });
 
 scene.add(transformControls);
@@ -71,34 +71,34 @@ let boundingBoxObject = {
 };
 
 //Raycaster function
-function onPointerMove( event ){
-    pointer.x = ( event.clientX / widthS ) * 2 - 1;
+function onPointerMove(event) {
+    pointer.x = (event.clientX / widthS) * 2 - 1;
 
     /*
         +0.11 pour mieux positionner le raycaster,
         et il faut mofidier si on change la taille de scene-container,
         En gros, c'est une méthode temporaire.
     */
-    pointer.y = - ( event.clientY / heightS ) * 2 + 1 + 0.11;
+    pointer.y = -(event.clientY / heightS) * 2 + 1 + 0.11;
 
 }
 
-function onPointerClick( event ){
+function onPointerClick(event) {
 
     // console.log(pointer.x + " " + pointer.y);
 
     let clickOnObject = false;
     raycaster.setFromCamera(pointer, camera);
 
-    const intersects = raycaster.intersectObjects( scene.children );
+    const intersects = raycaster.intersectObjects(scene.children);
     // console.log(scene.children);
 
-    if(lineModel != null){
+    if (lineModel != null) {
 
-        for(let i = 0; i < intersects.length; i ++ ){
+        for (let i = 0; i < intersects.length; i++) {
 
             // console.log(intersects[i].object.uuid);
-            if(intersects[i].object.uuid === lineModel.uuid){
+            if (intersects[i].object.uuid === lineModel.uuid) {
                 // console.log(intersects[i].object.uuid);
                 // console.log(mesh_stl.uuid);
 
@@ -112,10 +112,10 @@ function onPointerClick( event ){
             }
         }
 
-        if(!clickOnObject){
+        if (!clickOnObject) {
             removeBoundingBox(boundingBoxObject);
 
-            if(!transformControls.dragging){
+            if (!transformControls.dragging) {
                 transformControls.detach();
             }
         }
@@ -123,22 +123,23 @@ function onPointerClick( event ){
     }
 
 }
+
 window.addEventListener('pointermove', onPointerMove);
 
 //A Améliorer
 sceneContrainer.addEventListener('click', onPointerClick);
 
 //Render
-function render(){
+function render() {
     //Render page
     renderer.render(scene, camera);
 }
 
 //Animation
-function animate(){
+function animate() {
     requestAnimationFrame(animate);
     oribitcontrols.update();
-    if(boundingBoxObject.boundingBox){
+    if (boundingBoxObject.boundingBox) {
         boundingBoxObject.boundingBox.update();
     }
     render();
@@ -150,15 +151,13 @@ let lineModel;
 animate();
 
 
-
-
-
 //import event
 const importButton = document.getElementById('import');
 var input = document.getElementById("inputfile");
 input.addEventListener('change', handleFileSelect);
-importButton.addEventListener('click', function(){input.click();});
-
+importButton.addEventListener('click', function () {
+    input.click();
+});
 
 
 //toolbar pour Rotation, Translation, Scale
@@ -169,7 +168,6 @@ let menuMD = document.getElementById('menuModification');
 
 //panel
 let panel = document.getElementById('panel');
-
 
 
 //Utilsisation d'un WORKER pour parallelisé l'affichage du modèle 3D ainsi que le remplissage des données
@@ -193,35 +191,50 @@ function handleFileSelect(event) {
         try {
             stlloader.load(URL.createObjectURL(file), function (geometry) {
 
-                geometry.center();
-                /*let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+                    geometry.center();
+                    /*let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
 
-                //For binary STLs geometry might contain colors for vertices.
-                if (geometry.hasColors) {
-                    material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
-                }*/
+                    //For binary STLs geometry might contain colors for vertices.
+                    if (geometry.hasColors) {
+                        material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
+                    }*/
 
-                //Affichage seulement des arrètes du modèle 3D
-                let wireframe = new THREE.WireframeGeometry(geometry);
+                    //Affichage seulement des arrètes du modèle 3D
+                    let wireframe = new THREE.WireframeGeometry(geometry);
 
-                lineModel = new THREE.LineSegments(wireframe);
-                lineModel.material.depthTest = false;
-                lineModel.material.opacity = 0.25;
-                lineModel.material.transparent = true;
-                lineModel.receiveShadow = true;
-                lineModel.castShadow = true;
+                    lineModel = new THREE.LineSegments(wireframe);
+                    lineModel.material.depthTest = false;
+                    lineModel.material.opacity = 0.25;
+                    lineModel.material.transparent = true;
+                    lineModel.receiveShadow = true;
+                    lineModel.castShadow = true;
 
-                //Affichage pour l'utilisateur
-                scene.add(lineModel);
+                    //Affichage pour l'utilisateur
+                    scene.add(lineModel);
 
-                /*
-                TODO : remplir la structure de données à partir de l'objet obtenu avec le STLLoader (geometry) de manière
-                 - relativement - rapide dans le cas où un grand nombre de points est fourni
-                 */
-                dataFiller.postMessage(geometry.getAttribute("position").array);
+                    /*
+                    TODO : remplir la structure de données à partir de l'objet obtenu avec le STLLoader (geometry) de manière
+                     - relativement - rapide dans le cas où un grand nombre de points est fourni
+                     */
+                    dataFiller.postMessage(geometry.getAttribute("position").array);
 
-            });
-        } catch(e) {
+
+                    //écoute du worker pour maj bar
+                    var progressBar = document.getElementById('progress-bar');
+                    var loadingMessage = document.getElementById('loading-message');
+                    dataFiller.onmessage = function (event) {
+                        if (event.data.type === 'progress') {
+                            var percentComplete = event.data.value;
+                            progressBar.style.width = percentComplete + '%';
+
+                            loadingMessage.innerHTML = 'Chargement en cours... ' + Math.round(percentComplete) + '%';
+
+                        }
+                    }
+
+                }
+            );
+        } catch (e) {
             console.log(e.message)
         }
         importButton.style.display = "none";
@@ -237,6 +250,7 @@ function handleFileSelect(event) {
     }*/
 
 }
+
 let mesh;
 dataFiller.addEventListener("message", function (e) {
     mesh = e.data
@@ -244,25 +258,22 @@ dataFiller.addEventListener("message", function (e) {
 })
 
 
-
 //toolbar event
-toolbar.addEventListener('click', function(event){
+toolbar.addEventListener('click', function (event) {
     console.log(event.target.id);
-    if(event.target.id === "rotate"){
+    if (event.target.id === "rotate") {
         transformControls.setMode("rotate");
-    }
-    else if(event.target.id === "translate"){
+    } else if (event.target.id === "translate") {
         transformControls.setMode("translate");
-    }
-    else if(event.target.id === "scale"){
+    } else if (event.target.id === "scale") {
         transformControls.setMode("scale");
     }
 });
 
-document.getElementById('grid-check').addEventListener('change', function(event){
+document.getElementById('grid-check').addEventListener('change', function (event) {
     gridHelper.visible = event.target.checked;
 });
 
-export{
+export {
     renderer
 }

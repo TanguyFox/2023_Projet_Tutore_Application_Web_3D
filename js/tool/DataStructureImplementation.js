@@ -6,8 +6,10 @@ function convertirSTLtoDonnees(positions) {
     let points = [];
     let vertices = [];
     let faces = [];
+    var totalSize = positions.length;
 
-    for (let i = 0; i < positions.length; i += 9) {
+    for (let i = 0; i < totalSize; i += 9) {
+        onProgress((i/totalSize)*100);
         let x1 = positions[i];
         let y1 = positions[i + 1];
         let z1 = positions[i + 2];
@@ -65,7 +67,7 @@ function convertirSTLtoDonnees(positions) {
     faces = trierFaces(faces);
 
     console.log("Data filled")
-
+    onProgress(100);
     return new Mesh(vertices, faces, points);
 }
 
@@ -137,8 +139,23 @@ function setPrevAndNext(h, hPrev, hNext) {
     h.setNext(hNext);
     h.setPrev(hPrev);
 }
+/*function onProgress(xhr) {
+    var progressBar = document.getElementById('progress-bar');
+    var loadingMessage = document.getElementById('loading-message');
+
+    if (xhr.lengthComputable) {
+        var percentComplete = xhr.loaded / xhr.total * 100;
+        progressBar.style.width = percentComplete + '%';
+
+        loadingMessage.innerHTML = 'Chargement en cours... ' + Math.round(percentComplete) + '%';
+    }
+}*/
+function onProgress(progress){
+    self.postMessage({type: 'progress', value: progress});
+}
 
 self.addEventListener("message", function (e) {
+    console.log(e.data);
     const positions = e.data;
     const result = convertirSTLtoDonnees(positions);
 
