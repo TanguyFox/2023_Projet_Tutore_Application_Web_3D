@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import {STLLoader} from 'three/addons/loaders/STLLoader.js'
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {TransformControls} from 'three/addons/controls/TransformControls.js';
+import { STLLoader } from 'three/addons/loaders/STLLoader.js'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import {createBoundingBox, removeBoundingBox} from "./vue/BoundingBoxHandler";
 
 
@@ -22,12 +22,12 @@ scene.background = new THREE.Color(0x888888);
 //------------------------------------------
 const camera = new THREE.PerspectiveCamera(75, widthS / heightS, 0.1, 1000);
 camera.position.set(5, 5, 10);
-camera.lookAt(0, 0, 0);
+camera.lookAt(0 ,0, 0);
 //------------------------------------------
 
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
-const renderer = new THREE.WebGLRenderer({antialias: false});
-renderer.setSize(widthS, heightS);
+const renderer = new THREE.WebGLRenderer({ antialias: false });
+renderer.setSize( widthS, heightS );
 
 
 sceneContrainer.appendChild(renderer.domElement);
@@ -55,11 +55,22 @@ const oribitcontrols = new OrbitControls(camera, renderer.domElement);
 const transformControls = new TransformControls(camera, renderer.domElement);
 transformControls.addEventListener('change', render);
 
-transformControls.addEventListener('dragging-changed', function (event) {
-    oribitcontrols.enabled = !event.value;
+transformControls.addEventListener('dragging-changed', function(event){
+    oribitcontrols.enabled = ! event.value;
 });
 
 scene.add(transformControls);
+
+//STL file
+let meshModel;
+
+//wireframe
+let lineModel;
+
+let group;
+
+//couleur de mesh
+let color_mesh;
 
 //Raycaster
 const raycaster = new THREE.Raycaster();
@@ -70,94 +81,157 @@ let boundingBoxObject = {
     boundingBox: null
 };
 
-//Raycaster function
-function onPointerMove(event) {
-    pointer.x = (event.clientX / widthS) * 2 - 1;
+let intersects = [];
 
-    /*
-        +0.11 pour mieux positionner le raycaster,
-        et il faut mofidier si on change la taille de scene-container,
-        En gros, c'est une méthode temporaire.
-    */
-    pointer.y = -(event.clientY / heightS) * 2 + 1 + 0.11;
+//Raycaster vision
+const arrowHelper = new THREE.ArrowHelper(new THREE.Vector3(), new THREE.Vector3(), 0.5, 0x00a6ff);
+scene.add(arrowHelper);
+
+//face index
+let faceIndexAncien;
+
+//Raycaster function
+function onPointerMove( event ){
+    pointer.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1 - 0.005;
+    pointer.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1 + 0.1;
+
+    if(!modeFaceHtml.checked){
+        return;
+    }
+
+    raycaster.setFromCamera(pointer, camera);
+
+    intersects = raycaster.intersectObjects(scene.children, true);
+
+    for(let i = 0; i < intersects.length; i ++ ){
+
+        if(intersects[i].object.uuid === meshModel.uuid){
+            // console.log(intersects[i]);
+            let n = new THREE.Vector3();
+            n.copy(intersects[i].face.normal);
+            n.transformDirection(intersects[i].object.matrixWorld);
+            arrowHelper.setDirection(n);
+            arrowHelper.position.copy(intersects[i].point);
+
+            let faceIndex = intersects[i].faceIndex;
+            let geometry = intersects[i].object.geometry;
+            // console.log("geometry : " + geometry);
+            let position = geometry.attributes.position.array;
+            let vertexA = new THREE.Vector3().fromArray(position, faceIndex * 3);
+            let vertexB = new THREE.Vector3().fromArray(position, faceIndex * 3 + 1);
+            let vertexC = new THREE.Vector3().fromArray(position, faceIndex * 3 + 2);
+            // console.log(vertexA);
+            // console.log(vertexB);
+            // console.log(vertexC);
+
+            let colorAttribute = geometry.attributes.color;
+
+            // console.log("faceIndex : " + faceIndex);
+
+            if(faceIndexAncien != null){
+                colorAttribute.setXYZ(faceIndexAncien * 3, color_mesh.r, color_mesh.g, color_mesh.b);
+                colorAttribute.setXYZ(faceIndexAncien * 3 + 1, color_mesh.r, color_mesh.g, color_mesh.b);
+                colorAttribute.setXYZ(faceIndexAncien * 3 + 2, color_mesh.r, color_mesh.g, color_mesh.b);
+            }
+
+            //couleur de face
+            let color = new THREE.Color(0xff0000);
+            colorAttribute.setXYZ(faceIndex * 3, color.r, color.g, color.b);
+            colorAttribute.setXYZ(faceIndex * 3 + 1, color.r, color.g, color.b);
+            colorAttribute.setXYZ(faceIndex * 3 + 2, color.r, color.g, color.b);
+            faceIndexAncien = faceIndex;
+            colorAttribute.needsUpdate = true;
+            break;
+        }
+    }
 
 }
 
-function onPointerClick(event) {
+function onWindowResize(){
+    camera.aspect = widthS / heightS;
+    camera.updateProjectionMatrix();
+    renderer.setSize(widthS, heightS);
+    render();
+}
+window.addEventListener('resize', onWindowResize, false);
 
-    // console.log(pointer.x + " " + pointer.y);
+//check mode face
+let modeFaceHtml = document.getElementById('face-mode-check');
+
+function onPointerClick( event ){
+
+    // console.log("x:"+pointer.x + " y:" + pointer.y);
 
     let clickOnObject = false;
     raycaster.setFromCamera(pointer, camera);
 
-    const intersects = raycaster.intersectObjects(scene.children);
-    // console.log(scene.children);
+    intersects = raycaster.intersectObjects( scene.children );
 
-    if (lineModel != null) {
+    if(meshModel != null){
 
-        for (let i = 0; i < intersects.length; i++) {
+        for(let i = 0; i < intersects.length; i ++ ){
 
             // console.log(intersects[i].object.uuid);
-            if (intersects[i].object.uuid === lineModel.uuid) {
+            if(!modeFaceHtml.checked && intersects[i].object.uuid === meshModel.uuid){
                 // console.log(intersects[i].object.uuid);
-                // console.log(mesh_stl.uuid);
 
                 //Bounding Box
                 removeBoundingBox(boundingBoxObject);
-                createBoundingBox(lineModel, boundingBoxObject, scene)
+                createBoundingBox(meshModel, boundingBoxObject, scene)
 
-                transformControls.attach(lineModel);
+                transformControls.attach(group);
                 clickOnObject = true;
                 break;
             }
         }
 
-        if (!clickOnObject) {
+        if(!clickOnObject){
             removeBoundingBox(boundingBoxObject);
 
-            if (!transformControls.dragging) {
+            if(!transformControls.dragging){
                 transformControls.detach();
             }
         }
 
     }
-
 }
 
-window.addEventListener('pointermove', onPointerMove);
+
+
+// window.addEventListener('pointermove', onPointerMove);
+renderer.domElement.addEventListener('mousemove', onPointerMove, false);
 
 //A Améliorer
 sceneContrainer.addEventListener('click', onPointerClick);
 
 //Render
-function render() {
+function render(){
     //Render page
     renderer.render(scene, camera);
 }
 
 //Animation
-function animate() {
+function animate(){
     requestAnimationFrame(animate);
     oribitcontrols.update();
-    if (boundingBoxObject.boundingBox) {
+    if(boundingBoxObject.boundingBox){
         boundingBoxObject.boundingBox.update();
     }
     render();
 }
 
-//STL file | Pour l'instant, on peut seulement importer un seul fichier STL, A modifier. Pour le demo, c'est suffisant.
-let lineModel;
+
 
 animate();
+
 
 
 //import event
 const importButton = document.getElementById('import');
 var input = document.getElementById("inputfile");
 input.addEventListener('change', handleFileSelect);
-importButton.addEventListener('click', function () {
-    input.click();
-});
+importButton.addEventListener('click', function(){input.click();});
+
 
 
 //toolbar pour Rotation, Translation, Scale
@@ -168,6 +242,10 @@ let menuMD = document.getElementById('menuModification');
 
 //panel
 let panel = document.getElementById('panel');
+
+//Geometry
+let geometry_model;
+
 
 
 //Utilsisation d'un WORKER pour parallelisé l'affichage du modèle 3D ainsi que le remplissage des données
@@ -182,8 +260,8 @@ function handleFileSelect(event) {
     if (file) {
 
         //S'il y a déjà un model 3D de chargé, on l'enlève
-        if (lineModel) {
-            scene.remove(lineModel);
+        if (group) {
+            scene.remove(group);
         }
 
         const loadingmg = new THREE.LoadingManager()
@@ -191,32 +269,45 @@ function handleFileSelect(event) {
         try {
             stlloader.load(URL.createObjectURL(file), function (geometry) {
 
-                    geometry.center();
-                    /*let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+                geometry_model = geometry;
 
-                    //For binary STLs geometry might contain colors for vertices.
-                    if (geometry.hasColors) {
-                        material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
-                    }*/
+                // configure the color
+                geometry_model.setAttribute('color', new THREE.BufferAttribute(new Float32Array(geometry_model.attributes.position.count * 3), 3));
 
-                    //Affichage seulement des arrètes du modèle 3D
-                    let wireframe = new THREE.WireframeGeometry(geometry);
+                //couleur de mesh
+                color_mesh = new THREE.Color(0xFFFFFF);
+                for (let i = 0; i < geometry_model.attributes.color.count; i++) {
+                    geometry_model.attributes.color.setXYZ(i, color_mesh.r, color_mesh.g, color_mesh.b);
+                }
 
-                    lineModel = new THREE.LineSegments(wireframe);
-                    lineModel.material.depthTest = false;
-                    lineModel.material.opacity = 0.25;
-                    lineModel.material.transparent = true;
-                    lineModel.receiveShadow = true;
-                    lineModel.castShadow = true;
+                geometry_model.center();
+                // let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+                let material = new THREE.MeshBasicMaterial({vertexColors: true});
 
-                    //Affichage pour l'utilisateur
-                    scene.add(lineModel);
 
-                    /*
-                    TODO : remplir la structure de données à partir de l'objet obtenu avec le STLLoader (geometry) de manière
-                     - relativement - rapide dans le cas où un grand nombre de points est fourni
-                     */
-                    dataFiller.postMessage(geometry.getAttribute("position").array);
+                let wireframe = new THREE.WireframeGeometry(geometry);
+
+                //couleur de ligne
+                lineModel = new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000}));
+                lineModel.material.depthTest = false;
+                lineModel.material.opacity = 1;
+                lineModel.material.transparent = true;
+                // scene.add(lineModel);
+
+
+                meshModel = new THREE.Mesh(geometry_model, material);
+
+                console.log(meshModel);
+
+                group = new THREE.Group();
+                group.add(meshModel, lineModel);
+                scene.add(group);
+
+                /*
+                TODO : remplir la structure de données à partir de l'objet obtenu avec le STLLoader (geometry) de manière
+                - relativement - rapide dans le cas où un grand nombre de points est fourni
+                */
+                dataFiller.postMessage(geometry.getAttribute("position").array);
 
 
                     //écoute du worker pour maj bar
@@ -250,7 +341,6 @@ function handleFileSelect(event) {
     }*/
 
 }
-
 let mesh;
 dataFiller.addEventListener("message", function (e) {
     mesh = e.data
@@ -258,22 +348,50 @@ dataFiller.addEventListener("message", function (e) {
 })
 
 
+
 //toolbar event
-toolbar.addEventListener('click', function (event) {
+toolbar.addEventListener('click', function(event){
     console.log(event.target.id);
-    if (event.target.id === "rotate") {
+    if(event.target.id === "rotate"){
         transformControls.setMode("rotate");
-    } else if (event.target.id === "translate") {
+    }
+    else if(event.target.id === "translate"){
         transformControls.setMode("translate");
-    } else if (event.target.id === "scale") {
+    }
+    else if(event.target.id === "scale"){
         transformControls.setMode("scale");
     }
 });
 
-document.getElementById('grid-check').addEventListener('change', function (event) {
-    gridHelper.visible = event.target.checked;
+document.getElementById('grid-check').addEventListener('change', function(event){
+    if(event.target.checked){
+        scene.add(gridHelper);
+    }else{
+        scene.remove(gridHelper);
+    }
 });
 
-export {
+modeFaceHtml.addEventListener('change', function(event){
+    if(!modeFaceHtml.checked && scene.children.includes(arrowHelper)){
+        scene.remove(arrowHelper);
+        let colorAttribute = geometry_model.attributes.color;
+
+        console.log(1);
+        if(faceIndexAncien != null){
+            console.log(2);
+            console.log(faceIndexAncien);
+            colorAttribute.setXYZ(faceIndexAncien * 3, color_mesh.r, color_mesh.g, color_mesh.b);
+            colorAttribute.setXYZ(faceIndexAncien * 3 + 1, color_mesh.r, color_mesh.g, color_mesh.b);
+            colorAttribute.setXYZ(faceIndexAncien * 3 + 2, color_mesh.r, color_mesh.g, color_mesh.b);
+            colorAttribute.needsUpdate = true;
+        }
+
+    }else{
+        scene.add(arrowHelper);
+        transformControls.detach();
+    }
+});
+
+export{
     renderer
 }
