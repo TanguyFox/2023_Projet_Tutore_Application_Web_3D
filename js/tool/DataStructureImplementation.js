@@ -1,25 +1,26 @@
 importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face", "../structure/Point.js", "../structure/Mesh.js")
 
-function convertirSTLtoDonnees(positions){
+function convertirSTLtoDonnees(positions) {
 
     console.log("RENTREE TOOL");
     let points = [];
     let vertices = [];
     let faces = [];
 
-    for(let i = 0; i < positions.length; i+=9){
+    for (let i = 0; i < positions.length; i += 9) {
         let x1 = positions[i];
-        let y1 = positions[i+1];
-        let z1 = positions[i+2];
+        let y1 = positions[i + 1];
+        let z1 = positions[i + 2];
         let p1 = new Point(x1, y1, z1);
-        console.log("p1 : " + p1.toString());
-        let x2 = positions[i+3];
-        let y2 = positions[i+4];
-        let z2 = positions[i+5];
+        //console.log("p1 : " + p1.toString());
+        let x2 = positions[i + 3];
+        let y2 = positions[i + 4];
+        let z2 = positions[i + 5];
         let p2 = new Point(x2, y2, z2);
-        let x3 = positions[i+6];
-        let y3 = positions[i+7];
-        let z3 = positions[i+8];
+
+        let x3 = positions[i + 6];
+        let y3 = positions[i + 7];
+        let z3 = positions[i + 8];
         let p3 = new Point(x3, y3, z3);
 
         ajouterPointAListe(p1, points);
@@ -50,9 +51,9 @@ function convertirSTLtoDonnees(positions){
         faces.push(newFace);
 
         // détection des arêtes opposées pour compléter la structure de données
-        detectionAretesOpposees(p1, p2, h1, "p1");
-        detectionAretesOpposees(p2, p3, h2, "p2");
-        detectionAretesOpposees(p3, p1, h3, "p3");
+        detectionAretesOpposees(vertices, p1, p2, h1, "p1");
+        detectionAretesOpposees(vertices, p2, p3, h2, "p2");
+        detectionAretesOpposees(vertices, p3, p1, h3, "p3");
 
         vertices.push(v1);
         vertices.push(v2);
@@ -68,11 +69,11 @@ function convertirSTLtoDonnees(positions){
     return new Mesh(vertices, faces, points);
 }
 
-function vertexDegree(vertex){
+function vertexDegree(vertex) {
     let result = 0;
     let e = vertex.edge;
     let pEdge = e.next.opposite;
-    while(pEdge !== e){
+    while (pEdge !== e) {
         pEdge = pEdge.next.opposite;
         result++;
     }
@@ -80,8 +81,8 @@ function vertexDegree(vertex){
 }
 
 
-function trierPoints(points){
-    points.sort((a,b) => (
+function trierPoints(points) {
+    points.sort((a, b) => (
         a.compare(b)
     ));
     return points;
@@ -91,45 +92,45 @@ function isPointInList(newPoint, pointList) {
     return pointList.some(existingPoint => existingPoint.equals(newPoint));
 }
 
-function getPointInList(list, point){
+function getPointInList(list, point) {
     return list.filter(e => e.equals(point))[0];
 }
 
-function trierVertex(vertices){
-    vertices.sort((a,b)=>(
+function trierVertex(vertices) {
+    vertices.sort((a, b) => (
         a.compare(b)
     ));
     return vertices;
 }
 
-function trierFaces(faces){
-    faces.sort((a,b)=>(
+function trierFaces(faces) {
+    faces.sort((a, b) => (
         a.compare(b)
     ));
     return faces
 }
 
-function ajouterPointAListe (p, points) {
-    if (!isPointInList(p, points)){
+function ajouterPointAListe(p, points) {
+    if (!isPointInList(p, points)) {
         points.push(p);
     } else {
         p = getPointInList(points, p);
     }
 }
 
-function detectionAretesOpposees(p1, p2, h, nom) {
+function detectionAretesOpposees(vertices, p1, p2, h, nom) {
     let vertex = vertices.filter(e => e.point.equals(p1));
-        if(vertex.length !== 0){
-            let halfedgeOppose = vertex.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p2))[0];
-            if(typeof halfedgeOppose !== 'undefined'){
-                if(halfedgeOppose.opposite == null){
-                    halfedgeOppose.setOpposite(h);
-                    h.setOpposite(halfedgeOppose);
-                }else{
-                    throw new Error("Erreur de topologie p" + nom);
-                }
+    if (vertex.length !== 0) {
+        let halfedgeOppose = vertex.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p2))[0];
+        if (typeof halfedgeOppose !== 'undefined') {
+            if (halfedgeOppose.opposite == null) {
+                halfedgeOppose.setOpposite(h);
+                h.setOpposite(halfedgeOppose);
+            } else {
+                throw new Error("Erreur de topologie p" + nom);
             }
         }
+    }
 }
 
 function setPrevAndNext(h, hPrev, hNext) {
