@@ -317,7 +317,6 @@ function handleFileSelect(event) {
                         if (event.data.type === 'progress') {
                             var percentComplete = event.data.value;
                             progressBar.style.width = percentComplete + '%';
-
                             loadingMessage.innerHTML = 'Chargement en cours... ' + Math.round(percentComplete) + '%';
 
                         }
