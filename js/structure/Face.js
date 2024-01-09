@@ -1,6 +1,4 @@
-import {Vertex} from "./Vertex";
-
-export class Face {
+class Face {
     constructor(edge) {
         this.edge = edge;
     }
@@ -56,4 +54,34 @@ Face.prototype.isWellOriented = function(){
 
 Face.prototype.compare = function(face){
     return this.edge.compare(face.edge);
+}
+
+Face.prototype.getAdjacentes = function(){
+    let faces = [];  
+
+    let f2h1 = this.edge.opposite;
+    let f2 = f2h1.face;
+    faces.push(f2);
+    let f1h2 = this.edge.next;   
+    
+    let f3h2 = f1h2.opposite;
+    let f3 = f3h2.face;
+    faces.push(f3);
+    let f1h3 = f1h2.next;   
+
+    let f4h3 = f1h3.opposite;
+    let f4 = f4h3.face;
+    faces.push(f4);
+    return faces;
+}
+
+Face.prototype.has3FaceAdjacentes = function() {
+    let faces = this.getAdjacentes();
+    let result = false;
+
+    if(faces.length === 3) {
+        result = true;
+    }
+
+    return result;
 }

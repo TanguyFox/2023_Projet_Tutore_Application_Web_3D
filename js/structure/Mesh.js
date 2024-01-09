@@ -1,4 +1,4 @@
-export class Mesh {
+class Mesh {
     constructor(vertices, faces, points) {
         this.vertices = vertices;
         this.faces = faces;

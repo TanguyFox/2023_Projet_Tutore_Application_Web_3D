@@ -1,4 +1,4 @@
-export class Vertex{
+class Vertex{
     constructor(depart) {
         this.point = depart;
     }

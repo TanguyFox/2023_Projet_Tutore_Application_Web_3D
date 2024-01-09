@@ -222,7 +222,7 @@ animate();
 
 
 
-//import event 
+//import event
 const importButton = document.getElementById('import');
 var input = document.getElementById("inputfile");
 input.addEventListener('change', handleFileSelect);
@@ -242,16 +242,28 @@ let panel = document.getElementById('panel');
 //Geometry
 let geometry_model;
 
+
+
+//Utilsisation d'un WORKER pour parallelisé l'affichage du modèle 3D ainsi que le remplissage des données
+//Tous les export ont été enlevés des classes pour le moment (car WORKER n'est pas compatible avec)
+//Si besoin des export, il faudra qu'on regarde pour une autre solution
+let dataFiller = new Worker("js/tool/DataStructureImplementation.js")
+
+//Fonction de chargement du fichier STL
 function handleFileSelect(event) {
 
     const file = event.target.files[0];
     if (file) {
-        
+
+        //S'il y a déjà un model 3D de chargé, on l'enlève
         if (group) {
             scene.remove(group);
         }
-        const stlloader = new STLLoader();
-        stlloader.load(URL.createObjectURL(file), function(geometry) {
+
+        const loadingmg = new THREE.LoadingManager()
+        const stlloader = new STLLoader(loadingmg);
+        try {
+            stlloader.load(URL.createObjectURL(file), function (geometry) {
 
             geometry_model = geometry;
 
@@ -268,10 +280,6 @@ function handleFileSelect(event) {
             // let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
             let material = new THREE.MeshBasicMaterial({ vertexColors: true});
 
-            //For binary STLs geometry might contain colors for vertices.
-            // if (geometry_model.hasColors) {
-            //     material = new THREE.MeshPhongMaterial({ opacity: geometry_model.alpha, vertexColors: true });
-            // }
 
             let wireframe = new THREE.WireframeGeometry(geometry);
 
@@ -291,21 +299,37 @@ function handleFileSelect(event) {
             group.add(meshModel, lineModel);
             scene.add(group);
 
-            // scene.add(meshModel);
+                /*
+                    TODO : remplir la structure de données à partir de l'objet obtenu avec le STLLoader (geometry) de manière
+                     - relativement - rapide dans le cas où un grand nombre de points est fourni
+                     */
+                dataFiller.postMessage(geometry.getAttribute("position").array);
 
-        });
-    } else {
-        
-        if (group) {
-            scene.remove(group);
+
+            });
+    } catch(e){
+        console.log(e.message);
         }
-    }
-    importButton.style.display = "none";
-    sceneContrainer.style.display = "block";
-    toolbar.style.display = "block";
-    menuMD.style.display = "block";
-    panel.style.display = "block";
+        importButton.style.display = "none";
+        sceneContrainer.style.display = "block";
+        toolbar.style.display = "flex";
+        menuMD.style.display = "block";
+        panel.style.display = "block";
+    } /*else {
+
+        if (lineModel) {
+            scene.remove(lineModel);
+        }
+    }*/
+
 }
+let mesh;
+dataFiller.addEventListener("message", function (e) {
+    mesh = e.data
+    console.log(mesh)
+})
+
+
 
 //toolbar event
 toolbar.addEventListener('click', function(event){
@@ -329,3 +353,6 @@ document.getElementById('grid-check').addEventListener('change', function(event)
     }
 });
 
+export{
+    renderer
+}
