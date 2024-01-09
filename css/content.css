@@ -1,7 +1,7 @@
 #scene-container {
     /*z-index: 0;*/
     height: 100%;
-    width: 90%;
+    width: 100%;
     overflow: hidden;
     display: none;
 }
@@ -33,12 +33,4 @@
 }
 
 
-/**MENU MODIFICATION**/
-#menuModification{
-    display: none;
-    right: 0;
-    width: 350px;
-    height: 100%;
-    background-color: #cbcbcb;
-}
 

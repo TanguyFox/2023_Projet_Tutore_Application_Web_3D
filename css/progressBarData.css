@@ -26,6 +26,11 @@
 }
 
 #loading-message {
+
+}
+
+.loadingDataMessage
+{
     font-size: 18px;
     color: #fff;
 }
