@@ -2,7 +2,6 @@ import * as THREE from 'three';
 import { STLLoader } from 'three/addons/loaders/STLLoader.js'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
-import { convertirSTLtoDonnees } from './tool/tool.js';
 import {createBoundingBox, removeBoundingBox} from "./vue/BoundingBoxHandler";
 
 
@@ -62,6 +61,17 @@ transformControls.addEventListener('dragging-changed', function(event){
 
 scene.add(transformControls);
 
+//STL file
+let meshModel;
+
+//wireframe
+let lineModel;
+
+let group;
+
+//couleur de mesh
+let color_mesh;
+
 //Raycaster
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
@@ -71,43 +81,101 @@ let boundingBoxObject = {
     boundingBox: null
 };
 
+let intersects = [];
+
+//Raycaster vision
+const arrowHelper = new THREE.ArrowHelper(new THREE.Vector3(), new THREE.Vector3(), 0.5, 0xff0066);
+scene.add(arrowHelper);
+
+//face index
+let faceIndexAncien;
+
 //Raycaster function
 function onPointerMove( event ){
-    pointer.x = ( event.clientX / widthS ) * 2 - 1;
+    pointer.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1 - 0.005;
+    pointer.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1 + 0.1;
 
-    /*
-        +0.11 pour mieux positionner le raycaster,
-        et il faut mofidier si on change la taille de scene-container,
-        En gros, c'est une méthode temporaire.
-    */
-    pointer.y = - ( event.clientY / heightS ) * 2 + 1 + 0.11;
+    raycaster.setFromCamera(pointer, camera);
+
+    intersects = raycaster.intersectObjects(scene.children, true);
+
+    for(let i = 0; i < intersects.length; i ++ ){
+
+        if(intersects[i].object.uuid === meshModel.uuid){
+            // console.log(intersects[i]);
+            let n = new THREE.Vector3();
+            n.copy(intersects[i].face.normal);
+            n.transformDirection(intersects[i].object.matrixWorld);
+            arrowHelper.setDirection(n);
+            arrowHelper.position.copy(intersects[i].point);
+
+            let faceIndex = intersects[i].faceIndex;
+            let geometry = intersects[i].object.geometry;
+            // console.log("geometry : " + geometry);
+            let position = geometry.attributes.position.array;
+            let vertexA = new THREE.Vector3().fromArray(position, faceIndex * 3);
+            let vertexB = new THREE.Vector3().fromArray(position, faceIndex * 3 + 1);
+            let vertexC = new THREE.Vector3().fromArray(position, faceIndex * 3 + 2);
+            // console.log(vertexA);
+            // console.log(vertexB);
+            // console.log(vertexC);
+
+            let colorAttribute = geometry.attributes.color;
+
+            // console.log("faceIndex : " + faceIndex);
+
+            if(faceIndexAncien != null){
+                colorAttribute.setXYZ(faceIndexAncien * 3, color_mesh.r, color_mesh.g, color_mesh.b);
+                colorAttribute.setXYZ(faceIndexAncien * 3 + 1, color_mesh.r, color_mesh.g, color_mesh.b);
+                colorAttribute.setXYZ(faceIndexAncien * 3 + 2, color_mesh.r, color_mesh.g, color_mesh.b);
+            }
+
+            //couleur de face
+            let color = new THREE.Color(0xff0000);
+            colorAttribute.setXYZ(faceIndex * 3, color.r, color.g, color.b);
+            colorAttribute.setXYZ(faceIndex * 3 + 1, color.r, color.g, color.b);
+            colorAttribute.setXYZ(faceIndex * 3 + 2, color.r, color.g, color.b);
+            faceIndexAncien = faceIndex;
+            colorAttribute.needsUpdate = true;
+            break;
+        }
+    }
 
 }
 
+function onWindowResize(){
+    camera.aspect = widthS / heightS;
+    camera.updateProjectionMatrix();
+    renderer.setSize(widthS, heightS);
+    render();
+}
+window.addEventListener('resize', onWindowResize, false);
+
+//check mode face
+let modeFaceHtml = document.getElementById('face-mode-check');
+
 function onPointerClick( event ){
 
-    // console.log(pointer.x + " " + pointer.y);
+    // console.log("x:"+pointer.x + " y:" + pointer.y);
 
     let clickOnObject = false;
     raycaster.setFromCamera(pointer, camera);
 
-    const intersects = raycaster.intersectObjects( scene.children );
-    // console.log(scene.children);
+    intersects = raycaster.intersectObjects( scene.children );
 
-    if(lineModel != null){
+    if(meshModel != null){
 
         for(let i = 0; i < intersects.length; i ++ ){
 
             // console.log(intersects[i].object.uuid);
-            if(intersects[i].object.uuid === lineModel.uuid){
+            if(!modeFaceHtml.checked && intersects[i].object.uuid === meshModel.uuid){
                 // console.log(intersects[i].object.uuid);
-                // console.log(mesh_stl.uuid);
 
                 //Bounding Box
                 removeBoundingBox(boundingBoxObject);
-                createBoundingBox(lineModel, boundingBoxObject, scene)
+                createBoundingBox(meshModel, boundingBoxObject, scene)
 
-                transformControls.attach(lineModel);
+                transformControls.attach(group);
                 clickOnObject = true;
                 break;
             }
@@ -122,9 +190,12 @@ function onPointerClick( event ){
         }
 
     }
-
 }
-window.addEventListener('pointermove', onPointerMove);
+
+
+
+// window.addEventListener('pointermove', onPointerMove);
+renderer.domElement.addEventListener('mousemove', onPointerMove, false);
 
 //A Améliorer
 sceneContrainer.addEventListener('click', onPointerClick);
@@ -145,12 +216,9 @@ function animate(){
     render();
 }
 
-//STL file | Pour l'instant, on peut seulement importer un seul fichier STL, A modifier. Pour le demo, c'est suffisant.
-let lineModel;
+
 
 animate();
-
-
 
 
 
@@ -171,44 +239,65 @@ let menuMD = document.getElementById('menuModification');
 //panel
 let panel = document.getElementById('panel');
 
+//Geometry
+let geometry_model;
+
 function handleFileSelect(event) {
 
     const file = event.target.files[0];
     if (file) {
         
-        if (lineModel) {
-            scene.remove(lineModel);
+        if (group) {
+            scene.remove(group);
         }
         const stlloader = new STLLoader();
         stlloader.load(URL.createObjectURL(file), function(geometry) {
 
-            geometry.center();
-            /*let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+            geometry_model = geometry;
+
+            // configure the color
+            geometry_model.setAttribute('color', new THREE.BufferAttribute(new Float32Array(geometry_model.attributes.position.count * 3), 3));
+
+            //couleur de mesh
+            color_mesh = new THREE.Color(0xFFFFFF);
+            for(let i = 0; i < geometry_model.attributes.color.count; i++){
+                geometry_model.attributes.color.setXYZ(i, color_mesh.r, color_mesh.g, color_mesh.b);
+            }
+
+            geometry_model.center();
+            // let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+            let material = new THREE.MeshBasicMaterial({ vertexColors: true});
 
             //For binary STLs geometry might contain colors for vertices.
-            if (geometry.hasColors) {
-                material = new THREE.MeshPhongMaterial({ opacity: geometry.alpha, vertexColors: true });
-            }*/
+            // if (geometry_model.hasColors) {
+            //     material = new THREE.MeshPhongMaterial({ opacity: geometry_model.alpha, vertexColors: true });
+            // }
 
             let wireframe = new THREE.WireframeGeometry(geometry);
-            lineModel = new THREE.LineSegments(wireframe);
+
+            //couleur de ligne
+            lineModel = new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({ color: 0x000000 }));
             lineModel.material.depthTest = false;
-            lineModel.material.opacity = 0.25;
+            lineModel.material.opacity = 1;
             lineModel.material.transparent = true;
+            // scene.add(lineModel);
 
 
-            lineModel.receiveShadow = true;
-            lineModel.castShadow = true;
+            meshModel = new THREE.Mesh(geometry_model, material);
 
-            console.log(lineModel);
+            console.log(meshModel);
 
-            scene.add(lineModel);
-            //TODO ici
+            group = new THREE.Group();
+            group.add(meshModel, lineModel);
+            scene.add(group);
+
+            // scene.add(meshModel);
+
         });
     } else {
         
-        if (lineModel) {
-            scene.remove(lineModel);
+        if (group) {
+            scene.remove(group);
         }
     }
     importButton.style.display = "none";
@@ -233,6 +322,10 @@ toolbar.addEventListener('click', function(event){
 });
 
 document.getElementById('grid-check').addEventListener('change', function(event){
-    gridHelper.visible = event.target.checked;
+    if(event.target.checked){
+        scene.add(gridHelper);
+    }else{
+        scene.remove(gridHelper);
+    }
 });
 
