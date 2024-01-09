@@ -153,7 +153,7 @@ animate();
 
 
 
-//import event 
+//import event
 const importButton = document.getElementById('import');
 var input = document.getElementById("inputfile");
 input.addEventListener('change', handleFileSelect);
