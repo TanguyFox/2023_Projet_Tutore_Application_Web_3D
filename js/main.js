@@ -67,6 +67,7 @@ let meshModel;
 //wireframe
 let lineModel;
 
+//mesh + wireframe
 let group;
 
 //couleur de mesh
@@ -84,11 +85,12 @@ let boundingBoxObject = {
 let intersects = [];
 
 //Raycaster vision
-const arrowHelper = new THREE.ArrowHelper(new THREE.Vector3(), new THREE.Vector3(), 0.5, 0x00a6ff);
-scene.add(arrowHelper);
+const arrowHelper = new THREE.ArrowHelper(new THREE.Vector3(), new THREE.Vector3(), 0.5, 0x00a6ff, 0.1, 0.1);
 
 //face index
 let faceIndexAncien;
+
+let faceIndexSelected;
 
 //Raycaster function
 function onPointerMove( event ){
@@ -113,13 +115,17 @@ function onPointerMove( event ){
             arrowHelper.setDirection(n);
             arrowHelper.position.copy(intersects[i].point);
 
+            if(faceIndexSelected != null){
+                return;
+            }
+
             let faceIndex = intersects[i].faceIndex;
             let geometry = intersects[i].object.geometry;
             // console.log("geometry : " + geometry);
-            let position = geometry.attributes.position.array;
-            let vertexA = new THREE.Vector3().fromArray(position, faceIndex * 3);
-            let vertexB = new THREE.Vector3().fromArray(position, faceIndex * 3 + 1);
-            let vertexC = new THREE.Vector3().fromArray(position, faceIndex * 3 + 2);
+            // let position = geometry.attributes.position.array;
+            // let vertexA = new THREE.Vector3().fromArray(position, faceIndex * 3);
+            // let vertexB = new THREE.Vector3().fromArray(position, faceIndex * 3 + 1);
+            // let vertexC = new THREE.Vector3().fromArray(position, faceIndex * 3 + 2);
             // console.log(vertexA);
             // console.log(vertexB);
             // console.log(vertexC);
@@ -129,18 +135,13 @@ function onPointerMove( event ){
             // console.log("faceIndex : " + faceIndex);
 
             if(faceIndexAncien != null){
-                colorAttribute.setXYZ(faceIndexAncien * 3, color_mesh.r, color_mesh.g, color_mesh.b);
-                colorAttribute.setXYZ(faceIndexAncien * 3 + 1, color_mesh.r, color_mesh.g, color_mesh.b);
-                colorAttribute.setXYZ(faceIndexAncien * 3 + 2, color_mesh.r, color_mesh.g, color_mesh.b);
+                paintFace(faceIndexAncien, colorAttribute, color_mesh)
             }
 
             //couleur de face
             let color = new THREE.Color(0xff0000);
-            colorAttribute.setXYZ(faceIndex * 3, color.r, color.g, color.b);
-            colorAttribute.setXYZ(faceIndex * 3 + 1, color.r, color.g, color.b);
-            colorAttribute.setXYZ(faceIndex * 3 + 2, color.r, color.g, color.b);
+            paintFace(faceIndex, colorAttribute, color);
             faceIndexAncien = faceIndex;
-            colorAttribute.needsUpdate = true;
             break;
         }
     }
@@ -171,17 +172,44 @@ function onPointerClick( event ){
 
         for(let i = 0; i < intersects.length; i ++ ){
 
-            // console.log(intersects[i].object.uuid);
-            if(!modeFaceHtml.checked && intersects[i].object.uuid === meshModel.uuid){
-                // console.log(intersects[i].object.uuid);
+            if(intersects[i].object.uuid === meshModel.uuid){
 
-                //Bounding Box
-                removeBoundingBox(boundingBoxObject);
-                createBoundingBox(meshModel, boundingBoxObject, scene)
+                if(!modeFaceHtml.checked){
 
-                transformControls.attach(group);
-                clickOnObject = true;
-                break;
+                    //Bounding Box
+                    removeBoundingBox(boundingBoxObject);
+                    createBoundingBox(meshModel, boundingBoxObject, scene)
+
+                    transformControls.attach(group);
+                    clickOnObject = true;
+                    break;
+
+                }else{
+
+                    let colorAttribute = geometry_model.attributes.color;
+
+                    if(faceIndexSelected != null){
+                        paintFace(faceIndexSelected, colorAttribute, color_mesh)
+                    }
+
+                    faceIndexSelected = intersects[i].faceIndex;
+                    let color = new THREE.Color(0xff0000);
+                    paintFace(faceIndexSelected, colorAttribute, color);
+
+                    let geometry = intersects[i].object.geometry;
+                    let position = geometry.attributes.position.array;
+                    let vertexA = new THREE.Vector3().fromArray(position, faceIndexSelected * 3);
+                    let vertexB = new THREE.Vector3().fromArray(position, faceIndexSelected * 3 + 1);
+                    let vertexC = new THREE.Vector3().fromArray(position, faceIndexSelected * 3 + 2);
+
+                    console.log("faceIndexSelected : " + faceIndexSelected)
+                    console.log(vertexA);
+                    console.log(vertexB);
+                    console.log(vertexC);
+
+                    break;
+                }
+
             }
         }
 
@@ -196,13 +224,21 @@ function onPointerClick( event ){
     }
 }
 
+//changer la couleur d'une face
+function paintFace(indexFace, colorAttributes, color){
+    colorAttributes.setXYZ(indexFace * 3, color.r, color.g, color.b);
+    colorAttributes.setXYZ(indexFace * 3 + 1, color.r, color.g, color.b);
+    colorAttributes.setXYZ(indexFace * 3 + 2, color.r, color.g, color.b);
+    colorAttributes.needsUpdate = true;
+}
+
 
 
 // window.addEventListener('pointermove', onPointerMove);
 renderer.domElement.addEventListener('mousemove', onPointerMove, false);
 
 //A Améliorer
-sceneContrainer.addEventListener('click', onPointerClick);
+sceneContrainer.addEventListener('mousedown', onPointerClick);
 
 //Render
 function render(){
@@ -220,11 +256,7 @@ function animate(){
     render();
 }
 
-
-
 animate();
-
-
 
 //import event
 const importButton = document.getElementById('import');
@@ -281,9 +313,7 @@ function handleFileSelect(event) {
                 }
 
                 geometry_model.center();
-                // let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
                 let material = new THREE.MeshBasicMaterial({vertexColors: true});
-
 
                 let wireframe = new THREE.WireframeGeometry(geometry);
 
@@ -292,8 +322,6 @@ function handleFileSelect(event) {
                 lineModel.material.depthTest = false;
                 lineModel.material.opacity = 1;
                 lineModel.material.transparent = true;
-                // scene.add(lineModel);
-
 
                 meshModel = new THREE.Mesh(geometry_model, material);
 
@@ -308,7 +336,6 @@ function handleFileSelect(event) {
                 - relativement - rapide dans le cas où un grand nombre de points est fourni
                 */
                 dataFiller.postMessage(geometry.getAttribute("position").array);
-
 
             });
         } catch (e) {
@@ -362,21 +389,41 @@ modeFaceHtml.addEventListener('change', function(event){
         scene.remove(arrowHelper);
         let colorAttribute = geometry_model.attributes.color;
 
-        console.log(1);
         if(faceIndexAncien != null){
-            console.log(2);
-            console.log(faceIndexAncien);
-            colorAttribute.setXYZ(faceIndexAncien * 3, color_mesh.r, color_mesh.g, color_mesh.b);
-            colorAttribute.setXYZ(faceIndexAncien * 3 + 1, color_mesh.r, color_mesh.g, color_mesh.b);
-            colorAttribute.setXYZ(faceIndexAncien * 3 + 2, color_mesh.r, color_mesh.g, color_mesh.b);
-            colorAttribute.needsUpdate = true;
+            paintFace(faceIndexAncien, colorAttribute, color_mesh);
         }
+
+        if(faceIndexSelected != null){
+            paintFace(faceIndexSelected, colorAttribute, color_mesh);
+        }
+
+        faceIndexAncien = null;
+        faceIndexSelected = null;
 
     }else{
         scene.add(arrowHelper);
         transformControls.detach();
     }
 });
+
+function onDoubleClick(event){
+    raycaster.setFromCamera(pointer, camera);
+    intersects = raycaster.intersectObjects(scene.children, true);
+    for(let i = 0 ; i < intersects.length; i++){
+
+        if(intersects[i].object.uuid === meshModel.uuid){
+            let target = new THREE.Vector3();
+            meshModel.getWorldPosition(target);
+            let newCameraPosition = target.clone().add(new THREE.Vector3(0, 0, 10));
+            camera.position.copy(newCameraPosition);
+            camera.lookAt(target);
+            break;
+        }
+    }
+}
+
+//unstable
+// renderer.domElement.addEventListener('dblclick', onDoubleClick, false);
 
 export{
     renderer
