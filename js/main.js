@@ -84,7 +84,7 @@ let boundingBoxObject = {
 let intersects = [];
 
 //Raycaster vision
-const arrowHelper = new THREE.ArrowHelper(new THREE.Vector3(), new THREE.Vector3(), 0.5, 0xff0066);
+const arrowHelper = new THREE.ArrowHelper(new THREE.Vector3(), new THREE.Vector3(), 0.5, 0x00a6ff);
 scene.add(arrowHelper);
 
 //face index
@@ -94,6 +94,10 @@ let faceIndexAncien;
 function onPointerMove( event ){
     pointer.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1 - 0.005;
     pointer.y = -(event.clientY / renderer.domElement.clientHeight) * 2 + 1 + 0.1;
+
+    if(!modeFaceHtml.checked){
+        return;
+    }
 
     raycaster.setFromCamera(pointer, camera);
 
@@ -265,50 +269,50 @@ function handleFileSelect(event) {
         try {
             stlloader.load(URL.createObjectURL(file), function (geometry) {
 
-            geometry_model = geometry;
+                geometry_model = geometry;
 
-            // configure the color
-            geometry_model.setAttribute('color', new THREE.BufferAttribute(new Float32Array(geometry_model.attributes.position.count * 3), 3));
+                // configure the color
+                geometry_model.setAttribute('color', new THREE.BufferAttribute(new Float32Array(geometry_model.attributes.position.count * 3), 3));
 
-            //couleur de mesh
-            color_mesh = new THREE.Color(0xFFFFFF);
-            for(let i = 0; i < geometry_model.attributes.color.count; i++){
-                geometry_model.attributes.color.setXYZ(i, color_mesh.r, color_mesh.g, color_mesh.b);
-            }
+                //couleur de mesh
+                color_mesh = new THREE.Color(0xFFFFFF);
+                for (let i = 0; i < geometry_model.attributes.color.count; i++) {
+                    geometry_model.attributes.color.setXYZ(i, color_mesh.r, color_mesh.g, color_mesh.b);
+                }
 
-            geometry_model.center();
-            // let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
-            let material = new THREE.MeshBasicMaterial({ vertexColors: true});
-
-
-            let wireframe = new THREE.WireframeGeometry(geometry);
-
-            //couleur de ligne
-            lineModel = new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({ color: 0x000000 }));
-            lineModel.material.depthTest = false;
-            lineModel.material.opacity = 1;
-            lineModel.material.transparent = true;
-            // scene.add(lineModel);
+                geometry_model.center();
+                // let material = new THREE.MeshStandardMaterial({ color: 0xFFFFFF });
+                let material = new THREE.MeshBasicMaterial({vertexColors: true});
 
 
-            meshModel = new THREE.Mesh(geometry_model, material);
+                let wireframe = new THREE.WireframeGeometry(geometry);
 
-            console.log(meshModel);
+                //couleur de ligne
+                lineModel = new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000}));
+                lineModel.material.depthTest = false;
+                lineModel.material.opacity = 1;
+                lineModel.material.transparent = true;
+                // scene.add(lineModel);
 
-            group = new THREE.Group();
-            group.add(meshModel, lineModel);
-            scene.add(group);
+
+                meshModel = new THREE.Mesh(geometry_model, material);
+
+                console.log(meshModel);
+
+                group = new THREE.Group();
+                group.add(meshModel, lineModel);
+                scene.add(group);
 
                 /*
-                    TODO : remplir la structure de données à partir de l'objet obtenu avec le STLLoader (geometry) de manière
-                     - relativement - rapide dans le cas où un grand nombre de points est fourni
-                     */
+                TODO : remplir la structure de données à partir de l'objet obtenu avec le STLLoader (geometry) de manière
+                - relativement - rapide dans le cas où un grand nombre de points est fourni
+                */
                 dataFiller.postMessage(geometry.getAttribute("position").array);
 
 
             });
-    } catch(e){
-        console.log(e.message);
+        } catch (e) {
+            console.log(e.message);
         }
         importButton.style.display = "none";
         sceneContrainer.style.display = "block";
@@ -350,6 +354,27 @@ document.getElementById('grid-check').addEventListener('change', function(event)
         scene.add(gridHelper);
     }else{
         scene.remove(gridHelper);
+    }
+});
+
+modeFaceHtml.addEventListener('change', function(event){
+    if(!modeFaceHtml.checked && scene.children.includes(arrowHelper)){
+        scene.remove(arrowHelper);
+        let colorAttribute = geometry_model.attributes.color;
+
+        console.log(1);
+        if(faceIndexAncien != null){
+            console.log(2);
+            console.log(faceIndexAncien);
+            colorAttribute.setXYZ(faceIndexAncien * 3, color_mesh.r, color_mesh.g, color_mesh.b);
+            colorAttribute.setXYZ(faceIndexAncien * 3 + 1, color_mesh.r, color_mesh.g, color_mesh.b);
+            colorAttribute.setXYZ(faceIndexAncien * 3 + 2, color_mesh.r, color_mesh.g, color_mesh.b);
+            colorAttribute.needsUpdate = true;
+        }
+
+    }else{
+        scene.add(arrowHelper);
+        transformControls.detach();
     }
 });
 
