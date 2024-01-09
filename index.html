@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="css/content.css">
     <link rel="stylesheet" href="css/progressBarData.css">
     <link rel="stylesheet" href="css/ModificationMenu.css">
+    <link rel="stylesheet" href="css/progressSpinner.css">
 
 
 </head>
@@ -24,7 +25,11 @@
         <input type="file" hidden id="inputfile" accept=".stl"/>
     </button>
 
-    <div id="scene-container"></div>
+    <div id="scene-container">
+        <div id="loading-screen">
+            <div id="loading-spinner"></div>
+        </div>
+    </div>
     <div id="toolbar">
         <div>
             <button class="toolbar-button" id="translate">
@@ -76,6 +81,7 @@
 
 
     </div>
+
 <!--</div>
     <div class="progress-bar-container">
         <label for="progress-bar">Loading...</label>

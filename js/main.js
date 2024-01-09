@@ -4,6 +4,8 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import {createBoundingBox, removeBoundingBox} from "./vue/BoundingBoxHandler";
 import * as loadBar from "./tool/loadBarData.js";
+import * as loadSpin from "./tool/loadSpinnerData.js";
+
 
 //Scene
 //------------------------------------------
@@ -296,10 +298,13 @@ function handleFileSelect(event) {
             scene.remove(group);
         }
 
+        loadSpin.showLoadingScreen();
+
         const loadingmg = new THREE.LoadingManager()
         const stlloader = new STLLoader(loadingmg);
         try {
             stlloader.load(URL.createObjectURL(file), function (geometry) {
+                loadSpin.hideLoadingScreen();
                 loadBar.showLoadingScreen();
                 geometry_model = geometry;
 
