@@ -30,16 +30,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    transition: 0.5s ease all;
+}
+
+#headerMenu li:hover
+{
+    background-color: #e88146;
 }
 
 /* CONTENU */
 #menuModifContent
 {
     position: relative;
-    width: 100%;
     height: auto;
     max-height: 97%;
     background-color: #cbcbcb;
+    padding-left: 20px;
 }
 
 .contentModifMenu
