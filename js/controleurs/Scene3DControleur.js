@@ -30,6 +30,8 @@ function render(){
 }
 
 function onWindowResize(){
+    const widthS = window.innerWidth - 300;
+    const heightS = window.innerHeight;
     Scene3D.camera.aspect = widthS / heightS;
     Scene3D.camera.updateProjectionMatrix();
     Scene3D.renderer.setSize(widthS, heightS);
