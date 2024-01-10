@@ -87,7 +87,8 @@ nav li a
 #import::after
 {
     content: '';
-    background-size: 50%;
+    background-image: url("../resources/img/iconsMenu/telecharger.png");
+    background-size: 40%;
     background-repeat: no-repeat;
     background-position: right;
     position: absolute;
