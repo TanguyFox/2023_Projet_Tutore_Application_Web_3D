@@ -14,7 +14,7 @@
     background-color: transparent;
     user-select: none;
     width: calc(100% - 350px);
-    justify-content: space-between;
+    justify-content: flex-start;
 }
 
 .toolbar-button{
