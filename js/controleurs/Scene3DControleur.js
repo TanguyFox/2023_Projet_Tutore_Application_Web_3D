@@ -129,11 +129,15 @@ export function onPointerClick( event ){
 let meshvA;
 let meshvB;
 let meshvC;
-let highlightGeometry = new THREE.SphereGeometry(0.1, 32, 32);
+let highlightGeometry = new THREE.SphereGeometry(0.05, 16, 16);
 let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
 meshvA = new THREE.Mesh(highlightGeometry, highlightMaterial);
 meshvB = new THREE.Mesh(highlightGeometry, highlightMaterial);
 meshvC = new THREE.Mesh(highlightGeometry, highlightMaterial);
+
+let infohtml_vertexA = document.getElementById('info-vA');
+let infohtml_vertexB = document.getElementById('info-vB');
+let infohtml_vertexC = document.getElementById('info-vC');
 
 export function onDoubleClick(event){
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
@@ -147,6 +151,10 @@ export function onDoubleClick(event){
 
             let transformedPositions = [];
             let transformedNormals = [];
+
+            if(Generaux.faceIndexSelected == null){
+                return;
+            }
 
             for(let i = 0; i < positionAttribute.count; i++){
                 let localPosition = new THREE.Vector3(positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i));
@@ -169,10 +177,21 @@ export function onDoubleClick(event){
             meshvB.position.copy(vertexB);
             meshvC.position.copy(vertexC);
 
-            console.log("transformed vertex")
-            console.log(vertexA);
-            console.log(vertexB);
-            console.log(vertexC);
+
+
+            // console.log("transformed vertex")
+            // console.log(vertexA);
+            // console.log(vertexB);
+            // console.log(vertexC);
+
+            // infohtml_vertexA.innerHTML = "Vertex A : " + vertexA.x.toFixed(3) + " " + vertexA.y.toFixed(3) + " " + vertexA.z.toFixed(3);
+            // infohtml_vertexB.innerHTML = "Vertex B : " + vertexB.x.toFixed(3) + " " + vertexB.y.toFixed(3) + " " + vertexB.z.toFixed(3);
+            // infohtml_vertexC.innerHTML = "Vertex C : " + vertexC.x.toFixed(3) + " " + vertexC.y.toFixed(3) + " " + vertexC.z.toFixed(3);
+
+
+            infohtml_vertexA.innerHTML = "Vertex A : " + vertexA.x + " " + vertexA.y + " " + vertexA.z;
+            infohtml_vertexB.innerHTML = "Vertex B : " + vertexB.x + " " + vertexB.y + " " + vertexB.z;
+            infohtml_vertexC.innerHTML = "Vertex C : " + vertexC.x + " " + vertexC.y + " " + vertexC.z;
 
             Scene3D.scene.add(meshvA);
             Scene3D.scene.add(meshvB);
@@ -181,6 +200,12 @@ export function onDoubleClick(event){
             break;
         }
     }
+}
+
+export {
+    meshvA,
+    meshvB,
+    meshvC
 }
 
 
