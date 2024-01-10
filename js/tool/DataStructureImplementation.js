@@ -1,3 +1,5 @@
+
+
 importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face", "../structure/Point.js", "../structure/Mesh.js")
 
 var envoie = false;

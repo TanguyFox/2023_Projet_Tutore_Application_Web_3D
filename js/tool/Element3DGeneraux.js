@@ -20,6 +20,9 @@ let boundingBoxObject = {
     boundingBox: null
 };
 
+//Maillage en données
+let mesh;
+
 let faceIndexSelected;
 let faceIndexAncien;
 
@@ -49,6 +52,9 @@ function setFaceIndexSelected(valeur){
 function setFaceIndexAncien(valeur){
     faceIndexAncien=valeur;
 }
+function setMesh(newMesh){
+    mesh=newMesh;
+}
 
 export {
     geometry_model,
@@ -59,11 +65,13 @@ export {
     boundingBoxObject,
     faceIndexSelected,
     faceIndexAncien,
+    mesh,
     setGeometryModel,
     setColorMesh,
     setLineModel,
     setMeshModel,
     setGroup,
     setFaceIndexSelected,
-    setFaceIndexAncien
+    setFaceIndexAncien,
+    setMesh
 }

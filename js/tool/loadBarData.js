@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import {mesh, setMesh} from "./Element3DGeneraux";
 
 /**
  * Module gérant la barre de progression du chargement des données
@@ -34,10 +35,14 @@ function progressBarMajworker(worker){
             progressBarData.style.width = percentComplete + '%';
             loadingMessage.innerHTML = 'Chargement des données... ' + Math.round(percentComplete) + '%';
 
+            if(event.data.value === 100 ){
+                hideLoadingScreen()
+            }
+        } else {
+            setMesh(event.data);
+            console.log(mesh)
         }
-        if(event.data.value === 100 ){
-            hideLoadingScreen()
-        }
+
     }
 }
 

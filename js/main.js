@@ -5,6 +5,8 @@ import {animate, onPointerClick, onDoubleClick} from "./controleurs/Scene3DContr
 import * as ToolBarEvent from "./controleurs/ToolBarEvent.js";
 import * as visualisationMenu from "./controleurs/VisualisationMenu.js";
 import {onPointerMove} from "./fonctionnalites/SelectionFace";
+import {mesh} from "./tool/Element3DGeneraux";
+
 
 
 let renderer = Scene3D.initScene3D();
@@ -21,3 +23,6 @@ renderer.domElement.addEventListener('mousemove', onPointerMove, false);
 Scene3D.sceneContrainer.addEventListener('mousedown', onPointerClick);
 
 renderer.domElement.addEventListener('dblclick', onDoubleClick, false);
+
+
+console.log(mesh);
