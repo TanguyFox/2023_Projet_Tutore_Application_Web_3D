@@ -24,9 +24,9 @@ listeButton.forEach((elem) =>
 
 function survolerIndicator(){
     let index = Array.from(listeButton).indexOf(this);
-    let nouvelleValeur = 155*index;
+let nouvelleValeur = 100*index;
     valeurTranslateIndicatorPrecedente = indicator.style.transform;
-    indicator.style.transform = 'translateX(calc( ' + nouvelleValeur + 'px))';
+    indicator.style.transform = 'translateX(calc( ' + nouvelleValeur + '%))';
     clicked = false;
 }
 
