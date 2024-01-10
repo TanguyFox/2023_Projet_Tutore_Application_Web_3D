@@ -1,5 +1,5 @@
 import * as Scene3D from "../vue/Scene3D.js";
-import {selectFace} from "../fonctionnalites/SelectionFace";
+import {handleModeSelect} from "../fonctionnalites/SelectionFace";
 import {scene, gridHelper} from "../vue/Scene3D.js";
 
 /**
@@ -12,7 +12,7 @@ import {scene, gridHelper} from "../vue/Scene3D.js";
 let modeFaceHtml = document.getElementById('face-mode-check');
 
 
-modeFaceHtml.addEventListener('change', selectFace);
+modeFaceHtml.addEventListener('change', handleModeSelect);
 
 document.getElementById('grid-check').addEventListener('change', function(event){
     if(event.target.checked){

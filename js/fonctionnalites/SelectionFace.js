@@ -5,16 +5,17 @@ import * as Generaux from "../tool/Element3DGeneraux";
 import * as Raycaster from "../tool/Raycaster";
 import * as Scene3D from "../vue/Scene3D";
 import * as THREE from "three";
+import * as Scene3DControleur from "../controleurs/Scene3DControleur";
 
 /**
- * Module pour la fonctionnalité de sélection des faces
+ * Module pour la fonctionnalité de traitement de mode (selection de face)
  * @type {HTMLElement}
  */
 
 let modeFaceHtml = document.getElementById('face-mode-check');
 
 
-export function selectFace (event){
+export function handleModeSelect (event){
     if(!modeFaceHtml.checked && scene.children.includes(arrowHelper)){
         scene.remove(arrowHelper);
         let colorAttribute = geometry_model.attributes.color;
@@ -26,6 +27,21 @@ export function selectFace (event){
         if(Generaux.faceIndexSelected != null){
             paintFace(Generaux.faceIndexSelected, colorAttribute, color_mesh);
         }
+
+        if(scene.children.includes(Scene3DControleur.meshvA)){
+            let infohtml_vertexA = document.getElementById('info-vA');
+            let infohtml_vertexB = document.getElementById('info-vB');
+            let infohtml_vertexC = document.getElementById('info-vC');
+
+            scene.remove(Scene3DControleur.meshvA);
+            scene.remove(Scene3DControleur.meshvB);
+            scene.remove(Scene3DControleur.meshvC);
+
+            infohtml_vertexA.innerHTML = "";
+            infohtml_vertexB.innerHTML = "";
+            infohtml_vertexC.innerHTML = "";
+        }
+
         Generaux.setFaceIndexSelected(null);
         Generaux.setFaceIndexAncien(null);
 
