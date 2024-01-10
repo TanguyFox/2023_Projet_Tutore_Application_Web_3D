@@ -18,6 +18,9 @@ let gridHelper;
 let transformControls;
 let orbitcontrols;
 
+//width / height Scene / a modifier temps en temps pour la Précision de RayCaster
+const widthS = window.innerWidth - 300;
+const heightS = window.innerHeight;
 
 function initScene3D() {
 console.log("initScene3D")
@@ -27,13 +30,9 @@ console.log("initScene3D")
     sceneContrainer = document.getElementById('scene-container');
     scene = new THREE.Scene();
 
-//width / height Scene / a modifier temps en temps pour la Précision de RayCaster
-    const widthS = window.innerWidth - 300;
-    const heightS = window.innerHeight;
 //Scene backgroud
     scene.background = new THREE.Color(0x888888);
 //------------------------------------------
-
 
 //Camera
 //------------------------------------------
@@ -43,7 +42,7 @@ console.log("initScene3D")
 //------------------------------------------
 
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
-    renderer = new THREE.WebGLRenderer({antialias: false});
+    renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(widthS, heightS);
 
 
@@ -59,7 +58,7 @@ console.log("initScene3D")
     scene.add(directionalLight);
 
 //Grid
-    gridHelper = new THREE.GridHelper(50, 50);
+    gridHelper = new THREE.GridHelper(20, 20);
     gridHelper.position.set(0, 0, 0);
     gridHelper.material.color.set(0x000000);
     scene.add(gridHelper);
@@ -87,5 +86,7 @@ export {
     camera,
     gridHelper,
     transformControls,
-    orbitcontrols
+    orbitcontrols,
+    widthS,
+    heightS
 }

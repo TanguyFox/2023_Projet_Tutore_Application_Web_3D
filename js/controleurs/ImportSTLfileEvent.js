@@ -58,15 +58,13 @@ export function handleFileSelect(event) {
 
                     generaux.geometry_model.center();
                     let material = new THREE.MeshBasicMaterial({vertexColors: true});
+                    material.transparent = true;
+                    material.opacity = 0.65;
 
                     let wireframe = new THREE.WireframeGeometry(geometry);
 
                     //couleur de ligne
                     generaux.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
-                    generaux.lineModel.material.depthTest = false;
-                    generaux.lineModel.material.opacity = 1;
-                    generaux.lineModel.material.transparent = true;
-
 
                     generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, material));
 

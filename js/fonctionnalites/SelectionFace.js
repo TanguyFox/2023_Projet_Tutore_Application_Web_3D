@@ -76,18 +76,7 @@ export function onPointerMove( event ){
 
             let faceIndex = intersects[i].faceIndex;
             let geometry = intersects[i].object.geometry;
-            // console.log("geometry : " + geometry);
-            // let position = geometry.attributes.position.array;
-            // let vertexA = new THREE.Vector3().fromArray(position, faceIndex * 3);
-            // let vertexB = new THREE.Vector3().fromArray(position, faceIndex * 3 + 1);
-            // let vertexC = new THREE.Vector3().fromArray(position, faceIndex * 3 + 2);
-            // console.log(vertexA);
-            // console.log(vertexB);
-            // console.log(vertexC);
-
             let colorAttribute = geometry.attributes.color;
-
-            // console.log("faceIndex : " + faceIndex);
 
             if(Generaux.faceIndexAncien != null){
                 paintFace(Generaux.faceIndexAncien, colorAttribute, Generaux.color_mesh)

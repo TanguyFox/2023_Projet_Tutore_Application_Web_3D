@@ -30,9 +30,9 @@ function render(){
 }
 
 function onWindowResize(){
-    Scene3D.camera.aspect = widthS / heightS;
+    Scene3D.camera.aspect = Scene3D.widthS / Scene3D.heightS;
     Scene3D.camera.updateProjectionMatrix();
-    Scene3D.renderer.setSize(widthS, heightS);
+    Scene3D.renderer.setSize(Scene3D.widthS, Scene3D.heightS);
     render();
 }
 window.addEventListener('resize', onWindowResize, false);
@@ -94,16 +94,19 @@ export function onPointerClick( event ){
                     let color = new THREE.Color(0xff0000);
                     paintFace(Generaux.faceIndexSelected, colorAttribute, color);
 
-                    let geometry = intersects[i].object.geometry;
-                    let position = geometry.attributes.position.array;
-                    let vertexA = new THREE.Vector3().fromArray(position, Generaux.faceIndexSelected * 3);
-                    let vertexB = new THREE.Vector3().fromArray(position, Generaux.faceIndexSelected * 3 + 1);
-                    let vertexC = new THREE.Vector3().fromArray(position, Generaux.faceIndexSelected * 3 + 2);
-
-                    console.log("faceIndexSelected : " + Generaux.faceIndexSelected)
-                    console.log(vertexA);
-                    console.log(vertexB);
-                    console.log(vertexC);
+                    // let geometry = intersects[i].object.geometry;
+                    // let position = geometry.attributes.position.array;
+                    //
+                    // let offset = faceIndexSelected * 9;
+                    // let vertexA = new THREE.Vector3(position[offset], position[offset + 1], position[offset + 2]);
+                    // let vertexB = new THREE.Vector3(position[offset + 3], position[offset + 4], position[offset + 5]);
+                    // let vertexC = new THREE.Vector3(position[offset + 6], position[offset + 7], position[offset + 8]);
+                    //
+                    // console.log("orginal vertex");
+                    // console.log("faceIndexSelected : " + faceIndexSelected)
+                    // console.log(vertexA);
+                    // console.log(vertexB);
+                    // console.log(vertexC);
 
                     break;
                 }
@@ -122,18 +125,59 @@ export function onPointerClick( event ){
     }
 }
 
+//Trois sommets d'une face
+let meshvA;
+let meshvB;
+let meshvC;
+let highlightGeometry = new THREE.SphereGeometry(0.1, 32, 32);
+let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+meshvA = new THREE.Mesh(highlightGeometry, highlightMaterial);
+meshvB = new THREE.Mesh(highlightGeometry, highlightMaterial);
+meshvC = new THREE.Mesh(highlightGeometry, highlightMaterial);
 
-function onDoubleClick(event){
+export function onDoubleClick(event){
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
     intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
     for(let i = 0 ; i < intersects.length; i++){
 
         if(intersects[i].object.uuid === Generaux.meshModel.uuid){
-            let target = new THREE.Vector3();
-            Generaux.meshModel.getWorldPosition(target);
-            let newCameraPosition = target.clone().add(new THREE.Vector3(0, 0, 10));
-            Scene3D.camera.position.copy(newCameraPosition);
-            Scene3D.camera.lookAt(target);
+            let matrixWorld = intersects[i].object.matrixWorld;
+            let positionAttribute = Generaux.geometry_model.attributes.position;
+            let normalAttribute = Generaux.geometry_model.attributes.normal;
+
+            let transformedPositions = [];
+            let transformedNormals = [];
+
+            for(let i = 0; i < positionAttribute.count; i++){
+                let localPosition = new THREE.Vector3(positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i));
+                localPosition.applyMatrix4(matrixWorld);
+                transformedPositions.push(localPosition.toArray());
+            }
+
+            if(Scene3D.scene.children.includes(meshvA)){
+                Scene3D.scene.remove(meshvA);
+                Scene3D.scene.remove(meshvB);
+                Scene3D.scene.remove(meshvC);
+            }
+
+            let offset = Generaux.faceIndexSelected * 3;
+            let vertexA = new THREE.Vector3(transformedPositions[offset][0], transformedPositions[offset][1], transformedPositions[offset][2]);
+            let vertexB = new THREE.Vector3(transformedPositions[offset + 1][0], transformedPositions[offset + 1][1], transformedPositions[offset + 1][2]);
+            let vertexC = new THREE.Vector3(transformedPositions[offset + 2][0], transformedPositions[offset + 2][1], transformedPositions[offset + 2][2]);
+
+            meshvA.position.copy(vertexA);
+            meshvB.position.copy(vertexB);
+            meshvC.position.copy(vertexC);
+
+            console.log("transformed vertex")
+            console.log(vertexA);
+            console.log(vertexB);
+            console.log(vertexC);
+
+            Scene3D.scene.add(meshvA);
+            Scene3D.scene.add(meshvB);
+            Scene3D.scene.add(meshvC);
+
             break;
         }
     }
