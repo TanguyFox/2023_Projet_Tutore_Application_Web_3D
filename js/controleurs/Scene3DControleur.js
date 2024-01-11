@@ -130,14 +130,23 @@ let meshvA;
 let meshvB;
 let meshvC;
 let highlightGeometry = new THREE.SphereGeometry(0.05, 16, 16);
-let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+//meshvA couleur: rouge
+let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xeb4646});
 meshvA = new THREE.Mesh(highlightGeometry, highlightMaterial);
+//meshvb couleur: bleu
+highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42b0f5});
 meshvB = new THREE.Mesh(highlightGeometry, highlightMaterial);
+//meshvc couleur: vert
+highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42f58d});
 meshvC = new THREE.Mesh(highlightGeometry, highlightMaterial);
 
-let infohtml_vertexA = document.getElementById('info-vA');
-let infohtml_vertexB = document.getElementById('info-vB');
-let infohtml_vertexC = document.getElementById('info-vC');
+let infohtml_vertexA = document.getElementById('position-vA');
+let infohtml_vertexB = document.getElementById('position-vB');
+let infohtml_vertexC = document.getElementById('position-vC');
+
+let info_position_vertexA_color = document.getElementById('color-vA');
+let info_position_vertexB_color = document.getElementById('color-vB');
+let info_position_vertexC_color = document.getElementById('color-vC');
 
 export function onDoubleClick(event){
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
@@ -177,17 +186,14 @@ export function onDoubleClick(event){
             meshvB.position.copy(vertexB);
             meshvC.position.copy(vertexC);
 
-
-
             // console.log("transformed vertex")
             // console.log(vertexA);
             // console.log(vertexB);
             // console.log(vertexC);
 
-            // infohtml_vertexA.innerHTML = "Vertex A : " + vertexA.x.toFixed(3) + " " + vertexA.y.toFixed(3) + " " + vertexA.z.toFixed(3);
-            // infohtml_vertexB.innerHTML = "Vertex B : " + vertexB.x.toFixed(3) + " " + vertexB.y.toFixed(3) + " " + vertexB.z.toFixed(3);
-            // infohtml_vertexC.innerHTML = "Vertex C : " + vertexC.x.toFixed(3) + " " + vertexC.y.toFixed(3) + " " + vertexC.z.toFixed(3);
-
+            info_position_vertexA_color.style.display = "block";
+            info_position_vertexB_color.style.display = "block";
+            info_position_vertexC_color.style.display = "block";
 
             infohtml_vertexA.innerHTML = "Vertex A : " + vertexA.x + " " + vertexA.y + " " + vertexA.z;
             infohtml_vertexB.innerHTML = "Vertex B : " + vertexB.x + " " + vertexB.y + " " + vertexB.z;
@@ -196,7 +202,6 @@ export function onDoubleClick(event){
             Scene3D.scene.add(meshvA);
             Scene3D.scene.add(meshvB);
             Scene3D.scene.add(meshvC);
-
             break;
         }
     }

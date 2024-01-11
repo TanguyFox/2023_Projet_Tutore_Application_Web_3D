@@ -29,17 +29,21 @@ export function handleModeSelect (event){
         }
 
         if(scene.children.includes(Scene3DControleur.meshvA)){
-            let infohtml_vertexA = document.getElementById('info-vA');
-            let infohtml_vertexB = document.getElementById('info-vB');
-            let infohtml_vertexC = document.getElementById('info-vC');
+            let info_position_vertexA = document.getElementById('position-vA');
+            let info_position_vertexB = document.getElementById('position-vB');
+            let info_position_vertexC = document.getElementById('position-vC');
 
             scene.remove(Scene3DControleur.meshvA);
             scene.remove(Scene3DControleur.meshvB);
             scene.remove(Scene3DControleur.meshvC);
 
-            infohtml_vertexA.innerHTML = "";
-            infohtml_vertexB.innerHTML = "";
-            infohtml_vertexC.innerHTML = "";
+            info_position_vertexA.innerHTML = "";
+            info_position_vertexB.innerHTML = "";
+            info_position_vertexC.innerHTML = "";
+
+            document.getElementById('color-vA').style.display = "none";
+            document.getElementById('color-vB').style.display = "none";
+            document.getElementById('color-vC').style.display = "none";
         }
 
         Generaux.setFaceIndexSelected(null);
