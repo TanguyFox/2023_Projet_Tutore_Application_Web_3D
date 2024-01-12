@@ -1,8 +1,6 @@
 class Mesh {
-    constructor(vertices, faces, points) {
-        this.vertices = vertices;
+    constructor(faces) {
         this.faces = faces;
-        this.points = points;
     }
 
 }
