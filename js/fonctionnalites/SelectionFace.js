@@ -13,6 +13,7 @@ import * as Scene3DControleur from "../controleurs/Scene3DControleur";
  */
 
 let modeFaceHtml = document.getElementById('face-mode-check');
+let infoCoordPoints = document.querySelector("#infoCoordPoints");
 let meshvA;
 let meshvB;
 let meshvC;
@@ -40,36 +41,25 @@ export function handleModeSelect (event){
             paintFace(Generaux.faceIndexSelected, colorAttribute, color_mesh);
         }
 
-        console.log(scene.children.includes(meshvA))
         if(scene.children.includes(meshvA)){
-            let info_position_vertexA = document.getElementById('position-vA');
-            let info_position_vertexB = document.getElementById('position-vB');
-            let info_position_vertexC = document.getElementById('position-vC');
-
-            info_position_vertexA.innerHTML = "";
-            info_position_vertexB.innerHTML = "";
-            info_position_vertexC.innerHTML = "";
-
+            document.querySelector("#infoCoordPoints").innerHTML="";
             scene.remove(meshvA);
             scene.remove(meshvB);
             scene.remove(meshvC);
-
-
-
-            document.getElementById('color-vA').style.display = "none";
-            document.getElementById('color-vB').style.display = "none";
-            document.getElementById('color-vC').style.display = "none";
         }
-
         Generaux.setFaceIndexSelected(null);
         Generaux.setFaceIndexAncien(null);
-
     }else{
         scene.add(arrowHelper);
         transformControls.detach();
     }
 }
 
+/**
+ * méthode déclanchée au double clic de la souris sur une face (en mode sélection de face)
+ * Elle affiche les trois sommets de la face sur le plan 3D
+ * @param transformedPositions
+ */
 export function afficherPoints3D(transformedPositions){
 
     if(Scene3D.scene.children.includes(meshvA)){
@@ -87,6 +77,13 @@ export function afficherPoints3D(transformedPositions){
     afficherCoordPoints(vertexA, vertexB, vertexC)
 }
 
+/**
+ * méthode qui gère l'affichage d'un seul point
+ * @param mesh le sommet qu'on veut afficher
+ * @param transformedPosition la position
+ * @param offsetValue la valeur dans le tableau de position
+ * @returns {Vector3} le sommet
+ */
 function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
     let vertex = new THREE.Vector3(transformedPosition[offsetValue][0],
         transformedPosition[offsetValue][1], transformedPosition[offsetValue][2]);
@@ -95,23 +92,35 @@ function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
     return vertex;
 }
 
+/**
+ * méthode qui affiche dans le menu les coordonnées des trois points de la face
+ * sélectionnée
+ * @param vertexA sommet A de la face
+ * @param vertexB sommet B de la face
+ * @param vertexC sommet C de la face
+ */
 function afficherCoordPoints(vertexA, vertexB, vertexC){
-    let infohtml_vertexA = document.getElementById('position-vA');
-    let infohtml_vertexB = document.getElementById('position-vB');
-    let infohtml_vertexC = document.getElementById('position-vC');
+    infoCoordPoints.innerHTML="";
+    afficherSingleCoordPoint('A', vertexA, '#eb4646');
+    afficherSingleCoordPoint('B', vertexB, '#42b0f5');
+    afficherSingleCoordPoint('C', vertexC, '#42f58d');
+}
 
-    let info_position_vertexA_color = document.getElementById('color-vA');
-    let info_position_vertexB_color = document.getElementById('color-vB');
-    let info_position_vertexC_color = document.getElementById('color-vC');
-
-
-    info_position_vertexA_color.style.display = "block";
-    info_position_vertexB_color.style.display = "block";
-    info_position_vertexC_color.style.display = "block";
-
-    infohtml_vertexA.innerHTML = "Vertex A : " + vertexA.x + " " + vertexA.y + " " + vertexA.z;
-    infohtml_vertexB.innerHTML = "Vertex B : " + vertexB.x + " " + vertexB.y + " " + vertexB.z;
-    infohtml_vertexC.innerHTML = "Vertex C : " + vertexC.x + " " + vertexC.y + " " + vertexC.z;
+/**
+ * méthode qui crée les div html pour afficher les coordonnées du point
+ * @param name
+ * @param vertex
+ * @param color
+ */
+function afficherSingleCoordPoint(name, vertex, color){
+    let divInfo = document.createElement("div");
+    infoCoordPoints.appendChild(divInfo);
+    divInfo.classList.add('info-face');
+    let html = `
+    <div class="color_point" style="background-color: ${color}"></div>
+    <div>Vertex ${name} : ${vertex.x} ${vertex.y} ${vertex.z}</div>
+    `;
+    divInfo.innerHTML = html;
 }
 
 //changer la couleur d'une face

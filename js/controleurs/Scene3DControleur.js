@@ -125,37 +125,6 @@ export function onPointerClick( event ){
     }
 }
 
-//Trois sommets d'une face
-/*
-afficherPoints3D
-let meshvA;
-let meshvB;
-let meshvC;
-let highlightGeometry = new THREE.SphereGeometry(0.05, 16, 16);
-//meshvA couleur: rouge
-let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xeb4646});
-meshvA = new THREE.Mesh(highlightGeometry, highlightMaterial);
-//meshvb couleur: bleu
-highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42b0f5});
-meshvB = new THREE.Mesh(highlightGeometry, highlightMaterial);
-//meshvc couleur: vert
-highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42f58d});
-meshvC = new THREE.Mesh(highlightGeometry, highlightMaterial);
-
- */
-
-/*
-afficherCoordPoints
-let infohtml_vertexA = document.getElementById('position-vA');
-let infohtml_vertexB = document.getElementById('position-vB');
-let infohtml_vertexC = document.getElementById('position-vC');
-
-let info_position_vertexA_color = document.getElementById('color-vA');
-let info_position_vertexB_color = document.getElementById('color-vB');
-let info_position_vertexC_color = document.getElementById('color-vC');
-
- */
-
 export function onDoubleClick(event){
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
     intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
@@ -186,11 +155,6 @@ export function onDoubleClick(event){
     }
 }
 
-/*export {
-    meshvA,
-    meshvB,
-    meshvC
-}*/
 
 
 
