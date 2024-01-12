@@ -13,7 +13,19 @@ import * as Scene3DControleur from "../controleurs/Scene3DControleur";
  */
 
 let modeFaceHtml = document.getElementById('face-mode-check');
-
+let meshvA;
+let meshvB;
+let meshvC;
+let highlightGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+//meshvA couleur: rouge
+let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xeb4646});
+meshvA = new THREE.Mesh(highlightGeometry, highlightMaterial);
+//meshvb couleur: bleu
+highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42b0f5});
+meshvB = new THREE.Mesh(highlightGeometry, highlightMaterial);
+//meshvc couleur: vert
+highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42f58d});
+meshvC = new THREE.Mesh(highlightGeometry, highlightMaterial);
 
 export function handleModeSelect (event){
     if(!modeFaceHtml.checked && scene.children.includes(arrowHelper)){
@@ -28,18 +40,21 @@ export function handleModeSelect (event){
             paintFace(Generaux.faceIndexSelected, colorAttribute, color_mesh);
         }
 
-        if(scene.children.includes(Scene3DControleur.meshvA)){
+        console.log(scene.children.includes(meshvA))
+        if(scene.children.includes(meshvA)){
             let info_position_vertexA = document.getElementById('position-vA');
             let info_position_vertexB = document.getElementById('position-vB');
             let info_position_vertexC = document.getElementById('position-vC');
 
-            scene.remove(Scene3DControleur.meshvA);
-            scene.remove(Scene3DControleur.meshvB);
-            scene.remove(Scene3DControleur.meshvC);
-
             info_position_vertexA.innerHTML = "";
             info_position_vertexB.innerHTML = "";
             info_position_vertexC.innerHTML = "";
+
+            scene.remove(meshvA);
+            scene.remove(meshvB);
+            scene.remove(meshvC);
+
+
 
             document.getElementById('color-vA').style.display = "none";
             document.getElementById('color-vB').style.display = "none";
@@ -53,6 +68,50 @@ export function handleModeSelect (event){
         scene.add(arrowHelper);
         transformControls.detach();
     }
+}
+
+export function afficherPoints3D(transformedPositions){
+
+    if(Scene3D.scene.children.includes(meshvA)){
+        Scene3D.scene.remove(meshvA);
+        Scene3D.scene.remove(meshvB);
+        Scene3D.scene.remove(meshvC);
+    }
+
+    let offset = Generaux.faceIndexSelected * 3;
+
+    let vertexA = afficherSinglePoint3d(meshvA, transformedPositions, offset);
+    let vertexB = afficherSinglePoint3d(meshvB, transformedPositions, (offset+1));
+    let vertexC = afficherSinglePoint3d(meshvC, transformedPositions, (offset+2));
+
+    afficherCoordPoints(vertexA, vertexB, vertexC)
+}
+
+function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
+    let vertex = new THREE.Vector3(transformedPosition[offsetValue][0],
+        transformedPosition[offsetValue][1], transformedPosition[offsetValue][2]);
+    mesh.position.copy(vertex);
+    Scene3D.scene.add(mesh);
+    return vertex;
+}
+
+function afficherCoordPoints(vertexA, vertexB, vertexC){
+    let infohtml_vertexA = document.getElementById('position-vA');
+    let infohtml_vertexB = document.getElementById('position-vB');
+    let infohtml_vertexC = document.getElementById('position-vC');
+
+    let info_position_vertexA_color = document.getElementById('color-vA');
+    let info_position_vertexB_color = document.getElementById('color-vB');
+    let info_position_vertexC_color = document.getElementById('color-vC');
+
+
+    info_position_vertexA_color.style.display = "block";
+    info_position_vertexB_color.style.display = "block";
+    info_position_vertexC_color.style.display = "block";
+
+    infohtml_vertexA.innerHTML = "Vertex A : " + vertexA.x + " " + vertexA.y + " " + vertexA.z;
+    infohtml_vertexB.innerHTML = "Vertex B : " + vertexB.x + " " + vertexB.y + " " + vertexB.z;
+    infohtml_vertexC.innerHTML = "Vertex C : " + vertexC.x + " " + vertexC.y + " " + vertexC.z;
 }
 
 //changer la couleur d'une face
