@@ -5,16 +5,17 @@ import * as Generaux from "../tool/Element3DGeneraux";
 import * as Raycaster from "../tool/Raycaster";
 import * as Scene3D from "../vue/Scene3D";
 import * as THREE from "three";
+import * as Scene3DControleur from "../controleurs/Scene3DControleur";
 
 /**
- * Module pour la fonctionnalité de sélection des faces
+ * Module pour la fonctionnalité de traitement de mode (selection de face)
  * @type {HTMLElement}
  */
 
 let modeFaceHtml = document.getElementById('face-mode-check');
 
 
-export function selectFace (event){
+export function handleModeSelect (event){
     if(!modeFaceHtml.checked && scene.children.includes(arrowHelper)){
         scene.remove(arrowHelper);
         let colorAttribute = geometry_model.attributes.color;
@@ -26,6 +27,25 @@ export function selectFace (event){
         if(Generaux.faceIndexSelected != null){
             paintFace(Generaux.faceIndexSelected, colorAttribute, color_mesh);
         }
+
+        if(scene.children.includes(Scene3DControleur.meshvA)){
+            let info_position_vertexA = document.getElementById('position-vA');
+            let info_position_vertexB = document.getElementById('position-vB');
+            let info_position_vertexC = document.getElementById('position-vC');
+
+            scene.remove(Scene3DControleur.meshvA);
+            scene.remove(Scene3DControleur.meshvB);
+            scene.remove(Scene3DControleur.meshvC);
+
+            info_position_vertexA.innerHTML = "";
+            info_position_vertexB.innerHTML = "";
+            info_position_vertexC.innerHTML = "";
+
+            document.getElementById('color-vA').style.display = "none";
+            document.getElementById('color-vB').style.display = "none";
+            document.getElementById('color-vC').style.display = "none";
+        }
+
         Generaux.setFaceIndexSelected(null);
         Generaux.setFaceIndexAncien(null);
 

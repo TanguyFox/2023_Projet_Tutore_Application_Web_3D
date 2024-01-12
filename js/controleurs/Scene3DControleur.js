@@ -129,11 +129,24 @@ export function onPointerClick( event ){
 let meshvA;
 let meshvB;
 let meshvC;
-let highlightGeometry = new THREE.SphereGeometry(0.1, 32, 32);
-let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xff0000});
+let highlightGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+//meshvA couleur: rouge
+let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xeb4646});
 meshvA = new THREE.Mesh(highlightGeometry, highlightMaterial);
+//meshvb couleur: bleu
+highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42b0f5});
 meshvB = new THREE.Mesh(highlightGeometry, highlightMaterial);
+//meshvc couleur: vert
+highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42f58d});
 meshvC = new THREE.Mesh(highlightGeometry, highlightMaterial);
+
+let infohtml_vertexA = document.getElementById('position-vA');
+let infohtml_vertexB = document.getElementById('position-vB');
+let infohtml_vertexC = document.getElementById('position-vC');
+
+let info_position_vertexA_color = document.getElementById('color-vA');
+let info_position_vertexB_color = document.getElementById('color-vB');
+let info_position_vertexC_color = document.getElementById('color-vC');
 
 export function onDoubleClick(event){
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
@@ -147,6 +160,10 @@ export function onDoubleClick(event){
 
             let transformedPositions = [];
             let transformedNormals = [];
+
+            if(Generaux.faceIndexSelected == null){
+                return;
+            }
 
             for(let i = 0; i < positionAttribute.count; i++){
                 let localPosition = new THREE.Vector3(positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i));
@@ -169,18 +186,31 @@ export function onDoubleClick(event){
             meshvB.position.copy(vertexB);
             meshvC.position.copy(vertexC);
 
-            console.log("transformed vertex")
-            console.log(vertexA);
-            console.log(vertexB);
-            console.log(vertexC);
+            // console.log("transformed vertex")
+            // console.log(vertexA);
+            // console.log(vertexB);
+            // console.log(vertexC);
+
+            info_position_vertexA_color.style.display = "block";
+            info_position_vertexB_color.style.display = "block";
+            info_position_vertexC_color.style.display = "block";
+
+            infohtml_vertexA.innerHTML = "Vertex A : " + vertexA.x + " " + vertexA.y + " " + vertexA.z;
+            infohtml_vertexB.innerHTML = "Vertex B : " + vertexB.x + " " + vertexB.y + " " + vertexB.z;
+            infohtml_vertexC.innerHTML = "Vertex C : " + vertexC.x + " " + vertexC.y + " " + vertexC.z;
 
             Scene3D.scene.add(meshvA);
             Scene3D.scene.add(meshvB);
             Scene3D.scene.add(meshvC);
-
             break;
         }
     }
+}
+
+export {
+    meshvA,
+    meshvB,
+    meshvC
 }
 
 
