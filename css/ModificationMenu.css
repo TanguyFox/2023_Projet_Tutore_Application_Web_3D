@@ -126,25 +126,12 @@
     transition: 0.5s ease all;
 }
 
-#color-vA{
-    display: none;
-    background-color: #eb4646;
-    width: 20px;
-    height: 20px;
-}
 
-#color-vB{
-    display: none;
-    background-color: #42b0f5;
+.color_point
+{
     width: 20px;
     height: 20px;
-}
-
-#color-vC{
-    display: none;
-    background-color: #42f58d;
-    width: 20px;
-    height: 20px;
+    display: block;
 }
 
 .info-face{

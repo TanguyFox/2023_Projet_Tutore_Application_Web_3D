@@ -13,7 +13,20 @@ import * as Scene3DControleur from "../controleurs/Scene3DControleur";
  */
 
 let modeFaceHtml = document.getElementById('face-mode-check');
-
+let infoCoordPoints = document.querySelector("#infoCoordPoints");
+let meshvA;
+let meshvB;
+let meshvC;
+let highlightGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+//meshvA couleur: rouge
+let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xeb4646});
+meshvA = new THREE.Mesh(highlightGeometry, highlightMaterial);
+//meshvb couleur: bleu
+highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42b0f5});
+meshvB = new THREE.Mesh(highlightGeometry, highlightMaterial);
+//meshvc couleur: vert
+highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42f58d});
+meshvC = new THREE.Mesh(highlightGeometry, highlightMaterial);
 
 export function handleModeSelect (event){
     if(!modeFaceHtml.checked && scene.children.includes(arrowHelper)){
@@ -28,31 +41,86 @@ export function handleModeSelect (event){
             paintFace(Generaux.faceIndexSelected, colorAttribute, color_mesh);
         }
 
-        if(scene.children.includes(Scene3DControleur.meshvA)){
-            let info_position_vertexA = document.getElementById('position-vA');
-            let info_position_vertexB = document.getElementById('position-vB');
-            let info_position_vertexC = document.getElementById('position-vC');
-
-            scene.remove(Scene3DControleur.meshvA);
-            scene.remove(Scene3DControleur.meshvB);
-            scene.remove(Scene3DControleur.meshvC);
-
-            info_position_vertexA.innerHTML = "";
-            info_position_vertexB.innerHTML = "";
-            info_position_vertexC.innerHTML = "";
-
-            document.getElementById('color-vA').style.display = "none";
-            document.getElementById('color-vB').style.display = "none";
-            document.getElementById('color-vC').style.display = "none";
+        if(scene.children.includes(meshvA)){
+            document.querySelector("#infoCoordPoints").innerHTML="";
+            scene.remove(meshvA);
+            scene.remove(meshvB);
+            scene.remove(meshvC);
         }
-
         Generaux.setFaceIndexSelected(null);
         Generaux.setFaceIndexAncien(null);
-
     }else{
         scene.add(arrowHelper);
         transformControls.detach();
     }
+}
+
+/**
+ * méthode déclanchée au double clic de la souris sur une face (en mode sélection de face)
+ * Elle affiche les trois sommets de la face sur le plan 3D
+ * @param transformedPositions
+ */
+export function afficherPoints3D(transformedPositions){
+
+    if(Scene3D.scene.children.includes(meshvA)){
+        Scene3D.scene.remove(meshvA);
+        Scene3D.scene.remove(meshvB);
+        Scene3D.scene.remove(meshvC);
+    }
+
+    let offset = Generaux.faceIndexSelected * 3;
+
+    let vertexA = afficherSinglePoint3d(meshvA, transformedPositions, offset);
+    let vertexB = afficherSinglePoint3d(meshvB, transformedPositions, (offset+1));
+    let vertexC = afficherSinglePoint3d(meshvC, transformedPositions, (offset+2));
+
+    afficherCoordPoints(vertexA, vertexB, vertexC)
+}
+
+/**
+ * méthode qui gère l'affichage d'un seul point
+ * @param mesh le sommet qu'on veut afficher
+ * @param transformedPosition la position
+ * @param offsetValue la valeur dans le tableau de position
+ * @returns {Vector3} le sommet
+ */
+function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
+    let vertex = new THREE.Vector3(transformedPosition[offsetValue][0],
+        transformedPosition[offsetValue][1], transformedPosition[offsetValue][2]);
+    mesh.position.copy(vertex);
+    Scene3D.scene.add(mesh);
+    return vertex;
+}
+
+/**
+ * méthode qui affiche dans le menu les coordonnées des trois points de la face
+ * sélectionnée
+ * @param vertexA sommet A de la face
+ * @param vertexB sommet B de la face
+ * @param vertexC sommet C de la face
+ */
+function afficherCoordPoints(vertexA, vertexB, vertexC){
+    infoCoordPoints.innerHTML="";
+    afficherSingleCoordPoint('A', vertexA, '#eb4646');
+    afficherSingleCoordPoint('B', vertexB, '#42b0f5');
+    afficherSingleCoordPoint('C', vertexC, '#42f58d');
+}
+
+/**
+ * méthode qui crée les div html pour afficher les coordonnées du point
+ * @param name
+ * @param vertex
+ * @param color
+ */
+function afficherSingleCoordPoint(name, vertex, color){
+    let divInfo = document.createElement("div");
+    infoCoordPoints.appendChild(divInfo);
+    divInfo.classList.add('info-face');
+    let html = `
+    <div class="color_point" style="background-color: ${color}"></div>
+    <div>Vertex ${name} : ${vertex.x} ${vertex.y} ${vertex.z}</div>
+    `;
+    divInfo.innerHTML = html;
 }
 
 //changer la couleur d'une face
