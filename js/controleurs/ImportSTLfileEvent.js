@@ -102,9 +102,8 @@ export function handleFileSelect(event) {
 
 }
 
-let mesh;
 dataFiller.addEventListener("message", function (e) {
-    mesh = e.data;
-    console.log(mesh)
+    loadBar.progressBarMajworker(this);
 })
+
 

@@ -1,13 +1,16 @@
 class HalfEdge {
-    constructor(dep, arr) {
-        this.vertexDepart = dep;
-        this.vertexArrivee = arr
+    constructor(dep) {
+        this.vertex = dep;
         this.face = null;
         this.next = null;
         this.prev = null;
         this.opposite = null;
     }
 }
+
+HalfEdge.prototype.headVertex = function() { return this.vertex }
+
+HalfEdge.prototype.tailVertex = function () { return this.next.headVertex() ? this.next.headVertex() : null}
 
 HalfEdge.prototype.setFace = function (face){
     this.face = face;

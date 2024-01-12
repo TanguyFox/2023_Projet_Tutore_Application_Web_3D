@@ -98,51 +98,61 @@ function convertirSTLtoDonnees(positions) {
 }
 */
 
-function convertDataToSTL(positions) {
+function convertSTLToData(positions) {
 
     let sommets = []
     let faces = []
 
-    console.log("nb loop expected : " + positions.length/9)
+    console.time("Data filling")
+    console.log("nbFaces : " + positions.length/9)
+    try {
+        for(let i = 0; i < positions.length; i+=9) {
 
-    for(let i = 0; i < positions.length; i+=9) {
-        console.log("loop")
+            let vertex1 = creerSommet(new Point(positions[i], positions[i+1], positions[i+2]), sommets)
+            let vertex2 = creerSommet(new Point(positions[i+3], positions[i+4], positions[i+5]), sommets)
+            let vertex3 = creerSommet(new Point(positions[i+6], positions[i+7], positions[i+8]), sommets)
 
-        let vertex1 = creerSommet(new Point(positions[i], positions[i+1], positions[i+2]), sommets)
-        let vertex2 = creerSommet(new Point(positions[i+3], positions[i+4], positions[i+5]), sommets)
-        let vertex3 = creerSommet(new Point(positions[i+6], positions[i+7], positions[i+8]), sommets)
+            let h1 = new HalfEdge(vertex1)
+            let h2 = new HalfEdge(vertex2)
+            let h3 = new HalfEdge(vertex3)
 
-        let h1 = new HalfEdge(vertex1, vertex2)
-        let h2 = new HalfEdge(vertex2, vertex3)
-        let h3 = new HalfEdge(vertex3, vertex1)
+            setPrevAndNext(h1, h3, h2)
+            setPrevAndNext(h2, h1, h3)
+            setPrevAndNext(h3, h2, h1)
 
-        setPrevAndNext(h1, h3, h2)
-        setPrevAndNext(h2, h1, h3)
-        setPrevAndNext(h3, h2, h1)
+            vertex1.halfedgesTab.push(h1, h1.prev)
+            vertex2.halfedgesTab.push(h2, h2.prev)
+            vertex3.halfedgesTab.push(h3, h3.prev)
 
-        vertex1.halfedgesTab.push(h1,h3)
-        vertex2.halfedgesTab.push(h1, h2)
-        vertex3.halfedgesTab.push(h2,h3)
+            sommets.push(vertex1, vertex2, vertex3);
+            let face = new Face(h1);
 
-        sommets.push(vertex1, vertex2, vertex3);
-        let face = new Face(h1);
+            getOppositeEdge(face)
 
-        faces.push(face);
+            faces.push(face);
 
-        progression(i, positions.length/9)
+            onProgress((i/positions.length)*100)
+
+        }
+
+        onProgress(100)
+        console.timeEnd("Data filling")
+        return faces
+    } catch (error) {
+        console.log("Error in conversion : " + error)
     }
 
-    faces.forEach(face => function () {
-        let edge = face.edge
-        let nextEdge = edge.next
 
-        while(nextEdge !== edge) {
-            getOppositeEdge(edge)
-        }
-    })
+}
 
-    return new Mesh(faces)
+function getOppositeEdge(face) {
+    let edge = face.edge
+    let nextEdge = edge.next
 
+    while(nextEdge !== edge) {
+        setOppositeEdge(nextEdge)
+        nextEdge = nextEdge.next
+    }
 }
 
 function creerSommet(point, sommets) {
@@ -155,20 +165,21 @@ function creerSommet(point, sommets) {
     return vertex
 }
 
-function getOppositeEdge(h) {
-    let sommetDepart = h.vertexDepart;
-    let sommetArrivee = h.vertexArrivee;
-    let opp = sommetDepart.halfedgesTab.filter(he => he.vertexDepart === sommetArrivee).find(he => he.vertexArrivee === sommetDepart)
+function setOppositeEdge(h) {
+    let sommetDepart = h.headVertex();
+    let sommetArrivee = h.tailVertex();
+    let opp = sommetDepart.halfedgesTab.filter(he => he.headVertex() === sommetArrivee).find(he => he.tailVertex() === sommetDepart)
     if(opp !== undefined) {
-        h.setOpposite(opp)
-        opp.setOpposite(h)
 
-        sommetDepart.halfedgesTab.splice(sommetDepart.halfedgesTab.findIndex(opp),1)
-        sommetDepart.halfedgesTab.splice(sommetDepart.halfedgesTab.findIndex(h),1)
-        sommetArrivee.halfedgesTab.splice(sommetArrivee.halfedgesTab.findIndex(opp),1)
-        sommetArrivee.halfedgesTab.splice(sommetArrivee.halfedgesTab.findIndex(h),1)
-    }
+        if (opp.opposite !== null) throw new Error("HalfEdge already define" + opp)
+            h.setOpposite(opp)
+            opp.setOpposite(h)
 
+            sommetDepart.halfedgesTab.splice(sommetDepart.halfedgesTab.indexOf(opp),1)
+            sommetDepart.halfedgesTab.splice(sommetDepart.halfedgesTab.indexOf(h),1)
+            sommetArrivee.halfedgesTab.splice(sommetArrivee.halfedgesTab.indexOf(opp),1)
+            sommetArrivee.halfedgesTab.splice(sommetArrivee.halfedgesTab.indexOf(h),1)
+        }
 }
 
 function vertexDegree(vertex) {
@@ -223,13 +234,14 @@ function ajouterPointAListe(p, points) {
 function detectionAretesOpposees(vertices, p1, p2, h, nom) {
     let vertex = vertices.filter(e => e.point.equals(p1));
     if (vertex.length !== 0) {
-        let halfedgeOppose = vertex.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p2))[0];
+        //console.log(vertex)
+        let halfedgeOppose = vertex.map(e => e.edge.prev).filter(e => e.vertexDepart.point.equals(p2))[0];
         if (typeof halfedgeOppose !== 'undefined') {
             if (halfedgeOppose.opposite == null) {
                 halfedgeOppose.setOpposite(h);
                 h.setOpposite(halfedgeOppose);
             } else {
-                throw new Error("Erreur de topologie p" + nom);
+                throw new Error("Erreur de topologie p" + nom + "// " + halfedgeOppose);
             }
         }
     }
@@ -266,9 +278,10 @@ function progression(i, totalSize){
 }
 
 self.addEventListener("message", function (e) {
-    //console.log(e.data);
     const positions = e.data;
-    const result = convertDataToSTL(positions);
+    const result = convertSTLToData(positions);
 
+
+    //PROBLEME ICI, WORKER NE GERE PAS LES REFERENCES BIDIRECTIONNELLE (Halfedge <--> Halfedge opposée)
     self.postMessage(result);
 });
