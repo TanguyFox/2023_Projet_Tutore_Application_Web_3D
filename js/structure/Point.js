@@ -10,19 +10,26 @@ class Point{
 }
 
 Point.prototype.equals = function(point){
-    return ((point.x === this.x)&&(point.y === this.y) && (point.z === this.z));
+    return (isCoordonneesEgales(this.x, point.x)&&
+        isCoordonneesEgales(this.y, point.y) &&
+        isCoordonneesEgales(this.z, point.z));
 }
 
 Point.prototype.compare = function (pointB){
-    if(this.x !== pointB.x){
+    if(!isCoordonneesEgales(this.x, pointB.x)){
         return this.x - pointB.x;
-    }else if(this.y !== pointB.y){
+    }else if(!isCoordonneesEgales(this.y, pointB.y)){
         return this.y - pointB.y;
-    }else if(this.z !== pointB.z){
+    }else if(!isCoordonneesEgales(this.z, pointB.z)){
         return this.z - pointB.z
     }
 }
 
 Point.prototype.toString = function (){
     return 'Point{'+ this.x + ","+ this.y + ","+ this.z + "}";
+}
+
+
+function isCoordonneesEgales(a, b){
+    return Math.abs(a-b) < 1e-10;
 }

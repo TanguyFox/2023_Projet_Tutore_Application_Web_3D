@@ -5,7 +5,6 @@ importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face
 var envoie = false;
 
 function convertirSTLtoDonnees(positions) {
-
     console.log("RENTREE TOOL");
     let points = [];
     let vertices = [];
@@ -14,6 +13,8 @@ function convertirSTLtoDonnees(positions) {
     for (let i = 0; i < totalSize; i += 9) {
         progression(i, totalSize);
 
+
+        console.time("création des 3 points")
         let x1 = positions[i];
         let y1 = positions[i + 1];
         let z1 = positions[i + 2];
@@ -28,11 +29,13 @@ function convertirSTLtoDonnees(positions) {
         let y3 = positions[i + 7];
         let z3 = positions[i + 8];
         let p3 = new Point(x3, y3, z3);
+        console.timeEnd("création des 3 points")
 
         ajouterPointAListe(p1, points);
         ajouterPointAListe(p2, points);
         ajouterPointAListe(p3, points);
 
+        console.time("création du triangle")
         let v1 = new Vertex(p1);
         let h1 = new HalfEdge(v1);
         v1.setEdge(h1);
@@ -48,6 +51,8 @@ function convertirSTLtoDonnees(positions) {
         setPrevAndNext(h1, h3, h2);
         setPrevAndNext(h2, h1, h3);
         setPrevAndNext(h3, h2, h1);
+        console.timeEnd("création du triangle");
+
 
         let newFace = new Face(h1);
         h1.setFace(newFace);
@@ -57,18 +62,34 @@ function convertirSTLtoDonnees(positions) {
         faces.push(newFace);
 
         // détection des arêtes opposées pour compléter la structure de données
+        console.time("detection p1");
         detectionAretesOpposees(vertices, p1, p2, h1, "p1");
+        console.timeEnd("detection p1");
+        console.time("detection p2");
         detectionAretesOpposees(vertices, p2, p3, h2, "p2");
+        console.timeEnd("detection p2");
+        console.time("detection p3");
         detectionAretesOpposees(vertices, p3, p1, h3, "p3");
+        console.timeEnd("detection p3");
+
 
         vertices.push(v1);
         vertices.push(v2);
         vertices.push(v3);
     }
 
+    console.time("trierPoint");
     points = trierPoints(points);
+    console.timeEnd("trierPoint");
+
+    console.time("trierVertex");
     vertices = trierVertex(vertices);
+    console.timeEnd("trierVertex");
+
+    console.time("trierFaces");
     faces = trierFaces(faces);
+    console.timeEnd("trierFaces");
+
 
     console.log("Data filled")
     onProgress(100);
@@ -170,7 +191,7 @@ function progression(i, totalSize){
 }
 
 self.addEventListener("message", function (e) {
-    console.log(e.data);
+    //console.log(e.data);
     const positions = e.data;
     const result = convertirSTLtoDonnees(positions);
 
