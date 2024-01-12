@@ -1,6 +1,8 @@
 class Vertex{
+
     constructor(depart) {
         this.point = depart;
+        this.halfedgesTab = [];
     }
 }
 

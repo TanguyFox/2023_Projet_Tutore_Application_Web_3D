@@ -1,6 +1,7 @@
 class HalfEdge {
-    constructor(vertex) {
-        this.vertex = vertex;
+    constructor(dep, arr) {
+        this.vertexDepart = dep;
+        this.vertexArrivee = arr
         this.face = null;
         this.next = null;
         this.prev = null;

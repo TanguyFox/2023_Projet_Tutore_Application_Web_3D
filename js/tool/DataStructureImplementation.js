@@ -4,6 +4,7 @@ importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face
 
 var envoie = false;
 
+/*
 function convertirSTLtoDonnees(positions) {
     console.log("RENTREE TOOL");
     let points = [];
@@ -94,6 +95,80 @@ function convertirSTLtoDonnees(positions) {
     console.log("Data filled")
     onProgress(100);
     return new Mesh(vertices, faces, points);
+}
+*/
+
+function convertDataToSTL(positions) {
+
+    let sommets = []
+    let faces = []
+
+    console.log("nb loop expected : " + positions.length/9)
+
+    for(let i = 0; i < positions.length; i+=9) {
+        console.log("loop")
+
+        let vertex1 = creerSommet(new Point(positions[i], positions[i+1], positions[i+2]), sommets)
+        let vertex2 = creerSommet(new Point(positions[i+3], positions[i+4], positions[i+5]), sommets)
+        let vertex3 = creerSommet(new Point(positions[i+6], positions[i+7], positions[i+8]), sommets)
+
+        let h1 = new HalfEdge(vertex1, vertex2)
+        let h2 = new HalfEdge(vertex2, vertex3)
+        let h3 = new HalfEdge(vertex3, vertex1)
+
+        setPrevAndNext(h1, h3, h2)
+        setPrevAndNext(h2, h1, h3)
+        setPrevAndNext(h3, h2, h1)
+
+        vertex1.halfedgesTab.push(h1,h3)
+        vertex2.halfedgesTab.push(h1, h2)
+        vertex3.halfedgesTab.push(h2,h3)
+
+        sommets.push(vertex1, vertex2, vertex3);
+        let face = new Face(h1);
+
+        faces.push(face);
+
+        progression(i, positions.length/9)
+    }
+
+    faces.forEach(face => function () {
+        let edge = face.edge
+        let nextEdge = edge.next
+
+        while(nextEdge !== edge) {
+            getOppositeEdge(edge)
+        }
+    })
+
+    return new Mesh(faces)
+
+}
+
+function creerSommet(point, sommets) {
+    let vertex;
+    if (sommets.some(v => v.point.equals(point))) {
+        vertex = sommets.find(v => v.point.equals(point))
+    } else {
+        vertex = new Vertex(point)
+    }
+    return vertex
+}
+
+function getOppositeEdge(h) {
+    let sommetDepart = h.vertexDepart;
+    let sommetArrivee = h.vertexArrivee;
+    let opp = sommetDepart.halfedgesTab.filter(he => he.vertexDepart === sommetArrivee).find(he => he.vertexArrivee === sommetDepart)
+    if(opp !== undefined) {
+        h.setOpposite(opp)
+        opp.setOpposite(h)
+
+        sommetDepart.halfedgesTab.splice(sommetDepart.halfedgesTab.findIndex(opp),1)
+        sommetDepart.halfedgesTab.splice(sommetDepart.halfedgesTab.findIndex(h),1)
+        sommetArrivee.halfedgesTab.splice(sommetArrivee.halfedgesTab.findIndex(opp),1)
+        sommetArrivee.halfedgesTab.splice(sommetArrivee.halfedgesTab.findIndex(h),1)
+    }
+
 }
 
 function vertexDegree(vertex) {
@@ -193,7 +268,7 @@ function progression(i, totalSize){
 self.addEventListener("message", function (e) {
     //console.log(e.data);
     const positions = e.data;
-    const result = convertirSTLtoDonnees(positions);
+    const result = convertDataToSTL(positions);
 
     self.postMessage(result);
 });
