@@ -1,0 +1,32 @@
+Fonctionnalités implémentées:
+    - Possibilité d’importer un fichier STL et le visualiser dans l’application
+    - Remplissage de la structure des données
+    - Possibilité de sélectionner une face de l’objet 3D avec un clic (indépendant de la
+    structure de données)
+    - Possibilité d’afficher les coordonnées de trois sommets de la face sélectionnée avec un
+    double-clic (indépendant de la structure de données)
+    - Possibilité de sélectionner l’objet 3D dans son ensemble et de modifier sa visualisation
+    (orientation, position dans le repère, proportions) (indépendant de la structure de
+    données)
+    - Affichage de l’objet en texture “fil de fer”
+    - Algorithme de détection des faces mal orientées (pas encore testé)
+    - Algorithme de récupération les faces adjacentes à une autre (pas encore testé)
+    - Améliorations visuelles
+    - Bar de progression du chargement du fichier STL
+    - Ecran de chargement de l’objet 3D
+    - Organisation visuelle du menu
+    - Début d’optimisation de la vitesse de remplissage des données (notamment essayer de
+    n’afficher que les faces visibles)
+
+Rôle des membres du groupe :
+
+ - Lucie : Lucie s'est beaucoup occupée de l'aspect graphique de l'application, elle a également participé à la partie de remplissage et
+           modélisation de la structure de données Half-Edge. Aussi, elle a réorganisé les fichiers du projet en module, rendant le projet
+           plus structuré et compréhensible.
+
+ - Solène : Solène a aidé Lucie sur certains aspect graphique de l'application, elle a également partcipé à la refactorisation de code
+            et l'implémentation de l'algo de détection des faces adjacentes d'un triangle.
+
+ - Xin :    Xin s'est occupé de toutes les manipulations de l'objet 3D dans l'application, indépendamment de la structure de données
+
+ - Tanguy : Tanguy a participé à l'implémentation de la structure de données Half-Edge ainsi que l'amélioration de l'efficacité du remplissage des données.
