@@ -34,11 +34,11 @@ function progressBarMajworker(worker){
             var percentComplete = event.data.value;
             progressBarData.style.width = percentComplete + '%';
             loadingMessage.innerHTML = 'Chargement des données... ' + Math.round(percentComplete) + '%';
-
             if(event.data.value === 100 ){
                 hideLoadingScreen()
             }
         } else {
+            console.log('event progress bar retour de mesh ')
             setMesh(event.data);
             console.log(mesh)
         }

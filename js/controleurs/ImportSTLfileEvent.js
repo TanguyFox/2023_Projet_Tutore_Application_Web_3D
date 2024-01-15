@@ -81,7 +81,7 @@ export function handleFileSelect(event) {
                     dataFiller.postMessage(geometry.getAttribute("position").array);
 
 
-                    //loadBar.progressBarMajworker(dataFiller);
+                    loadBar.progressBarMajworker(dataFiller);
 
                 }
             );
@@ -103,6 +103,7 @@ export function handleFileSelect(event) {
 }
 
 dataFiller.addEventListener("message", function (e) {
+    console.log("loadBar");
     loadBar.progressBarMajworker(this);
 })
 

@@ -1,10 +1,7 @@
-importScripts("../structure/Vertex",
-    "../structure/HalfEdge",
-    "../structure/Face",
-    "../structure/Point.js",
-    "../structure/Mesh.js",
-    "../structure/VertexSkipList"
-)
+importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face", "../structure/Point.js", "../structure/Mesh.js")
+
+var envoie = false;
+
 
 function convertSTLToData(positions) {
 
@@ -13,18 +10,17 @@ function convertSTLToData(positions) {
     //let halfedges = []
 
     console.time("Data filling")
-    console.log("nbFaces : " + positions.length / 9)
-    for (let i = 0; i < positions.length; i += 9) {
+    console.log("nbFaces : " + positions.length/9)
+        for(let i = 0; i < positions.length; i+=9) {
 
-        const vertices = [
-            creerSommet(new Point(positions[i], positions[i + 1], positions[i + 2]), sommets),
-            creerSommet(new Point(positions[i + 3], positions[i + 4], positions[i + 5]), sommets),
-            creerSommet(new Point(positions[i + 6], positions[i + 7], positions[i + 8]), sommets)
-        ]
+            const vertices = [
+                creerSommet(new Point(positions[i], positions[i+1], positions[i+2]), sommets),
+                creerSommet(new Point(positions[i+3], positions[i+4], positions[i+5]), sommets),
+                creerSommet(new Point(positions[i+6], positions[i+7], positions[i+8]), sommets)
+            ]
 
-
-        const halfedges = vertices.map(v => new HalfEdge(v))
-        halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) % 3], halfedges[(index + 1) % 3]))
+            const halfedges = vertices.map(v => new HalfEdge(v))
+            halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) %3], halfedges[(index + 1) %3]))
 
 
         vertices.forEach((vertex, index) => {
@@ -32,24 +28,25 @@ function convertSTLToData(positions) {
             vertex.addHalfEdge(halfedges[index].prev)
         })
 
-        const face = new Face(halfedges[0]);
+            const face = new Face(halfedges[0]);
 
         //getOppositeEdge(face)
 
-        faces.push(face);
-        onProgress((i / positions.length) * 100)
-    }
+            faces.push(face);
+            onProgress(i,positions.length)
+        }
 
-    onProgress(100)
-    console.timeEnd("Data filling")
-    return faces
+        onProgress(100)
+        console.timeEnd("Data filling")
+        new Mesh(faces);
+       // return mesh
 }
 
 function getOppositeEdge(face) {
     let edge = face.edge
     let nextEdge = edge.next
 
-    while (nextEdge !== edge) {
+    while(nextEdge !== edge) {
         setOppositeEdge(nextEdge)
         nextEdge = nextEdge.next
     }
@@ -68,7 +65,7 @@ function setOppositeEdge(h) {
     const sommetDepart = h.headVertex();
     const sommetArrivee = h.tailVertex();
     const opp = sommetDepart.halfedgesTab.find(he => he.tailVertex() === sommetDepart && he.headVertex() === sommetArrivee)
-    if (opp !== undefined) {
+    if(opp !== undefined) {
 
         if (opp.opposite !== null) console.error("HalfEdge already define" + opp)
         else {
@@ -77,9 +74,9 @@ function setOppositeEdge(h) {
         }
 
 
-        // removeFromHalfedgesTab(sommetDepart.halfedgesTab, [h, opp])
-        // removeFromHalfedgesTab(sommetArrivee.halfedgesTab, [h, opp])
-    }
+            // removeFromHalfedgesTab(sommetDepart.halfedgesTab, [h, opp])
+            // removeFromHalfedgesTab(sommetArrivee.halfedgesTab, [h, opp])
+        }
 }
 
 function removeFromHalfedgesTab(halfedgesTab, halfedgesToRemove) {
@@ -92,15 +89,14 @@ function removeFromHalfedgesTab(halfedgesTab, halfedgesToRemove) {
 }
 
 
-function onProgress(progress) {
+function onProgress(progress){
     self.postMessage({type: 'progress', value: progress});
 }
-
-function progression(i, totalSize) {
-    if (i % 2 === 0) {
-        if (envoie) {
+function progression(i, totalSize){
+    if(i%2===0){
+        if(envoie){
             envoie = false;
-            onProgress((i / totalSize) * 100);
+            onProgress((i/totalSize)*100);
         } else {
             envoie = true;
         }
@@ -110,11 +106,11 @@ function progression(i, totalSize) {
 
 self.addEventListener("message", function (e) {
     const positions = e.data;
-    const result = convertSTLToData(positions);
+    convertSTLToData(positions);
 
 
     //PROBLEME ICI, WORKER NE GERE PAS LES REFERENCES BIDIRECTIONNELLE (Halfedge <--> Halfedge opposée)
-    self.postMessage(result);
+    //self.postMessage({type: 'mesh', value: result});
 });
 
 function setPrevAndNext(h, hPrev, hNext) {

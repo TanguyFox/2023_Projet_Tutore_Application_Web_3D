@@ -23,7 +23,7 @@
 <div id="content">
     <button type="button" id="import">
         <div title="Upload your STL file here!">
-        <label style="cursor: pointer">Upload</label>
+            <label style="cursor: pointer">Upload</label>
         </div>
         <input type="file" hidden id="inputfile" accept=".stl"/>
     </button>
@@ -32,15 +32,15 @@
 
     </div>
     <div id="toolbar">
-            <button class="toolbar-button" id="translate">
-                <img class="toolbar-img" src="resources/img/toolbar/translate.svg" alt="translate">
-            </button>
-            <button class="toolbar-button" id="rotate">
-                <img class="toolbar-img" src="resources/img/toolbar/rotate.svg" alt="rotate">
-            </button>
-            <button class="toolbar-button" id="scale">
-                <img class="toolbar-img" src="resources/img/toolbar/scale.svg" alt="scale">
-            </button>
+        <button class="toolbar-button" id="translate">
+            <img class="toolbar-img" src="resources/img/toolbar/translate.svg" alt="translate">
+        </button>
+        <button class="toolbar-button" id="rotate">
+            <img class="toolbar-img" src="resources/img/toolbar/rotate.svg" alt="rotate">
+        </button>
+        <button class="toolbar-button" id="scale">
+            <img class="toolbar-img" src="resources/img/toolbar/scale.svg" alt="scale">
+        </button>
     </div>
 
 
@@ -58,14 +58,14 @@
 
         <div id="menuModifContent">
             <div id="visualisation_content" class="contentModifMenu">
-                    <label>
-                        Grid
-                        <input type="checkbox" id="grid-check" checked>
-                    </label>
-                    <label>
-                        Mode de selection d'une face(nom temporaire)
-                        <input type="checkbox" id="face-mode-check">
-                    </label>
+                <label>
+                    Grid
+                    <input type="checkbox" id="grid-check" checked>
+                </label>
+                <label>
+                    Mode de selection d'une face(nom temporaire)
+                    <input type="checkbox" id="face-mode-check">
+                </label>
 
 
             </div>
@@ -78,29 +78,18 @@
                     <label class="loadingDataMessage">Modification impossible durant cette opération</label>
                 </div>
                 <div id="infoCoordPoints">
-                    <div id="info-vA" class="info-face">
-                        <div id="color-vA"></div>
-                        <div id="position-vA"></div>
-                    </div>
-                    <div id="info-vB" class="info-face">
-                        <div id="color-vB"></div>
-                        <div id="position-vB"></div>
-                    </div>
-                    <div id="info-vC" class="info-face">
-                        <div id="color-vC"></div>
-                        <div id="position-vC"></div>
-                    </div>
+
                 </div>
             </div>
         </div>
-
-
-
     </div>
 
-    <div id="loading-screen">
-        <div id="loading-spinner"></div>
-    </div>
+
+</div>
+
+<div id="loading-screen">
+    <div id="loading-spinner"></div>
+</div>
 
 
 </div>
