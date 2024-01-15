@@ -100,8 +100,8 @@ function convertirSTLtoDonnees(positions) {
 
 function convertSTLToData(positions) {
 
-    let sommets = []
-    let faces = []
+    let sommets = [];
+    let faces = [];
 
     console.time("Data filling")
     console.log("nbFaces : " + positions.length/9)
@@ -131,7 +131,7 @@ function convertSTLToData(positions) {
 
             faces.push(face);
 
-            onProgress((i/positions.length)*100)
+            progression(i, positions.length);
 
         }
 
@@ -179,7 +179,7 @@ function setOppositeEdge(h) {
             sommetDepart.halfedgesTab.splice(sommetDepart.halfedgesTab.indexOf(h),1)
             sommetArrivee.halfedgesTab.splice(sommetArrivee.halfedgesTab.indexOf(opp),1)
             sommetArrivee.halfedgesTab.splice(sommetArrivee.halfedgesTab.indexOf(h),1)
-        }
+    }
 }
 
 function vertexDegree(vertex) {
@@ -280,8 +280,7 @@ function progression(i, totalSize){
 self.addEventListener("message", function (e) {
     const positions = e.data;
     const result = convertSTLToData(positions);
-
-
+    console.log(result);
     //PROBLEME ICI, WORKER NE GERE PAS LES REFERENCES BIDIRECTIONNELLE (Halfedge <--> Halfedge opposée)
     self.postMessage(result);
 });
