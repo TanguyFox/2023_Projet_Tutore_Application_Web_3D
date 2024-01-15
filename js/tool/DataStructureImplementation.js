@@ -1,6 +1,4 @@
-
 importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face", "../structure/Point.js", "../structure/Mesh.js")
-
 
 var envoie = false;
 
@@ -25,16 +23,17 @@ function convertSTLToData(positions) {
             halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) %3], halfedges[(index + 1) %3]))
 
 
-            vertices.forEach((vertex, index) => {
-                vertex.halfedgesTab.push(halfedges[index], halfedges[index].prev)
-            })
+        vertices.forEach((vertex, index) => {
+            vertex.addHalfEdge(halfedges[index])
+            vertex.addHalfEdge(halfedges[index].prev)
+        })
 
             const face = new Face(halfedges[0]);
 
-            getOppositeEdge(face)
+        //getOppositeEdge(face)
 
             faces.push(face);
-            progression(i,positions.length);
+            onProgress(i,positions.length)
         }
 
         onProgress(100)
@@ -54,10 +53,10 @@ function getOppositeEdge(face) {
 }
 
 function creerSommet(point, sommets) {
-    let existingVertex = sommets.search(point)
+    let existingVertex = sommets.searchVertex(point)
     if (existingVertex === null) {
         existingVertex = new Vertex(point)
-        sommets.insert(point, existingVertex)
+        sommets.insertVertex(point, existingVertex)
     }
     return existingVertex
 }
@@ -67,11 +66,14 @@ function setOppositeEdge(h) {
     const sommetArrivee = h.tailVertex();
     const opp = sommetDepart.halfedgesTab.find(he => he.tailVertex() === sommetDepart && he.headVertex() === sommetArrivee)
     if(opp !== undefined) {
+
         if (opp.opposite !== null) console.error("HalfEdge already define" + opp)
         else {
             h.setOpposite(opp)
             opp.setOpposite(h)
         }
+
+
             // removeFromHalfedgesTab(sommetDepart.halfedgesTab, [h, opp])
             // removeFromHalfedgesTab(sommetArrivee.halfedgesTab, [h, opp])
         }
