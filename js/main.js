@@ -6,6 +6,7 @@ import * as ToolBarEvent from "./controleurs/ToolBarEvent.js";
 import * as visualisationMenu from "./controleurs/VisualisationMenu.js";
 import {onPointerMove} from "./fonctionnalites/SelectionFace";
 import {mesh} from "./tool/Element3DGeneraux";
+import * as modificationMenu from './controleurs/ModificationMenu.js';
 
 
 
