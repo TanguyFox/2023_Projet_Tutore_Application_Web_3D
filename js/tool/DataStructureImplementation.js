@@ -7,7 +7,7 @@ var envoie = false;
 
 function convertSTLToData(positions) {
 
-    const sommets = []
+    const sommets = new VertexSkipList();
     const faces = []
     //let halfedges = []
 
@@ -37,7 +37,6 @@ function convertSTLToData(positions) {
             progression(i,positions.length);
         }
 
-
         onProgress(100)
         console.timeEnd("Data filling")
         new Mesh(faces);
@@ -55,10 +54,10 @@ function getOppositeEdge(face) {
 }
 
 function creerSommet(point, sommets) {
-    let existingVertex = sommets.find(vertex => vertex.point.equals(point))
-    if (existingVertex === undefined) {
+    let existingVertex = sommets.search(point)
+    if (existingVertex === null) {
         existingVertex = new Vertex(point)
-        sommets.push(existingVertex)
+        sommets.insert(point, existingVertex)
     }
     return existingVertex
 }
