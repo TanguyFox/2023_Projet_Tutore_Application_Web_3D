@@ -39,7 +39,10 @@ function convertSTLToData(positions) {
         //getOppositeEdge(face)
 
             faces.push(face);
-            onProgress((i/positions.length)*100)
+            var progression = (i/positions.length)*100;
+            if (Math.round(progression) % 10 === 0) {
+                onProgress(progression)
+            }
         }
 
         onProgress(100)
