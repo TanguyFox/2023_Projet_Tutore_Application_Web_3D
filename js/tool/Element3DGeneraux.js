@@ -54,6 +54,7 @@ function setFaceIndexAncien(valeur){
 }
 function setMesh(newMesh){
     mesh=newMesh;
+    console.log('mesh setted !')
 }
 
 export {
