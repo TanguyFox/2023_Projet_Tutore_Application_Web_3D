@@ -13,7 +13,7 @@ class VertexSkipList{
     }
 }
 
-VertexSkipList.prototype.insert = function(key, value) {
+VertexSkipList.prototype.insertVertex = function(key, value) {
     const nodes = [];
     let node = this.head;
 
@@ -47,7 +47,7 @@ VertexSkipList.prototype.insert = function(key, value) {
     }
 }
 
-VertexSkipList.prototype.search = function (key) {
+VertexSkipList.prototype.searchVertex = function (key) {
     let node = this.head;
 
     while(node) {
@@ -58,6 +58,6 @@ VertexSkipList.prototype.search = function (key) {
         } else {
             node = node.right;
         }
-
     }
+    return null
 }

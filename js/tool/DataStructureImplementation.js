@@ -1,7 +1,10 @@
-importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face", "../structure/Point.js", "../structure/Mesh.js")
-
-var envoie = false;
-
+importScripts("../structure/Vertex",
+    "../structure/HalfEdge",
+    "../structure/Face",
+    "../structure/Point.js",
+    "../structure/Mesh.js",
+    "../structure/VertexSkipList"
+)
 
 function convertSTLToData(positions) {
 
@@ -10,51 +13,53 @@ function convertSTLToData(positions) {
     //let halfedges = []
 
     console.time("Data filling")
-    console.log("nbFaces : " + positions.length/9)
-        for(let i = 0; i < positions.length; i+=9) {
+    console.log("nbFaces : " + positions.length / 9)
+    for (let i = 0; i < positions.length; i += 9) {
 
-            const vertices = [
-                creerSommet(new Point(positions[i], positions[i+1], positions[i+2]), sommets),
-                creerSommet(new Point(positions[i+3], positions[i+4], positions[i+5]), sommets),
-                creerSommet(new Point(positions[i+6], positions[i+7], positions[i+8]), sommets)
-            ]
-
-            const halfedges = vertices.map(v => new HalfEdge(v))
-            halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) %3], halfedges[(index + 1) %3]))
+        const vertices = [
+            creerSommet(new Point(positions[i], positions[i + 1], positions[i + 2]), sommets),
+            creerSommet(new Point(positions[i + 3], positions[i + 4], positions[i + 5]), sommets),
+            creerSommet(new Point(positions[i + 6], positions[i + 7], positions[i + 8]), sommets)
+        ]
 
 
-            vertices.forEach((vertex, index) => {
-                vertex.halfedgesTab.push(halfedges[index], halfedges[index].prev)
-            })
+        const halfedges = vertices.map(v => new HalfEdge(v))
+        halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) % 3], halfedges[(index + 1) % 3]))
 
-            const face = new Face(halfedges[0]);
 
-            getOppositeEdge(face)
+        vertices.forEach((vertex, index) => {
+            vertex.addHalfEdge(halfedges[index])
+            vertex.addHalfEdge(halfedges[index].prev)
+        })
 
-            faces.push(face);
-            onProgress((i/positions.length)*100)
-        }
+        const face = new Face(halfedges[0]);
 
-        onProgress(100)
-        console.timeEnd("Data filling")
-        return faces
+        //getOppositeEdge(face)
+
+        faces.push(face);
+        onProgress((i / positions.length) * 100)
+    }
+
+    onProgress(100)
+    console.timeEnd("Data filling")
+    return faces
 }
 
 function getOppositeEdge(face) {
     let edge = face.edge
     let nextEdge = edge.next
 
-    while(nextEdge !== edge) {
+    while (nextEdge !== edge) {
         setOppositeEdge(nextEdge)
         nextEdge = nextEdge.next
     }
 }
 
 function creerSommet(point, sommets) {
-    let existingVertex = sommets.search(point)
+    let existingVertex = sommets.searchVertex(point)
     if (existingVertex === null) {
         existingVertex = new Vertex(point)
-        sommets.insert(point, existingVertex)
+        sommets.insertVertex(point, existingVertex)
     }
     return existingVertex
 }
@@ -63,7 +68,7 @@ function setOppositeEdge(h) {
     const sommetDepart = h.headVertex();
     const sommetArrivee = h.tailVertex();
     const opp = sommetDepart.halfedgesTab.find(he => he.tailVertex() === sommetDepart && he.headVertex() === sommetArrivee)
-    if(opp !== undefined) {
+    if (opp !== undefined) {
 
         if (opp.opposite !== null) console.error("HalfEdge already define" + opp)
         else {
@@ -72,9 +77,9 @@ function setOppositeEdge(h) {
         }
 
 
-            // removeFromHalfedgesTab(sommetDepart.halfedgesTab, [h, opp])
-            // removeFromHalfedgesTab(sommetArrivee.halfedgesTab, [h, opp])
-        }
+        // removeFromHalfedgesTab(sommetDepart.halfedgesTab, [h, opp])
+        // removeFromHalfedgesTab(sommetArrivee.halfedgesTab, [h, opp])
+    }
 }
 
 function removeFromHalfedgesTab(halfedgesTab, halfedgesToRemove) {
@@ -87,14 +92,15 @@ function removeFromHalfedgesTab(halfedgesTab, halfedgesToRemove) {
 }
 
 
-function onProgress(progress){
+function onProgress(progress) {
     self.postMessage({type: 'progress', value: progress});
 }
-function progression(i, totalSize){
-    if(i%2===0){
-        if(envoie){
+
+function progression(i, totalSize) {
+    if (i % 2 === 0) {
+        if (envoie) {
             envoie = false;
-            onProgress((i/totalSize)*100);
+            onProgress((i / totalSize) * 100);
         } else {
             envoie = true;
         }
