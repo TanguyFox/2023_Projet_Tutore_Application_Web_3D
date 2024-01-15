@@ -18,7 +18,7 @@ VertexSkipList.prototype.insertVertex = function(key, value) {
     let node = this.head;
 
     while(node) {
-        if(!node.right || node.right.key.compare(key) > 1) {
+        if(!node.right || node.right.key.compare(key) > 0) {
             nodes.unshift(node);
             node = node.down
         } else {
@@ -33,7 +33,8 @@ VertexSkipList.prototype.insertVertex = function(key, value) {
         const node = nodes.shift();
         const newNode = new VertexNode(key, value);
         newNode.down = downNode;
-        newNode.right = newNode;
+        newNode.right = node.right;
+        node.right = newNode
         shouldPromote = Math.random() < 0.5;
         downNode = newNode
     }
@@ -51,7 +52,7 @@ VertexSkipList.prototype.searchVertex = function (key) {
     let node = this.head;
 
     while(node) {
-        if(!node.right || node.right.key.compare(key) > 1) {
+        if(!node.right || node.right.key.compare(key) > 0) {
             node = node.down
         } else if(node.right.key.equals(key)) {
             return node.right.value;

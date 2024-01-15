@@ -1,4 +1,10 @@
-importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face", "../structure/Point.js", "../structure/Mesh.js")
+importScripts("../structure/Vertex",
+    "../structure/HalfEdge",
+    "../structure/Face",
+    "../structure/Point.js",
+    "../structure/Mesh.js",
+    "../structure/VertexSkipList.js"
+    )
 
 var envoie = false;
 
@@ -33,12 +39,12 @@ function convertSTLToData(positions) {
         //getOppositeEdge(face)
 
             faces.push(face);
-            onProgress(i,positions.length)
+            onProgress((i/positions.length)*100)
         }
 
         onProgress(100)
         console.timeEnd("Data filling")
-        new Mesh(faces);
+        return new Mesh(faces);
        // return mesh
 }
 

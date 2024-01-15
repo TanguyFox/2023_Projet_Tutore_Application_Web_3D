@@ -103,7 +103,7 @@ export function handleFileSelect(event) {
 }
 
 dataFiller.addEventListener("message", function (e) {
-    console.log("loadBar");
+    //console.log("loadBar");
     loadBar.progressBarMajworker(this);
 })
 
