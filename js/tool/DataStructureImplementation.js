@@ -1,8 +1,121 @@
-
-
 importScripts("../structure/Vertex", "../structure/HalfEdge", "../structure/Face", "../structure/Point.js", "../structure/Mesh.js")
 
 var envoie = false;
+
+
+function convertSTLToData(positions) {
+
+    const sommets = []
+    const faces = []
+    //let halfedges = []
+
+    console.time("Data filling")
+    console.log("nbFaces : " + positions.length/9)
+        for(let i = 0; i < positions.length; i+=9) {
+
+            const vertices = [
+                creerSommet(new Point(positions[i], positions[i+1], positions[i+2]), sommets),
+                creerSommet(new Point(positions[i+3], positions[i+4], positions[i+5]), sommets),
+                creerSommet(new Point(positions[i+6], positions[i+7], positions[i+8]), sommets)
+            ]
+
+            const halfedges = vertices.map(v => new HalfEdge(v))
+            halfedges.forEach((h, index) => setPrevAndNext(h, halfedges(index + 2) %3, halfedges(index + 1) %3 ))
+
+
+            vertices.forEach((vertex, index) => {
+                vertex.halfedgesTab.push(halfedges[index], halfedges[index].prev)
+            })
+
+            const face = new Face(halfedges[0]);
+
+            getOppositeEdge(face)
+
+            faces.push(face);
+            onProgress((i/positions.length)*100)
+        }
+
+
+        onProgress(100)
+        console.timeEnd("Data filling")
+        return faces
+}
+
+function getOppositeEdge(face) {
+    let edge = face.edge
+    let nextEdge = edge.next
+
+    while(nextEdge !== edge) {
+        setOppositeEdge(nextEdge)
+        nextEdge = nextEdge.next
+    }
+}
+
+function creerSommet(point, sommets) {
+    let existingVertex = sommets.find(vertex => vertex.point.equals(point))
+    if (existingVertex === undefined) {
+        existingVertex = new Vertex(point)
+        sommets.push(existingVertex)
+    }
+    return existingVertex
+}
+
+function setOppositeEdge(h) {
+    const sommetDepart = h.headVertex();
+    const sommetArrivee = h.tailVertex();
+    const opp = sommetDepart.halfedgesTab.find(he => he.tailVertex() === sommetDepart && he.headVertex() === sommetArrivee)
+    if(opp !== undefined) {
+
+        if (opp.opposite !== null) console.error("HalfEdge already define" + opp)
+        else {
+            h.setOpposite(opp)
+            opp.setOpposite(h)
+        }
+
+
+            // removeFromHalfedgesTab(sommetDepart.halfedgesTab, [h, opp])
+            // removeFromHalfedgesTab(sommetArrivee.halfedgesTab, [h, opp])
+        }
+}
+
+function removeFromHalfedgesTab(halfedgesTab, halfedgesToRemove) {
+    halfedgesToRemove.forEach(he => {
+        const index = halfedgesTab.indexOf(he);
+        if (index !== -1) {
+            halfedgesTab.splice(index, 1);
+        }
+    });
+}
+
+
+function onProgress(progress){
+    self.postMessage({type: 'progress', value: progress});
+}
+function progression(i, totalSize){
+    if(i%2===0){
+        if(envoie){
+            envoie = false;
+            onProgress((i/totalSize)*100);
+        } else {
+            envoie = true;
+        }
+
+    }
+}
+
+self.addEventListener("message", function (e) {
+    const positions = e.data;
+    const result = convertSTLToData(positions);
+
+
+    //PROBLEME ICI, WORKER NE GERE PAS LES REFERENCES BIDIRECTIONNELLE (Halfedge <--> Halfedge opposée)
+    self.postMessage(result);
+});
+
+function setPrevAndNext(h, hPrev, hNext) {
+    h.setNext(hNext);
+    h.setPrev(hPrev);
+}
 
 /*
 function convertirSTLtoDonnees(positions) {
@@ -96,91 +209,8 @@ function convertirSTLtoDonnees(positions) {
     onProgress(100);
     return new Mesh(vertices, faces, points);
 }
-*/
-
-function convertSTLToData(positions) {
-
-    let sommets = [];
-    let faces = [];
-
-    console.time("Data filling")
-    console.log("nbFaces : " + positions.length/9)
-    try {
-        for(let i = 0; i < positions.length; i+=9) {
-
-            let vertex1 = creerSommet(new Point(positions[i], positions[i+1], positions[i+2]), sommets)
-            let vertex2 = creerSommet(new Point(positions[i+3], positions[i+4], positions[i+5]), sommets)
-            let vertex3 = creerSommet(new Point(positions[i+6], positions[i+7], positions[i+8]), sommets)
-
-            let h1 = new HalfEdge(vertex1)
-            let h2 = new HalfEdge(vertex2)
-            let h3 = new HalfEdge(vertex3)
-
-            setPrevAndNext(h1, h3, h2)
-            setPrevAndNext(h2, h1, h3)
-            setPrevAndNext(h3, h2, h1)
-
-            vertex1.halfedgesTab.push(h1, h1.prev)
-            vertex2.halfedgesTab.push(h2, h2.prev)
-            vertex3.halfedgesTab.push(h3, h3.prev)
-
-            sommets.push(vertex1, vertex2, vertex3);
-            let face = new Face(h1);
-
-            getOppositeEdge(face)
-
-            faces.push(face);
-
-            progression(i, positions.length);
-
-        }
-
-        onProgress(100)
-        console.timeEnd("Data filling")
-        return faces
-    } catch (error) {
-        console.log("Error in conversion : " + error)
-    }
 
 
-}
-
-function getOppositeEdge(face) {
-    let edge = face.edge
-    let nextEdge = edge.next
-
-    while(nextEdge !== edge) {
-        setOppositeEdge(nextEdge)
-        nextEdge = nextEdge.next
-    }
-}
-
-function creerSommet(point, sommets) {
-    let vertex;
-    if (sommets.some(v => v.point.equals(point))) {
-        vertex = sommets.find(v => v.point.equals(point))
-    } else {
-        vertex = new Vertex(point)
-    }
-    return vertex
-}
-
-function setOppositeEdge(h) {
-    let sommetDepart = h.headVertex();
-    let sommetArrivee = h.tailVertex();
-    let opp = sommetDepart.halfedgesTab.filter(he => he.headVertex() === sommetArrivee).find(he => he.tailVertex() === sommetDepart)
-    if(opp !== undefined) {
-
-        if (opp.opposite !== null) throw new Error("HalfEdge already define" + opp)
-            h.setOpposite(opp)
-            opp.setOpposite(h)
-
-            sommetDepart.halfedgesTab.splice(sommetDepart.halfedgesTab.indexOf(opp),1)
-            sommetDepart.halfedgesTab.splice(sommetDepart.halfedgesTab.indexOf(h),1)
-            sommetArrivee.halfedgesTab.splice(sommetArrivee.halfedgesTab.indexOf(opp),1)
-            sommetArrivee.halfedgesTab.splice(sommetArrivee.halfedgesTab.indexOf(h),1)
-    }
-}
 
 function vertexDegree(vertex) {
     let result = 0;
@@ -247,11 +277,8 @@ function detectionAretesOpposees(vertices, p1, p2, h, nom) {
     }
 }
 
-function setPrevAndNext(h, hPrev, hNext) {
-    h.setNext(hNext);
-    h.setPrev(hPrev);
-}
-/*function onProgress(xhr) {
+
+function onProgress(xhr) {
     var progressBar = document.getElementById('progress-bar');
     var loadingMessage = document.getElementById('loading-message');
 
@@ -262,25 +289,3 @@ function setPrevAndNext(h, hPrev, hNext) {
         loadingMessage.innerHTML = 'Chargement en cours... ' + Math.round(percentComplete) + '%';
     }
 }*/
-function onProgress(progress){
-    self.postMessage({type: 'progress', value: progress});
-}
-function progression(i, totalSize){
-    if(i%2===0){
-        if(envoie){
-            envoie = false;
-            onProgress((i/totalSize)*100);
-        } else {
-            envoie = true;
-        }
-
-    }
-}
-
-self.addEventListener("message", function (e) {
-    const positions = e.data;
-    const result = convertSTLToData(positions);
-    console.log(result);
-    //PROBLEME ICI, WORKER NE GERE PAS LES REFERENCES BIDIRECTIONNELLE (Halfedge <--> Halfedge opposée)
-    self.postMessage(result);
-});
