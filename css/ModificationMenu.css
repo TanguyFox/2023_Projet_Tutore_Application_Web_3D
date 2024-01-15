@@ -136,14 +136,14 @@
     border-radius: 50%;
 }
 
-.info-face
+.info-point
 {
     display: flex;
     flex-direction: row;
     margin-bottom: 10px;
 }
 
-.info-face input
+.info-point input
 {
     width: 4.5vw;
     margin-right: 1vw;

@@ -115,12 +115,12 @@ function afficherCoordPoints(vertexA, vertexB, vertexC){
 function afficherSingleCoordPoint(name, vertex, color){
     let divInfo = document.createElement("div");
     infoCoordPoints.appendChild(divInfo);
-    divInfo.classList.add('info-face');
+    divInfo.classList.add('info-point');
     let html = `
     <div class="color_point" style="background-color: ${color}"></div>
-    <div>${name} : <input type="number" title="x" value="${vertex.x.toFixed(3)}"></input>
-    <input type="number" title="y" value="${vertex.y.toFixed(3)}"></input>
-    <input type="number" title="x" value="${vertex.z.toFixed(3)}"></input></input></div>
+    <div>${name} : <input type="number" title="x" value="${vertex.x.toFixed(3)}">
+    <input type="number" title="y" value="${vertex.y.toFixed(3)}">
+    <input type="number" title="x" value="${vertex.z.toFixed(3)}"></div>
     `;
     divInfo.innerHTML = html;
 }
