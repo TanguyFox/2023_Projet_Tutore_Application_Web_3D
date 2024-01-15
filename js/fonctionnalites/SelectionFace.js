@@ -118,7 +118,9 @@ function afficherSingleCoordPoint(name, vertex, color){
     divInfo.classList.add('info-face');
     let html = `
     <div class="color_point" style="background-color: ${color}"></div>
-    <div>Vertex ${name} : ${vertex.x} ${vertex.y} ${vertex.z}</div>
+    <div>${name} : <input type="number" title="x" value="${vertex.x.toFixed(3)}"></input>
+    <input type="number" title="y" value="${vertex.y.toFixed(3)}"></input>
+    <input type="number" title="x" value="${vertex.z.toFixed(3)}"></input></input></div>
     `;
     divInfo.innerHTML = html;
 }
