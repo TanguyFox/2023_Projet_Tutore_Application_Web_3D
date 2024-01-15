@@ -20,7 +20,7 @@ function convertSTLToData(positions) {
             ]
 
             const halfedges = vertices.map(v => new HalfEdge(v))
-            halfedges.forEach((h, index) => setPrevAndNext(h, halfedges(index + 2) %3, halfedges(index + 1) %3 ))
+            halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) %3], halfedges[(index + 1) %3]))
 
 
             vertices.forEach((vertex, index) => {
