@@ -9,6 +9,8 @@ export function initEventInputCoord(){
 
     inputCoordonnees.forEach(element => {
         console.log("foreach")
-        element.addEventListener('input', modifCoord)
+        element.addEventListener('keydown', function(event){
+            if(event.keyCode === 13) modifCoord(event)
+        } )
     });
 }
