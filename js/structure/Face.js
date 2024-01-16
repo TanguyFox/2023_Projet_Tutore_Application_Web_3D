@@ -1,4 +1,4 @@
-class Face {
+export class Face {
     constructor(edge) {
         this.edge = edge;
     }

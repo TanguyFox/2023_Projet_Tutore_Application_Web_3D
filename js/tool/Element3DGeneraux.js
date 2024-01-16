@@ -6,7 +6,7 @@
 //STL file
 let meshModel;
 //Geometry
-let geometry_model;
+let geometry_model = null;
 
 //couleur de mesh
 let color_mesh;

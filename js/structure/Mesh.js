@@ -1,7 +1,4 @@
-
-
-
-class Mesh {
+export class Mesh {
     constructor(faces) {
         this.faces = faces;
         this.setMesh(this).then(r => console.log('setMesh executed'));
