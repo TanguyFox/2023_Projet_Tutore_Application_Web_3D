@@ -7,6 +7,8 @@ import {geometry_model, mesh} from "../tool/Element3DGeneraux";
 import {Point} from "../structure/Point";
 import * as THREE from "three";
 import {scene} from "../vue/Scene3D";
+import * as generaux from "../tool/Element3DGeneraux";
+import * as Scene3D from "../vue/Scene3D";
 
 //MODIFICATION DEPUIS LE MENU DE MODIFICATION
 
@@ -62,6 +64,8 @@ function setPoint3D(targetPoint, newPoint){
         let nbPointsSetted = 0;
         let positionAttributeIndex = 0;
         //positionAttribute.setXYZ(0, newPoint.x, newPoint.y, newPoint.z);
+        //EDGE
+
         for(let i = 0; i < positions.length; i += 3){
             let pointCourant = new Point(positions[i], positions[i+1],positions[i+2]);
             console.log(pointCourant);
@@ -75,10 +79,7 @@ function setPoint3D(targetPoint, newPoint){
             positionAttributeIndex++;
         }
         // Exemple : Création d'arêtes pour un objet Mesh
-        const edges = new THREE.EdgesGeometry(geometry_model); // geometry est la géométrie de votre objet
-        const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 }); // couleur noire pour les arêtes
-        const edgesMesh = new THREE.LineSegments(edges, edgesMaterial);
-        scene.add(edgesMesh);
+        majEdges();
         console.log('nbPtsSetted : ' + nbPointsSetted);
         // Mettez à jour le rendu
         geometry_model.computeBoundingSphere(); // Recalcul du sphere de la bounding box
@@ -91,6 +92,24 @@ function setPoint3D(targetPoint, newPoint){
 
 }
 
+function majEdges(){
+    let material = new THREE.MeshBasicMaterial({vertexColors: true});
+    material.transparent = true;
+    material.opacity = 0.65;
+
+    let wireframe = new THREE.WireframeGeometry(geometry_model);
+
+    //couleur de ligne
+    generaux.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
+
+    generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, material));
+
+    console.log(generaux.meshModel);
+
+    generaux.setGroup(new THREE.Group());
+    generaux.group.add(generaux.meshModel, generaux.lineModel);
+    Scene3D.scene.add(generaux.group);
+}
 
 
 //MODIFICATION SUR L'OBJET 3D
