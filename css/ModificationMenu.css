@@ -151,3 +151,10 @@
     border-radius: 15px;
     border: #868686 0.1em solid;
 }
+
+#viewHelper
+{
+    position: absolute;
+    bottom: 10px;
+    right: 465px;
+}
