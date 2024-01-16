@@ -27,10 +27,15 @@ function render(){
 }
 
 function onWindowResize(){
-    Scene3D.camera.aspect = Scene3D.widthS / Scene3D.heightS;
-    Scene3D.camera.updateProjectionMatrix();
-    Scene3D.renderer.setSize(Scene3D.widthS, Scene3D.heightS);
-    render();
+    // Scene3D.camera.aspect = Scene3D.widthS / Scene3D.heightS;
+    // Scene3D.camera.updateProjectionMatrix();
+    // Scene3D.renderer.setSize(Scene3D.widthS, Scene3D.heightS);
+    // render();
+    let menuModification = document.getElementById('menuModification');
+    let menuRect = menuModification.getBoundingClientRect();
+    let viewHelper = document.getElementById('viewHelper');
+    let newRightPosition = window.innerWidth - menuRect.left + 10;
+    viewHelper.style.right = newRightPosition + "px";
 }
 window.addEventListener('resize', onWindowResize, false);
 
