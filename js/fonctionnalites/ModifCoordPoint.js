@@ -9,6 +9,7 @@ import * as THREE from "three";
 import {scene} from "../vue/Scene3D";
 import * as generaux from "../tool/Element3DGeneraux";
 import * as Scene3D from "../vue/Scene3D";
+import {animate} from "../controleurs/Scene3DControleur";
 
 //MODIFICATION DEPUIS LE MENU DE MODIFICATION
 
@@ -87,26 +88,26 @@ function setPoint3D(targetPoint, newPoint){
         //geometry_model.computeFaceNormals(); // Recalcul des normales des faces
         geometry_model.computeVertexNormals();
         positionAttribute.needsUpdate = true;
+
     }
 
 
 }
 
 function majEdges(){
-    let material = new THREE.MeshBasicMaterial({vertexColors: true});
-    material.transparent = true;
-    material.opacity = 0.65;
-
+    generaux.group.remove(generaux.lineModel);
+    scene.remove(generaux.group);
     let wireframe = new THREE.WireframeGeometry(geometry_model);
-
+    console.log(wireframe)
     //couleur de ligne
+    console.log(generaux.lineModel)
     generaux.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
+    console.log(generaux.lineModel)
 
-    generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, material));
-
-    console.log(generaux.meshModel);
+    //console.log(generaux.meshModel);
 
     generaux.setGroup(new THREE.Group());
+    console.log(generaux.group);
     generaux.group.add(generaux.meshModel, generaux.lineModel);
     Scene3D.scene.add(generaux.group);
 }
