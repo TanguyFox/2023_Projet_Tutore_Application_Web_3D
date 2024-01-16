@@ -6,6 +6,7 @@ import * as Raycaster from "../tool/Raycaster";
 import * as Scene3D from "../vue/Scene3D";
 import * as THREE from "three";
 import * as Scene3DControleur from "../controleurs/Scene3DControleur";
+import {initEventInputCoord} from "../controleurs/ModificationMenu";
 
 /**
  * Module pour la fonctionnalité de traitement de mode (selection de face)
@@ -74,7 +75,9 @@ export function afficherPoints3D(transformedPositions){
     let vertexB = afficherSinglePoint3d(meshvB, transformedPositions, (offset+1));
     let vertexC = afficherSinglePoint3d(meshvC, transformedPositions, (offset+2));
 
-    afficherCoordPoints(vertexA, vertexB, vertexC)
+    afficherCoordPoints(vertexA, vertexB, vertexC);
+
+    initEventInputCoord();
 }
 
 /**
