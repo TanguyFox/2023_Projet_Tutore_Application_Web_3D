@@ -1,11 +1,8 @@
 import * as Scene3D from "../vue/Scene3D.js";
-import {OrbitControls} from "three/addons/controls/OrbitControls";
-
 import * as THREE from "three";
 import {createBoundingBox, removeBoundingBox} from "../vue/BoundingBoxHandler";
 import * as Generaux from "../tool/Element3DGeneraux.js";
 import * as Raycaster from "../tool/Raycaster.js";
-import {transformControls} from "../vue/Scene3D.js";
 import {paintFace, afficherPoints3D} from "../fonctionnalites/SelectionFace";
 
 
@@ -41,6 +38,7 @@ window.addEventListener('resize', onWindowResize, false);
 export function animate(){
     requestAnimationFrame(animate);
     Scene3D.orbitcontrols.update();
+
     if(Generaux.boundingBoxObject.boundingBox){
         Generaux.boundingBoxObject.boundingBox.update();
     }
