@@ -5,6 +5,8 @@
 
 import {geometry_model, mesh} from "../tool/Element3DGeneraux";
 import {Point} from "../structure/Point";
+import * as THREE from "three";
+import {scene} from "../vue/Scene3D";
 
 //MODIFICATION DEPUIS LE MENU DE MODIFICATION
 
@@ -58,16 +60,35 @@ function setPoint3D(targetPoint, newPoint){
         let positionAttribute = geometry_model.attributes.position;
         let positions = positionAttribute.array;
         let nbPointsSetted = 0;
+        let positionAttributeIndex = 0;
+        //positionAttribute.setXYZ(0, newPoint.x, newPoint.y, newPoint.z);
         for(let i = 0; i < positions.length; i += 3){
-            let pointCourant = newPoint(positions[i], positions[i+1],positions[i+2]);
-            if(pointCourant.equal(targetPoint)){
-                positionAttribute.setXYZ(i/3, newPoint.x, newPoint.y, newPoint.z);
+            let pointCourant = new Point(positions[i], positions[i+1],positions[i+2]);
+            console.log(pointCourant);
+            console.log(pointCourant.equals(targetPoint))
+            if(pointCourant.equals(targetPoint)){
+                console.log(positionAttribute)
+                positionAttribute.setXYZ(positionAttributeIndex, newPoint.x, newPoint.y, newPoint.z);
+                console.log(positionAttribute.getZ(positionAttributeIndex));
                 nbPointsSetted += 1;
             }
+            positionAttributeIndex++;
         }
+        // Exemple : Création d'arêtes pour un objet Mesh
+        const edges = new THREE.EdgesGeometry(geometry_model); // geometry est la géométrie de votre objet
+        const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x000000 }); // couleur noire pour les arêtes
+        const edgesMesh = new THREE.LineSegments(edges, edgesMaterial);
+        scene.add(edgesMesh);
         console.log('nbPtsSetted : ' + nbPointsSetted);
-
+        // Mettez à jour le rendu
+        geometry_model.computeBoundingSphere(); // Recalcul du sphere de la bounding box
+        geometry_model.computeBoundingBox(); // Recalcul de la bounding box
+        //geometry_model.computeFaceNormals(); // Recalcul des normales des faces
+        geometry_model.computeVertexNormals();
+        positionAttribute.needsUpdate = true;
     }
+
+
 }
 
 
