@@ -5,7 +5,7 @@ import {STLLoader} from "three/addons/loaders/STLLoader";
 import * as loadBar from "../tool/loadBarData";
 import * as Scene3D from "../vue/Scene3D.js";
 import * as generaux from "../tool/Element3DGeneraux.js";
-import {animate} from "./Scene3DControleur";
+import {convertSTLToData} from "../tool/DataStructureImplementation.js";
 
 
 /**
@@ -23,7 +23,7 @@ const importButton = document.getElementById('import');
 //Utilsisation d'un WORKER pour parallelisé l'affichage du modèle 3D ainsi que le remplissage des données
 //Tous les export ont été enlevés des classes pour le moment (car WORKER n'est pas compatible avec)
 //Si besoin des export, il faudra qu'on regarde pour une autre solution
-let dataFiller = new Worker("js/tool/DataStructureImplementation.js");
+//let dataFiller = new Worker("js/tool/DataStructureImplementation.js");
 
 //Fonction de chargement du fichier STL
 export function handleFileSelect(event) {
@@ -74,17 +74,12 @@ export function handleFileSelect(event) {
                     generaux.group.add(generaux.meshModel, generaux.lineModel);
                     Scene3D.scene.add(generaux.group);
 
-                    /*
-                    TODO : remplir la structure de données à partir de l'objet obtenu avec le STLLoader (geometry) de manière
-                    - relativement - rapide dans le cas où un grand nombre de points est fourni
-                    */
-                    dataFiller.postMessage(geometry.getAttribute("position").array);
-
-
-                    loadBar.progressBarMajworker(dataFiller);
-
-                }
+                    const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
+                    generaux.setMesh(mesh);
+                    console.log(generaux.mesh);
+            }
             );
+
         } catch (e) {
             console.log(e.message);
         }
@@ -102,9 +97,9 @@ export function handleFileSelect(event) {
 
 }
 
-dataFiller.addEventListener("message", function (e) {
+/*dataFiller.addEventListener("message", function (e) {
     //console.log("loadBar");
     loadBar.progressBarMajworker(this);
-})
+})*/
 
 

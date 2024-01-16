@@ -1,15 +1,14 @@
-importScripts("../structure/Vertex",
-    "../structure/HalfEdge",
-    "../structure/Face",
-    "../structure/Point.js",
-    "../structure/Mesh.js",
-    "../structure/VertexSkipList.js"
-    )
-
-var envoie = false;
+import {Vertex} from "../structure/Vertex.js"
+import {HalfEdge} from "../structure/HalfEdge.js"
+import {Face} from "../structure/Face.js"
+import {Point} from "../structure/Point.js"
+import {Mesh} from "../structure/Mesh.js"
+import {VertexSkipList} from "../structure/VertexSkipList.js"
+import {progressBarMaj} from "./loadBarData";
 
 
-function convertSTLToData(positions) {
+
+export function convertSTLToData(positions) {
 
     const sommets = new VertexSkipList();
     const faces = []
@@ -35,30 +34,18 @@ function convertSTLToData(positions) {
         })
 
             const face = new Face(halfedges[0]);
-
+            halfedges.forEach(he => he.setFace(face))
         //getOppositeEdge(face)
 
             faces.push(face);
-            var progression = (i/positions.length)*100;
-            if (Math.round(progression) % 10 === 0) {
-                onProgress(progression)
-            }
+            const progression = (i/positions.length)*100;
+            if (Math.round(progression) % 10 === 0) progressBarMaj(progression)
+
         }
 
-        onProgress(100)
+        progressBarMaj(100)
         console.timeEnd("Data filling")
         return new Mesh(faces);
-       // return mesh
-}
-
-function getOppositeEdge(face) {
-    let edge = face.edge
-    let nextEdge = edge.next
-
-    while(nextEdge !== edge) {
-        setOppositeEdge(nextEdge)
-        nextEdge = nextEdge.next
-    }
 }
 
 function creerSommet(point, sommets) {
@@ -69,58 +56,6 @@ function creerSommet(point, sommets) {
     }
     return existingVertex
 }
-
-function setOppositeEdge(h) {
-    const sommetDepart = h.headVertex();
-    const sommetArrivee = h.tailVertex();
-    const opp = sommetDepart.halfedgesTab.find(he => he.tailVertex() === sommetDepart && he.headVertex() === sommetArrivee)
-    if(opp !== undefined) {
-
-        if (opp.opposite !== null) console.error("HalfEdge already define" + opp)
-        else {
-            h.setOpposite(opp)
-            opp.setOpposite(h)
-        }
-
-
-            // removeFromHalfedgesTab(sommetDepart.halfedgesTab, [h, opp])
-            // removeFromHalfedgesTab(sommetArrivee.halfedgesTab, [h, opp])
-        }
-}
-
-function removeFromHalfedgesTab(halfedgesTab, halfedgesToRemove) {
-    halfedgesToRemove.forEach(he => {
-        const index = halfedgesTab.indexOf(he);
-        if (index !== -1) {
-            halfedgesTab.splice(index, 1);
-        }
-    });
-}
-
-
-function onProgress(progress){
-    self.postMessage({type: 'progress', value: progress});
-}
-function progression(i, totalSize){
-    if(i%2===0){
-        if(envoie){
-            envoie = false;
-            onProgress((i/totalSize)*100);
-        } else {
-            envoie = true;
-        }
-
-    }
-}
-
-self.addEventListener("message", function (e) {
-    const positions = e.data;
-    convertSTLToData(positions);
-
-
-    //PROBLEME ICI, WORKER NE GERE PAS LES REFERENCES BIDIRECTIONNELLE (Halfedge <--> Halfedge opposée)
-    //self.postMessage({type: 'mesh', value: result});
-});
 
 function setPrevAndNext(h, hPrev, hNext) {
     h.setNext(hNext);
@@ -220,7 +155,33 @@ function convertirSTLtoDonnees(positions) {
     return new Mesh(vertices, faces, points);
 }
 
+function getOppositeEdge(face) {
+    let edge = face.edge
+    let nextEdge = edge.next
 
+    while(nextEdge !== edge) {
+        setOppositeEdge(nextEdge)
+        nextEdge = nextEdge.next
+    }
+}
+
+function setOppositeEdge(h) {
+    const sommetDepart = h.headVertex();
+    const sommetArrivee = h.tailVertex();
+    const opp = sommetDepart.halfedgesTab.find(he => he.tailVertex() === sommetDepart && he.headVertex() === sommetArrivee)
+    if(opp !== undefined) {
+
+        if (opp.opposite !== null) console.error("HalfEdge already define" + opp)
+        else {
+            h.setOpposite(opp)
+            opp.setOpposite(h)
+        }
+
+
+            // removeFromHalfedgesTab(sommetDepart.halfedgesTab, [h, opp])
+            // removeFromHalfedgesTab(sommetArrivee.halfedgesTab, [h, opp])
+        }
+}
 
 function vertexDegree(vertex) {
     let result = 0;

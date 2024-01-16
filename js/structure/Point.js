@@ -1,4 +1,4 @@
-class Point{
+export class Point{
     constructor(x, y, z){
         this.x = x;
         this.y = y;
@@ -27,6 +27,12 @@ Point.prototype.compare = function (pointB){
 
 Point.prototype.toString = function (){
     return 'Point{'+ this.x + ","+ this.y + ","+ this.z + "}";
+}
+
+Point.prototype.set = function (point){
+        this.x = point.x;
+        this.y = point.y;
+        this.z = point.z;
 }
 
 

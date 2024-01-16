@@ -1,4 +1,4 @@
-class HalfEdge {
+export class HalfEdge {
     constructor(dep) {
         this.vertex = dep;
         this.face = null;

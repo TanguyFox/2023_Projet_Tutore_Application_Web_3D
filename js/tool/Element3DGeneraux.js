@@ -1,3 +1,4 @@
+
 /**
  * module répertoriant tous les éléments de l'objet 3D susceptibles d'être utilisés dans d'autres
  * modules et nécessitant une seule instance
@@ -6,7 +7,7 @@
 //STL file
 let meshModel;
 //Geometry
-let geometry_model;
+let geometry_model = null;
 
 //couleur de mesh
 let color_mesh;
@@ -52,12 +53,10 @@ function setFaceIndexSelected(valeur){
 function setFaceIndexAncien(valeur){
     faceIndexAncien=valeur;
 }
+
 function setMesh(newMesh){
     mesh=newMesh;
-    console.log('mesh setted !')
-    console.log(mesh);
 }
-
 export {
     geometry_model,
     color_mesh,

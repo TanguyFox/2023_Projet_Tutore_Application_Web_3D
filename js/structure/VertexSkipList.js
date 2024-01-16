@@ -7,7 +7,7 @@ class VertexNode {
     }
 }
 
-class VertexSkipList{
+export class VertexSkipList{
     constructor() {
         this.head = new VertexNode(null, null)
         this.size = 0;
