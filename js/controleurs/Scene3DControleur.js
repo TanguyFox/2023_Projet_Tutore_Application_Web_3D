@@ -1,11 +1,8 @@
 import * as Scene3D from "../vue/Scene3D.js";
-import {OrbitControls} from "three/addons/controls/OrbitControls";
-
 import * as THREE from "three";
 import {createBoundingBox, removeBoundingBox} from "../vue/BoundingBoxHandler";
 import * as Generaux from "../tool/Element3DGeneraux.js";
 import * as Raycaster from "../tool/Raycaster.js";
-import {transformControls} from "../vue/Scene3D.js";
 import {paintFace, afficherPoints3D} from "../fonctionnalites/SelectionFace";
 
 
@@ -30,10 +27,15 @@ function render(){
 }
 
 function onWindowResize(){
-    Scene3D.camera.aspect = Scene3D.widthS / Scene3D.heightS;
-    Scene3D.camera.updateProjectionMatrix();
-    Scene3D.renderer.setSize(Scene3D.widthS, Scene3D.heightS);
-    render();
+    // Scene3D.camera.aspect = Scene3D.widthS / Scene3D.heightS;
+    // Scene3D.camera.updateProjectionMatrix();
+    // Scene3D.renderer.setSize(Scene3D.widthS, Scene3D.heightS);
+    // render();
+    let menuModification = document.getElementById('menuModification');
+    let menuRect = menuModification.getBoundingClientRect();
+    let viewHelper = document.getElementById('viewHelper');
+    let newRightPosition = window.innerWidth - menuRect.left + 10;
+    viewHelper.style.right = newRightPosition + "px";
 }
 window.addEventListener('resize', onWindowResize, false);
 
@@ -41,6 +43,7 @@ window.addEventListener('resize', onWindowResize, false);
 export function animate(){
     requestAnimationFrame(animate);
     Scene3D.orbitcontrols.update();
+
     if(Generaux.boundingBoxObject.boundingBox){
         Generaux.boundingBoxObject.boundingBox.update();
     }

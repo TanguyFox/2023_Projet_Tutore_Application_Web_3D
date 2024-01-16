@@ -83,6 +83,9 @@ export function handleFileSelect(event) {
         } catch (e) {
             console.log(e.message);
         }
+
+        console.log(generaux.mesh)
+        document.getElementById("export").style.display = "block"
         importButton.style.display = "none";
         Scene3D.sceneContrainer.style.display = "block";
         toolbar.style.display = "flex";

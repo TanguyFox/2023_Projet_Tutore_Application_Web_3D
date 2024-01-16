@@ -3,6 +3,7 @@ import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {TransformControls} from 'three/addons/controls/TransformControls.js';
 import {createBoundingBox, removeBoundingBox} from "./BoundingBoxHandler.js";
 import * as THREE from "three";
+import {initViewHelper} from "./viewhelper";
 
 
 /**
@@ -74,6 +75,9 @@ console.log("initScene3D")
     });
     console.log(transformControls);
     scene.add(transformControls);
+
+    //viewhelper
+    initViewHelper();
 
     return renderer;
 }
