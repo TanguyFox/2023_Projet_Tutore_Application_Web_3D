@@ -56,6 +56,8 @@ export function handleModeSelect (event){
     }
 }
 
+
+
 /**
  * méthode déclanchée au double clic de la souris sur une face (en mode sélection de face)
  * Elle affiche les trois sommets de la face sur le plan 3D
@@ -78,6 +80,25 @@ export function afficherPoints3D(transformedPositions){
     afficherCoordPoints(vertexA, vertexB, vertexC);
 
     initEventInputCoord();
+}
+export function setTransformedPosition (intersectObject){
+    let positionAttribute = Generaux.geometry_model.attributes.position;
+    let normalAttribute = Generaux.geometry_model.attributes.normal;
+    let matrixWorld = intersectObject.object.matrixWorld;
+
+    let transformedPositions = [];
+    let transformedNormals = [];
+
+    if(Generaux.faceIndexSelected == null){
+        return;
+    }
+
+    for(let i = 0; i < positionAttribute.count; i++){
+        let localPosition = new THREE.Vector3(positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i));
+        localPosition.applyMatrix4(matrixWorld);
+        transformedPositions.push(localPosition.toArray());
+    }
+    return transformedPositions;
 }
 
 /**
@@ -122,9 +143,9 @@ function afficherSingleCoordPoint(name, vertex, color){
     let html = `
     <div class="color_point" style="background-color: ${color}"></div>
     <div>${name} : 
-    <input type="number" name="${vertex.x}" title="x" value="${vertex.x.toFixed(3)}">
-    <input type="number" name="${vertex.y}" title="y" value="${vertex.y.toFixed(3)}">
-    <input type="number" name="${vertex.z}" title="x" value="${vertex.z.toFixed(3)}"></div>
+    x <input type="number" name="${vertex.x}" title="x" value="${vertex.x.toFixed(3)}">
+    y <input type="number" name="${vertex.y}" title="y" value="${vertex.y.toFixed(3)}">
+    z <input type="number" name="${vertex.z}" title="x" value="${vertex.z.toFixed(3)}"></div>
     `;
     divInfo.innerHTML = html;
 }

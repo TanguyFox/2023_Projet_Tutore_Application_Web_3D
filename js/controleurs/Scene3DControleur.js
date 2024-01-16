@@ -3,7 +3,7 @@ import * as THREE from "three";
 import {createBoundingBox, removeBoundingBox} from "../vue/BoundingBoxHandler";
 import * as Generaux from "../tool/Element3DGeneraux.js";
 import * as Raycaster from "../tool/Raycaster.js";
-import {paintFace, afficherPoints3D} from "../fonctionnalites/SelectionFace";
+import {paintFace, afficherPoints3D, setTransformedPosition} from "../fonctionnalites/SelectionFace";
 
 
 /**
@@ -134,28 +134,15 @@ export function onDoubleClick(event){
     for(let i = 0 ; i < intersects.length; i++){
 
         if(intersects[i].object.uuid === Generaux.meshModel.uuid){
-            let matrixWorld = intersects[i].object.matrixWorld;
-            let positionAttribute = Generaux.geometry_model.attributes.position;
-            let normalAttribute = Generaux.geometry_model.attributes.normal;
-
-            let transformedPositions = [];
-            let transformedNormals = [];
-
-            if(Generaux.faceIndexSelected == null){
-                return;
-            }
-
-            for(let i = 0; i < positionAttribute.count; i++){
-                let localPosition = new THREE.Vector3(positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i));
-                localPosition.applyMatrix4(matrixWorld);
-                transformedPositions.push(localPosition.toArray());
-            }
-
+            let transformedPositions = setTransformedPosition(intersects[i]);
             afficherPoints3D(transformedPositions)
-
             break;
         }
     }
+}
+
+export {
+    intersects
 }
 
 
