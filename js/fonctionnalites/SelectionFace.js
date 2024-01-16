@@ -121,9 +121,10 @@ function afficherSingleCoordPoint(name, vertex, color){
     divInfo.classList.add('info-point');
     let html = `
     <div class="color_point" style="background-color: ${color}"></div>
-    <div>${name} : <input type="number" title="x" value="${vertex.x.toFixed(3)}">
-    <input type="number" title="y" value="${vertex.y.toFixed(3)}">
-    <input type="number" title="x" value="${vertex.z.toFixed(3)}"></div>
+    <div>${name} : 
+    <input type="number" name="${vertex.x}" title="x" value="${vertex.x.toFixed(3)}">
+    <input type="number" name="${vertex.y}" title="y" value="${vertex.y.toFixed(3)}">
+    <input type="number" name="${vertex.z}" title="x" value="${vertex.z.toFixed(3)}"></div>
     `;
     divInfo.innerHTML = html;
 }

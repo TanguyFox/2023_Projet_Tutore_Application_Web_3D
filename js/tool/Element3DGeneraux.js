@@ -1,3 +1,4 @@
+
 /**
  * module répertoriant tous les éléments de l'objet 3D susceptibles d'être utilisés dans d'autres
  * modules et nécessitant une seule instance
@@ -52,12 +53,10 @@ function setFaceIndexSelected(valeur){
 function setFaceIndexAncien(valeur){
     faceIndexAncien=valeur;
 }
+
 function setMesh(newMesh){
     mesh=newMesh;
-    console.log('mesh setted !')
-    console.log(mesh);
 }
-
 export {
     geometry_model,
     color_mesh,

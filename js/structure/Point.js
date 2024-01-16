@@ -29,6 +29,12 @@ Point.prototype.toString = function (){
     return 'Point{'+ this.x + ","+ this.y + ","+ this.z + "}";
 }
 
+Point.prototype.set = function (point){
+        this.x = point.x;
+        this.y = point.y;
+        this.z = point.z;
+}
+
 
 function isCoordonneesEgales(a, b){
     return Math.abs(a-b) < 1e-10;

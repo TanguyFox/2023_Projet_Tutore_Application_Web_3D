@@ -74,15 +74,15 @@ export function handleFileSelect(event) {
                     generaux.group.add(generaux.meshModel, generaux.lineModel);
                     Scene3D.scene.add(generaux.group);
 
-                convertSTLToData(generaux.geometry_model.getAttribute("position").array)
-                }
+                    const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
+                    generaux.setMesh(mesh);
+                    console.log(generaux.mesh);
+            }
             );
 
         } catch (e) {
             console.log(e.message);
         }
-
-        console.log(generaux.mesh)
         importButton.style.display = "none";
         Scene3D.sceneContrainer.style.display = "block";
         toolbar.style.display = "flex";
