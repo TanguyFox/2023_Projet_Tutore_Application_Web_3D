@@ -10,6 +10,7 @@ class VertexNode {
 class VertexSkipList{
     constructor() {
         this.head = new VertexNode(null, null)
+        this.size = 0;
     }
 }
 
@@ -46,6 +47,7 @@ VertexSkipList.prototype.insertVertex = function(key, value) {
         newHead.down = this.head;
         this.head = newHead
     }
+    this.size++;
 }
 
 VertexSkipList.prototype.searchVertex = function (key) {
@@ -62,3 +64,5 @@ VertexSkipList.prototype.searchVertex = function (key) {
     }
     return null
 }
+
+VertexSkipList.prototype.size = function () {return this.size}
