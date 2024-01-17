@@ -17,7 +17,8 @@
     <ul>
         <li id="home"><a>Home</a></li>
         <li id="documentation"><a>documentation</a></li>
-
+        <li id="export" style="display: none"><a>Exporter</a></li>
+        <li id="new-model" style="display: none"><a>Nouveau modèle</a></li>
     </ul>
 </nav>
 <div id="content">
@@ -29,8 +30,10 @@
     </button>
 
     <div id="scene-container">
-
+<!--    repère du plan-->
+        <div id="viewHelper"></div>
     </div>
+
     <div id="toolbar">
         <button class="toolbar-button" id="translate">
             <img class="toolbar-img" src="resources/img/toolbar/translate.svg" alt="translate">
@@ -91,17 +94,30 @@
     <div id="loading-screen">
         <div id="loading-spinner"></div>
     </div>
-    
+
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <h1>Export du modèle 3D</h1>
+            <label for="formatSelector">Dans quel format voulez-vous l'exporter ? :
+                <select id="formatSelector">
+                    <option value="stl" selected>STL</option>
+                    <option value="obj">OBJ</option>
+<!--                    <option value="gltf">GLTF</option>-->
+                </select>
+            </label>
+            <label>Format binaire : <input type="checkbox" value="false" id="binary"></label>
+            <button id="exportButton">Exporter</button>
+        </div>
+    </div>
+
 </div>
 
 
-
-</div>
 
 <script type="module" src="js/main.js"></script>
 <script type="module" src="js/tool/loadBarData.js"></script>
 <script type="module" src="js/vue/ModificationMenuVue.js"></script>
-
+<script type="module" src="js/vue/viewhelper.js"></script>
 
 
 </body>

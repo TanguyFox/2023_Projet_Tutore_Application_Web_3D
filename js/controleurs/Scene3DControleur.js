@@ -1,12 +1,11 @@
 import * as Scene3D from "../vue/Scene3D.js";
-import {OrbitControls} from "three/addons/controls/OrbitControls";
-
 import * as THREE from "three";
 import {createBoundingBox, removeBoundingBox} from "../vue/BoundingBoxHandler";
 import * as Generaux from "../tool/Element3DGeneraux.js";
 import * as Raycaster from "../tool/Raycaster.js";
-import {transformControls} from "../vue/Scene3D.js";
-import {paintFace, afficherPoints3D} from "../fonctionnalites/SelectionFace";
+import {camera, orbitcontrols} from "../vue/Scene3D.js";
+import {executeRenderHelper, viewhelper} from "../vue/viewhelper";
+import {paintFace, afficherPoints3D, setTransformedPosition} from "../fonctionnalites/SelectionFace";
 
 
 /**
@@ -30,10 +29,15 @@ function render(){
 }
 
 function onWindowResize(){
-    Scene3D.camera.aspect = Scene3D.widthS / Scene3D.heightS;
-    Scene3D.camera.updateProjectionMatrix();
-    Scene3D.renderer.setSize(Scene3D.widthS, Scene3D.heightS);
-    render();
+    // Scene3D.camera.aspect = Scene3D.widthS / Scene3D.heightS;
+    // Scene3D.camera.updateProjectionMatrix();
+    // Scene3D.renderer.setSize(Scene3D.widthS, Scene3D.heightS);
+    // render();
+    let menuModification = document.getElementById('menuModification');
+    let menuRect = menuModification.getBoundingClientRect();
+    let viewHelper = document.getElementById('viewHelper');
+    let newRightPosition = window.innerWidth - menuRect.left + 10;
+    viewHelper.style.right = newRightPosition + "px";
 }
 window.addEventListener('resize', onWindowResize, false);
 
@@ -41,10 +45,14 @@ window.addEventListener('resize', onWindowResize, false);
 export function animate(){
     requestAnimationFrame(animate);
     Scene3D.orbitcontrols.update();
+
     if(Generaux.boundingBoxObject.boundingBox){
         Generaux.boundingBoxObject.boundingBox.update();
     }
     render();
+
+    //viewhelper render
+    executeRenderHelper();
 }
 
 //animate();
@@ -131,29 +139,29 @@ export function onDoubleClick(event){
     for(let i = 0 ; i < intersects.length; i++){
 
         if(intersects[i].object.uuid === Generaux.meshModel.uuid){
-            let matrixWorld = intersects[i].object.matrixWorld;
-            let positionAttribute = Generaux.geometry_model.attributes.position;
-            let normalAttribute = Generaux.geometry_model.attributes.normal;
-
-            let transformedPositions = [];
-            let transformedNormals = [];
 
             if(Generaux.faceIndexSelected == null){
+                const boundingBox = new THREE.Box3().setFromObject(Generaux.meshModel);
+                const center = boundingBox.getCenter(new THREE.Vector3());
+                const offset = center.clone().sub(orbitcontrols.target);
+                camera.position.add(offset);
+                orbitcontrols.target.copy(center);
+                viewhelper.center.copy(center);
                 return;
             }
 
-            for(let i = 0; i < positionAttribute.count; i++){
-                let localPosition = new THREE.Vector3(positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i));
-                localPosition.applyMatrix4(matrixWorld);
-                transformedPositions.push(localPosition.toArray());
-            }
-
+            let transformedPositions = setTransformedPosition(intersects[i].object);
             afficherPoints3D(transformedPositions)
-
             break;
         }
     }
 }
+
+export {
+    intersects
+}
+
+
 
 
 

@@ -4,11 +4,9 @@ import {modifCoord} from '../fonctionnalites/ModifCoordPoint.js';
 
 export function initEventInputCoord(){
     let inputCoordonnees = document.querySelectorAll(".info-point input");
-    console.log("modificationMenu")
-    console.log(inputCoordonnees);
-
     inputCoordonnees.forEach(element => {
-        console.log("foreach")
-        element.addEventListener('input', modifCoord)
+        element.addEventListener('keydown', function(event){
+            if(event.keyCode === 13) modifCoord(event)
+        } )
     });
 }

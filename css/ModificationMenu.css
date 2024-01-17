@@ -146,8 +146,15 @@
 .info-point input
 {
     width: 4.5vw;
-    margin-right: 1vw;
+    margin-right: 0.5vw;
     text-align: center;
     border-radius: 15px;
     border: #868686 0.1em solid;
+}
+
+#viewHelper
+{
+    position: absolute;
+    bottom: 10px;
+    right: 465px;
 }

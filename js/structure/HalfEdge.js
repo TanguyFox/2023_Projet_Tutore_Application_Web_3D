@@ -1,4 +1,4 @@
-class HalfEdge {
+export class HalfEdge {
     constructor(dep) {
         this.vertex = dep;
         this.face = null;
@@ -29,7 +29,7 @@ HalfEdge.prototype.setOpposite = function(opposite) {
 }
 
 HalfEdge.prototype.toString = function(){
-    return "HE{ "  + this.vertex +" }"
+    return "HE{ Départ : "  + this.headVertex() +" Arrivée : " + this.tailVertex() + " }"
 }
 
 HalfEdge.prototype.compare = function(halfedge){

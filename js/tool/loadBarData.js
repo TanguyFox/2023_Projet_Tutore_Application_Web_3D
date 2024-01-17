@@ -7,6 +7,7 @@ import {mesh, setMesh} from "./Element3DGeneraux";
 
 let progressBarData = document.querySelector('#progress-barData');
 let loadingMessage = document.getElementById('loading-message');
+
 // Afficher la barre de chargement de chargement
 function showLoadingScreen() {
     document.querySelector("#progressBarData").style.display = 'flex';
@@ -26,28 +27,18 @@ function onObjectLoad(object) {
 /**
  * méthode qui met à jour la barre de progression en lien avec la méthode
  * convertirSTLtoDonnees
- * @param worker le job exécutant la méthode convertirSTLtoDonnees
+ * @param progression le job exécutant la méthode convertirSTLtoDonnees
  */
-function progressBarMajworker(worker){
-    worker.onmessage = function (event) {
-        if (event.data.type === 'progress') {
-            var percentComplete = event.data.value;
-            progressBarData.style.width = percentComplete + '%';
-            loadingMessage.innerHTML = 'Chargement des données... ' + Math.round(percentComplete) + '%';
-            if(event.data.value === 100 ){
-                hideLoadingScreen()
-            }
-        } else {
-            console.log('event progress bar retour de mesh ')
-            setMesh(event.data);
-            console.log(mesh)
-        }
-
+function progressBarMaj(progression) {
+    progressBarData.style.width = progression + '%';
+    loadingMessage.innerHTML = 'Chargement des données... ' + Math.round(progression) + '%';
+    if (progression === 100) {
+        hideLoadingScreen()
     }
 }
 
-export{
+export {
     showLoadingScreen,
     hideLoadingScreen,
-    progressBarMajworker
+    progressBarMaj
 }
