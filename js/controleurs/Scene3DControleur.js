@@ -69,14 +69,10 @@ export function animate(){
  */
 export function onPointerClick( event ){
 
-    console.log("click");
-
     let clickOnObject = false;
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
 
     intersects = Raycaster.raycaster.intersectObjects( Scene3D.scene.children );
-
-    console.log(intersects);
 
     if(Generaux.meshModel != null){
 
@@ -89,8 +85,6 @@ export function onPointerClick( event ){
                     //Bounding Box
                     removeBoundingBox(Generaux.boundingBoxObject);
                     createBoundingBox(Generaux.meshModel, Generaux.boundingBoxObject, Scene3D.scene)
-
-                    console.log("attach transformControls");
 
                     Scene3D.transformControls.attach(Generaux.group);
                     clickOnObject = true;
@@ -134,12 +128,10 @@ export function onPointerClick( event ){
                 Scene3D.transformControls.detach();
             }
         }
-
     }
 }
 
 export function onDoubleClick(event){
-    console.log("double click");
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
     intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
     for(let i = 0 ; i < intersects.length; i++){

@@ -109,7 +109,6 @@ function rebuildAll(antialiasStat){
 
     transformControls = new TransformControls(camera, renderer.domElement);
     transformControls.addEventListener('dragging-changed', function (event) {
-        console.log("dragging-changed");
         orbitcontrols.enabled = !event.value;
     });
 
