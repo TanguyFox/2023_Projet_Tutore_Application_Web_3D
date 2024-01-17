@@ -66,3 +66,27 @@ VertexSkipList.prototype.searchVertex = function (key) {
 }
 
 VertexSkipList.prototype.size = function () {return this.size}
+
+VertexSkipList.prototype.getHalfEdgeProblem = function() {
+    const result = [];
+    let node = this.head.down;
+
+    while (node) {
+        let currentNode = node.right;
+
+        while (currentNode) {
+            if (currentNode.value.halfedgesTab.length > 0) {
+                currentNode.value.halfedgesTab.forEach(halfedge => {
+                    if (result.indexOf(halfedge) === -1)
+                    result.push(halfedge);
+                })
+            }
+
+            currentNode = currentNode.right;
+        }
+
+        node = node.down;
+    }
+
+    return result;
+}

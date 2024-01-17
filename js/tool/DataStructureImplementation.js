@@ -18,17 +18,17 @@ export function convertSTLToData(positions) {
     console.log("nbFaces : " + positions.length/9)
         for(let i = 0; i < positions.length; i+=9) {
 
-            const vertices = [
+            const currentVertices = [
                 creerSommet(new Point(positions[i], positions[i+1], positions[i+2]), sommets),
                 creerSommet(new Point(positions[i+3], positions[i+4], positions[i+5]), sommets),
                 creerSommet(new Point(positions[i+6], positions[i+7], positions[i+8]), sommets)
             ]
 
-            const halfedges = vertices.map(v => new HalfEdge(v))
+            const halfedges = currentVertices.map(v => new HalfEdge(v))
             halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) %3], halfedges[(index + 1) %3]))
 
 
-        vertices.forEach((vertex, index) => {
+        currentVertices.forEach((vertex, index) => {
             vertex.addHalfEdge(halfedges[index])
             vertex.addHalfEdge(halfedges[index].prev)
         })
@@ -45,7 +45,7 @@ export function convertSTLToData(positions) {
 
         progressBarMaj(100)
         console.timeEnd("Data filling")
-        return new Mesh(faces);
+        return new Mesh(faces, sommets.getHalfEdgeProblem());
 }
 
 function creerSommet(point, sommets) {
