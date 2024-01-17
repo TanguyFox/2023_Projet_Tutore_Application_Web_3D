@@ -12,7 +12,7 @@ import {afficherPoints3D, afficherSinglePoint3d, meshvA, meshvB, meshvC, setTran
 import * as Raycaster from "../tool/Raycaster";
 import * as Generaux from "../tool/Element3DGeneraux";
 import * as SelectionFace from "./SelectionFace.js";
-import {intersects} from "../controleurs/Scene3DControleur";
+import {animate, intersects} from "../controleurs/Scene3DControleur";
 
 //MODIFICATION DEPUIS LE MENU DE MODIFICATION
 
@@ -36,15 +36,18 @@ export function modifCoord(event){
  function setCoord(ancienPoint, newPoint) {
     //console.log(mesh);
     let faces = mesh.faces;
-    //console.log(ancienPoint);
+    let nbPointModif = 0;
+    console.log(ancienPoint);
     faces.forEach((uneFace) => {
         let halfedgeDep = uneFace.edge;
         if(halfedgeDep.vertex.point.equals(ancienPoint)){
             halfedgeDep.vertex.point.set(newPoint);
+            nbPointModif += 1;
             //console.log('nouvelles coordonnees : ');
             //console.log(halfedgeDep.vertex.point);
         }
     })
+    console.log("setCoord : " + nbPointModif);
 }
 
 /**
@@ -108,7 +111,7 @@ function setPoint3D(targetPoint, newPoint){
         }
         // Exemple : Création d'arêtes pour un objet Mesh
         majEdges();
-        //console.log('nbPtsSetted : ' + nbPointsSetted);
+        console.log('SetPoint3D : ' + nbPointsSetted);
         // Mettez à jour le rendu
         geometry_model.computeBoundingSphere(); // Recalcul du sphere de la bounding box
         geometry_model.computeBoundingBox(); // Recalcul de la bounding box
@@ -154,7 +157,7 @@ function majEdges(){
 //MODIFICATION SUR L'OBJET 3D
 let isMouseDown = false;
 let pointSelectionne ;
-let transformedPosition;
+//let transformedPosition;
 let sauvegardeAncienPoint;
 export function setMouseDown(event){
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
@@ -168,8 +171,10 @@ export function setMouseDown(event){
             pointSelectionne = meshCourant;
             sauvegardeAncienPoint = new Point(pointSelectionne.position.x,
                 pointSelectionne.position.y,  pointSelectionne.position.z);
-            transformedPosition = setTransformedPosition(meshCourant);
+            //transformedPosition = setTransformedPosition(meshCourant);
             Scene3D.transformControls.attach(pointSelectionne);
+            console.log(sauvegardeAncienPoint);
+            console.log(isMouseDown);
             break;
         }
     }
@@ -190,21 +195,25 @@ function isMesh(uuid){
 //document.addEventListener('mousemove', deplacer)
 export function deplacerPoint(event) {
     if(isMouseDown && (typeof pointSelectionne !== 'undefined')) {
-        console.log('point sélectionné pouvant être déplacé');
+        //console.log('point sélectionné pouvant être déplacé');
         if (Scene3D.transformControls.object) {
-            console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
-            let newPoint = new Point(pointSelectionne.position.x, pointSelectionne.position.y,  pointSelectionne.position.z);
+            //console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
+
         }
     }
 }
 
 export function mouseUpReinitialisation(){
-    console.log('réinitialisation isMouseDown & pointSelectionne')
     if (Scene3D.transformControls.object && isMouseDown && (typeof pointSelectionne !== 'undefined')) {
         console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
+        let newPoint = new Point(pointSelectionne.position.x, pointSelectionne.position.y,  pointSelectionne.position.z);
+        setCoord(sauvegardeAncienPoint, newPoint);
+        setPoint3D(sauvegardeAncienPoint, newPoint);
+        //animate();
+        isMouseDown = false;
+        pointSelectionne = undefined;
     }
-    isMouseDown = false;
-    pointSelectionne = undefined;
+
 }
 
 
