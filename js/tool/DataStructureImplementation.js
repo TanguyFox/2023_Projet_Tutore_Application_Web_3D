@@ -23,14 +23,18 @@ export function convertSTLToData(positions) {
                 creerSommet(new Point(positions[i+3], positions[i+4], positions[i+5]), sommets),
                 creerSommet(new Point(positions[i+6], positions[i+7], positions[i+8]), sommets)
             ]
+            console.log(currentVertices)
 
             const halfedges = currentVertices.map(v => new HalfEdge(v))
+            console.log(halfedges)
             halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) %3], halfedges[(index + 1) %3]))
 
 
         currentVertices.forEach((vertex, index) => {
+            console.log("Ajoute de " + halfedges[index] + " à " + vertex)
             vertex.addHalfEdge(halfedges[index])
-            vertex.addHalfEdge(halfedges[index].prev)
+            //console.log("Ajoute de " + halfedges[index].prev + " à " + vertex)
+            //vertex.addHalfEdge(halfedges[index].prev)
         })
 
             const face = new Face(halfedges[0]);
