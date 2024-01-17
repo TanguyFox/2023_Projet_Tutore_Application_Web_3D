@@ -86,6 +86,7 @@ export function handleFileSelect(event) {
 
         console.log(generaux.mesh)
         document.getElementById("export").style.display = "block"
+        document.getElementById("new-model").style.display = "block"
         importButton.style.display = "none";
         Scene3D.sceneContrainer.style.display = "block";
         toolbar.style.display = "flex";
