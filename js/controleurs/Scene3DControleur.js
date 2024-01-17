@@ -150,11 +150,15 @@ export function onDoubleClick(event){
                 return;
             }
 
-            let transformedPositions = setTransformedPosition(intersects[i]);
+            let transformedPositions = setTransformedPosition(intersects[i].object);
             afficherPoints3D(transformedPositions)
             break;
         }
     }
+}
+
+export {
+    intersects
 }
 
 

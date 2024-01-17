@@ -4,6 +4,7 @@
     width: 100%;
     overflow: hidden;
     display: none;
+    user-select: none;
 }
 
 #toolbar{
