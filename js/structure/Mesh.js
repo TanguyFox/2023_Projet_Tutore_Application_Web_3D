@@ -1,12 +1,10 @@
 
 
 export class Mesh {
-    constructor(faces) {
+    constructor(faces, badHe) {
         this.faces = faces;
+        this.badHalfEdges = badHe
     }
-
-
-
 }
 
 Mesh.prototype.detectHoles = function(){

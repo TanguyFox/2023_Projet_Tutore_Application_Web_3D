@@ -19,7 +19,7 @@ function initViewHelper(){
     viewhelper.controls = orbitcontrols;
     viewhelper.controls.cennter = orbitcontrols.target;
     sceneContainerHelper.addEventListener('pointerup', (event) => viewhelper.handleClick(event));
-    animate();
+    // animate();
 }
 
 function animate() {
@@ -29,4 +29,10 @@ function animate() {
     viewhelper.render(renderer);
 }
 
-export { initViewHelper }
+function executeRenderHelper(){
+    const delta = clock.getDelta();
+    if(viewhelper.animating) viewhelper.update(delta);
+    viewhelper.render(renderer);
+}
+
+export { initViewHelper, viewhelper, executeRenderHelper }

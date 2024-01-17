@@ -91,10 +91,6 @@ export function setTransformedPosition (intersectObject){
     let transformedPositions = [];
     let transformedNormals = [];
 
-    if(Generaux.faceIndexSelected == null){
-        return;
-    }
-
     for(let i = 0; i < positionAttribute.count; i++){
         let localPosition = new THREE.Vector3(positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i));
         localPosition.applyMatrix4(matrixWorld);

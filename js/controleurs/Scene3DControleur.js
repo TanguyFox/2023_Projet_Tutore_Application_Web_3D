@@ -3,6 +3,8 @@ import * as THREE from "three";
 import {createBoundingBox, removeBoundingBox} from "../vue/BoundingBoxHandler";
 import * as Generaux from "../tool/Element3DGeneraux.js";
 import * as Raycaster from "../tool/Raycaster.js";
+import {camera, orbitcontrols} from "../vue/Scene3D.js";
+import {executeRenderHelper, viewhelper} from "../vue/viewhelper";
 import {paintFace, afficherPoints3D, setTransformedPosition} from "../fonctionnalites/SelectionFace";
 
 
@@ -48,6 +50,9 @@ export function animate(){
         Generaux.boundingBoxObject.boundingBox.update();
     }
     render();
+
+    //viewhelper render
+    executeRenderHelper();
 }
 
 //animate();
@@ -134,6 +139,17 @@ export function onDoubleClick(event){
     for(let i = 0 ; i < intersects.length; i++){
 
         if(intersects[i].object.uuid === Generaux.meshModel.uuid){
+
+            if(Generaux.faceIndexSelected == null){
+                const boundingBox = new THREE.Box3().setFromObject(Generaux.meshModel);
+                const center = boundingBox.getCenter(new THREE.Vector3());
+                const offset = center.clone().sub(orbitcontrols.target);
+                camera.position.add(offset);
+                orbitcontrols.target.copy(center);
+                viewhelper.center.copy(center);
+                return;
+            }
+
             let transformedPositions = setTransformedPosition(intersects[i].object);
             afficherPoints3D(transformedPositions)
             break;
