@@ -7,6 +7,7 @@ import * as Scene3D from "../vue/Scene3D";
 import * as THREE from "three";
 import * as Scene3DControleur from "../controleurs/Scene3DControleur";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
+import {setMouseDown} from "./ModifCoordPoint";
 
 /**
  * Module pour la fonctionnalité de traitement de mode (selection de face)
@@ -56,6 +57,8 @@ export function handleModeSelect (event){
     }
 }
 
+
+
 /**
  * méthode déclanchée au double clic de la souris sur une face (en mode sélection de face)
  * Elle affiche les trois sommets de la face sur le plan 3D
@@ -79,6 +82,21 @@ export function afficherPoints3D(transformedPositions){
 
     initEventInputCoord();
 }
+export function setTransformedPosition (intersectObject){
+    let positionAttribute = Generaux.geometry_model.attributes.position;
+    let normalAttribute = Generaux.geometry_model.attributes.normal;
+    let matrixWorld = intersectObject.object.matrixWorld;
+
+    let transformedPositions = [];
+    let transformedNormals = [];
+
+    for(let i = 0; i < positionAttribute.count; i++){
+        let localPosition = new THREE.Vector3(positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i));
+        localPosition.applyMatrix4(matrixWorld);
+        transformedPositions.push(localPosition.toArray());
+    }
+    return transformedPositions;
+}
 
 /**
  * méthode qui gère l'affichage d'un seul point
@@ -87,11 +105,12 @@ export function afficherPoints3D(transformedPositions){
  * @param offsetValue la valeur dans le tableau de position
  * @returns {Vector3} le sommet
  */
-function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
+export function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
     let vertex = new THREE.Vector3(transformedPosition[offsetValue][0],
         transformedPosition[offsetValue][1], transformedPosition[offsetValue][2]);
     mesh.position.copy(vertex);
     Scene3D.scene.add(mesh);
+    console.log(mesh);
     return vertex;
 }
 
@@ -122,9 +141,9 @@ function afficherSingleCoordPoint(name, vertex, color){
     let html = `
     <div class="color_point" style="background-color: ${color}"></div>
     <div>${name} : 
-    <input type="number" name="${vertex.x}" title="x" value="${vertex.x.toFixed(3)}">
-    <input type="number" name="${vertex.y}" title="y" value="${vertex.y.toFixed(3)}">
-    <input type="number" name="${vertex.z}" title="x" value="${vertex.z.toFixed(3)}"></div>
+    x <input type="number" name="${vertex.x}" title="x" value="${vertex.x.toFixed(3)}">
+    y <input type="number" name="${vertex.y}" title="y" value="${vertex.y.toFixed(3)}">
+    z <input type="number" name="${vertex.z}" title="x" value="${vertex.z.toFixed(3)}"></div>
     `;
     divInfo.innerHTML = html;
 }
@@ -184,4 +203,10 @@ export function onPointerMove( event ){
         }
     }
 
+}
+
+export{
+    meshvA,
+    meshvB,
+    meshvC
 }
