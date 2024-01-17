@@ -1,8 +1,8 @@
-import {GLTFExporter, OBJExporter, STLExporter} from "three/addons";
+import {OBJExporter, STLExporter} from "three/addons";
 import * as THREE from "three";
 
 const exportModal = document.getElementById("exportModal");
-const exportButton = document.getElementById("exportButton");
+//const exportButton = document.getElementById("exportButton");
 
 
 
@@ -39,7 +39,7 @@ function exportInObj(scene) {
     return blob;
 }*/
 
-async function exportMesh(scene) {
+function exportMesh(scene) {
     let file;
     let newScene = clearScene(scene)
     clearScene(scene)
