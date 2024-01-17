@@ -8,10 +8,11 @@ import {Point} from "../structure/Point";
 import * as THREE from "three";
 import * as generaux from "../tool/Element3DGeneraux";
 import * as Scene3D from "../vue/Scene3D";
-import {afficherPoints3D, afficherSinglePoint3d, setTransformedPosition} from "./SelectionFace";
+import {afficherPoints3D, afficherSinglePoint3d, meshvA, meshvB, meshvC, setTransformedPosition} from "./SelectionFace";
 import * as Raycaster from "../tool/Raycaster";
 import * as Generaux from "../tool/Element3DGeneraux";
 import * as SelectionFace from "./SelectionFace.js";
+import {intersects} from "../controleurs/Scene3DControleur";
 
 //MODIFICATION DEPUIS LE MENU DE MODIFICATION
 
@@ -22,24 +23,35 @@ export function modifCoord(event){
     let ancienPoint = recreatePointDivParent(divParent);
     majNameDiv(event.target);
     let nouveauPoint = createNewPoint(divParent);
-    setCoord(ancienPoint,event.target.title, nouveauPoint);
+    setCoord(ancienPoint, nouveauPoint);
     setPoint3D(ancienPoint, nouveauPoint);
+    setPointColore();
 }
 
- function setCoord(ancienPoint, coordonneeChangee, newPoint) {
-    console.log(mesh);
+/**
+ * Méthode modifiant les coordonnées des points de la structure de donnée
+ * @param ancienPoint le point à trouver dans la structure de données
+ * @param newPoint les nouvelles coordonnées du point
+ */
+ function setCoord(ancienPoint, newPoint) {
+    //console.log(mesh);
     let faces = mesh.faces;
-    console.log(ancienPoint);
+    //console.log(ancienPoint);
     faces.forEach((uneFace) => {
         let halfedgeDep = uneFace.edge;
         if(halfedgeDep.vertex.point.equals(ancienPoint)){
             halfedgeDep.vertex.point.set(newPoint);
-            console.log('nouvelles coordonnees : ');
-            console.log(halfedgeDep.vertex.point);
+            //console.log('nouvelles coordonnees : ');
+            //console.log(halfedgeDep.vertex.point);
         }
     })
 }
 
+/**
+ * Méthode créant un point avec les anciennes valeurs du point modifié
+ * @param divParent
+ * @returns {Point}
+ */
 function recreatePointDivParent(divParent){
     let valueX = parseFloat(divParent.children[0].name);
     let valueY = parseFloat(divParent.children[1].name);
@@ -48,10 +60,19 @@ function recreatePointDivParent(divParent){
 
 }
 
+/**
+ * Methode qui met à jour le champ name de la division html avec la nouvelle valeur
+ * @param targetInput
+ */
 function majNameDiv(targetInput){
     targetInput.name = targetInput.value;
 }
 
+/**
+ * Méthode créant un nouveau point avec les nouvelles valeurs des inputs du point modifié
+ * @param divParent
+ * @returns {Point}
+ */
 function createNewPoint(divParent){
     let x = parseFloat(divParent.children[0].value);
     let y = parseFloat(divParent.children[1].value);
@@ -59,6 +80,12 @@ function createNewPoint(divParent){
     return new Point(x, y, z);
 }
 
+/**
+ * Méthode mettant à jour la positions des points de la structure 3D pour afficher
+ * la nouvelle structure modifiée
+ * @param targetPoint
+ * @param newPoint
+ */
 function setPoint3D(targetPoint, newPoint){
     //accès à la géométrie de l'objet 3D
     if(geometry_model.isBufferGeometry){
@@ -71,8 +98,8 @@ function setPoint3D(targetPoint, newPoint){
 
         for(let i = 0; i < positions.length; i += 3){
             let pointCourant = new Point(positions[i], positions[i+1],positions[i+2]);
-            console.log(pointCourant);
-            console.log(pointCourant.equals(targetPoint))
+            //console.log(pointCourant);
+            //console.log(pointCourant.equals(targetPoint))
             if(pointCourant.equals(targetPoint)){
                 positionAttribute.setXYZ(positionAttributeIndex, newPoint.x, newPoint.y, newPoint.z);
                 nbPointsSetted += 1;
@@ -81,28 +108,31 @@ function setPoint3D(targetPoint, newPoint){
         }
         // Exemple : Création d'arêtes pour un objet Mesh
         majEdges();
-        console.log('nbPtsSetted : ' + nbPointsSetted);
+        //console.log('nbPtsSetted : ' + nbPointsSetted);
         // Mettez à jour le rendu
         geometry_model.computeBoundingSphere(); // Recalcul du sphere de la bounding box
         geometry_model.computeBoundingBox(); // Recalcul de la bounding box
         //geometry_model.computeFaceNormals(); // Recalcul des normales des faces
         geometry_model.computeVertexNormals();
-        positionAttribute.needsUpdate = true;
+        geometry_model.attributes.position = positionAttribute;
+        geometry_model.attributes.position.needsUpdate = true;
 
-        //MAJ point en couleur
-        console.log(Scene3D.scene);
-
-        for(let i = 0 ; i < intersects.length; i++){
-
-            if(intersects[i].object.uuid === Generaux.meshModel.uuid){
-                let transformedPosition = setTransformedPosition(intersects[i]);
-                afficherPoints3D(transformedPosition)
-                break;
-            }
-        }
     }
 
 
+}
+
+/**
+ * Methode mettant à jour la position du point coloré correspondant au point modifié
+ */
+function setPointColore(){
+    for(let i = 0 ; i < intersects.length; i++){
+        if(intersects[i].object.uuid === Generaux.meshModel.uuid){
+            let transformedPositions = setTransformedPosition(intersects[i].object);
+            afficherPoints3D(transformedPositions)
+            break;
+        }
+    }
 }
 
 /**
@@ -135,7 +165,7 @@ export function setMouseDown(event){
             console.log(meshCourant);
             isMouseDown = true;
             pointSelectionne = meshCourant;
-            transformedPosition = setTransformedPosition(intersects[i]);
+            transformedPosition = setTransformedPosition(meshCourant);
             Scene3D.transformControls.attach(pointSelectionne);
             break;
         }
@@ -180,10 +210,7 @@ export function deplacerPoint(event) {
         if (Scene3D.transformControls.object) {
             console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
         }
-
-
     }
-    isMouseDown = false;
 }
 
 export function mouseUpReinitialisation(){
@@ -192,7 +219,7 @@ export function mouseUpReinitialisation(){
         console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
     }
     isMouseDown = false;
-    pointSelectionne = null;
+    pointSelectionne = undefined;
 }
 
 

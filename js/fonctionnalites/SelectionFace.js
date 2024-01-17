@@ -70,6 +70,7 @@ export function afficherPoints3D(transformedPositions){
         Scene3D.scene.remove(meshvA);
         Scene3D.scene.remove(meshvB);
         Scene3D.scene.remove(meshvC);
+        console.log(Scene3D.scene);
     }
 
     let offset = Generaux.faceIndexSelected * 3;
@@ -85,7 +86,7 @@ export function afficherPoints3D(transformedPositions){
 export function setTransformedPosition (intersectObject){
     let positionAttribute = Generaux.geometry_model.attributes.position;
     let normalAttribute = Generaux.geometry_model.attributes.normal;
-    let matrixWorld = intersectObject.object.matrixWorld;
+    let matrixWorld = intersectObject.matrixWorld;
 
     let transformedPositions = [];
     let transformedNormals = [];

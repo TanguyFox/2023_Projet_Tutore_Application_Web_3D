@@ -134,11 +134,15 @@ export function onDoubleClick(event){
     for(let i = 0 ; i < intersects.length; i++){
 
         if(intersects[i].object.uuid === Generaux.meshModel.uuid){
-            let transformedPositions = setTransformedPosition(intersects[i]);
+            let transformedPositions = setTransformedPosition(intersects[i].object);
             afficherPoints3D(transformedPositions)
             break;
         }
     }
+}
+
+export {
+    intersects
 }
 
 
