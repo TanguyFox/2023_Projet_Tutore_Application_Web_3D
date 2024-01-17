@@ -7,7 +7,6 @@ import {VertexSkipList} from "../structure/VertexSkipList.js"
 import {progressBarMaj} from "./loadBarData";
 
 
-
 export function convertSTLToData(positions) {
 
     const sommets = new VertexSkipList();
@@ -15,41 +14,37 @@ export function convertSTLToData(positions) {
     //let halfedges = []
 
     console.time("Data filling")
-    console.log("nbFaces : " + positions.length/9)
-        for(let i = 0; i < positions.length; i+=9) {
+    console.log("nbFaces : " + positions.length / 9)
+    for (let i = 0; i < positions.length; i += 9) {
 
-            const currentVertices = [
-                creerSommet(new Point(positions[i], positions[i+1], positions[i+2]), sommets),
-                creerSommet(new Point(positions[i+3], positions[i+4], positions[i+5]), sommets),
-                creerSommet(new Point(positions[i+6], positions[i+7], positions[i+8]), sommets)
-            ]
-            console.log(currentVertices)
+        const currentVertices = [
+            creerSommet(new Point(positions[i], positions[i + 1], positions[i + 2]), sommets),
+            creerSommet(new Point(positions[i + 3], positions[i + 4], positions[i + 5]), sommets),
+            creerSommet(new Point(positions[i + 6], positions[i + 7], positions[i + 8]), sommets)
+        ]
 
-            const halfedges = currentVertices.map(v => new HalfEdge(v))
-            console.log(halfedges)
-            halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) %3], halfedges[(index + 1) %3]))
+        const halfedges = currentVertices.map(v => new HalfEdge(v))
+        halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) % 3], halfedges[(index + 1) % 3]))
 
 
         currentVertices.forEach((vertex, index) => {
-            console.log("Ajoute de " + halfedges[index] + " à " + vertex)
             vertex.addHalfEdge(halfedges[index])
-            //console.log("Ajoute de " + halfedges[index].prev + " à " + vertex)
-            //vertex.addHalfEdge(halfedges[index].prev)
         })
 
-            const face = new Face(halfedges[0]);
-            halfedges.forEach(he => he.setFace(face))
+        const face = new Face(halfedges[0]);
+        halfedges.forEach(he => he.setFace(face))
         //getOppositeEdge(face)
 
-            faces.push(face);
-            const progression = (i/positions.length)*100;
-            if (Math.round(progression) % 10 === 0) progressBarMaj(progression)
+        faces.push(face);
+        const progression = (i / positions.length) * 100;
+        if (Math.round(progression) % 10 === 0) progressBarMaj(progression)
 
-        }
+    }
+    console.timeEnd("Data filling")
+    const badHalfedges = sommets.getHalfEdgeProblem()
+    progressBarMaj(100)
 
-        progressBarMaj(100)
-        console.timeEnd("Data filling")
-        return new Mesh(faces, sommets.getHalfEdgeProblem());
+    return new Mesh(faces, badHalfedges);
 }
 
 function creerSommet(point, sommets) {

@@ -20,19 +20,12 @@ Vertex.prototype.compare = function (vertex) {
 
 Vertex.prototype.addHalfEdge = function (he) {
 
-    //this.halfedgesTab.push(he);
-    let opp = this.halfedgesTab.find(halfedge => halfedge.tailVertex() === this && halfedge.headVertex() === he.tailVertex())
-    console.log("expected : " + he.tailVertex() + " " + he.headVertex())
-    console.warn("found : " + opp)
+    let opp = he.tailVertex().halfedgesTab.find(halfedge => halfedge.tailVertex() === this)
     if (opp !== undefined) {
         he.setOpposite(opp)
         opp.setOpposite(he)
-        this.halfedgesTab.splice(this.halfedgesTab.indexOf(opp), 1)
-        console.log("opposite deleted from departure : " + this.halfedgesTab.indexOf(opp))
-        he.tailVertex().halfedgesTab.splice(he.tailVertex().halfedgesTab.indexOf(opp), 1)
-        console.log("opposite deleted from arrival : " + he.tailVertex().halfedgesTab.indexOf(opp))
+        opp.headVertex().halfedgesTab.splice(opp.headVertex().halfedgesTab.indexOf(opp), 1)
     } else {
-        this.halfedgesTab.push(he);
-        console.log("opposite not found, he added")
+        this.halfedgesTab.push(he)
     }
 }

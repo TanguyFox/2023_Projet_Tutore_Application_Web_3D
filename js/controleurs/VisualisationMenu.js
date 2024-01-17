@@ -1,9 +1,9 @@
 import * as Scene3D from "../vue/Scene3D.js";
 import {handleModeSelect} from "../fonctionnalites/SelectionFace";
-import {scene, gridHelper, renderer} from "../vue/Scene3D.js";
+import {scene, gridHelper} from "../vue/Scene3D.js";
 import * as THREE from "three";
-import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
-import {TransformControls} from 'three/addons/controls/TransformControls.js';
+import * as generaux from "../tool/Element3DGeneraux.js";
+import {wireframe, material} from "./ImportSTLfileEvent.js";
 
 
 /**
@@ -29,4 +29,25 @@ document.getElementById('grid-check').addEventListener('change', function(event)
 document.getElementById('anti-aliasing-check').addEventListener('change', function(event){
     let antialiasEtat = event.target.checked;
     Scene3D.rebuildAll(antialiasEtat);
+});
+
+document.getElementById('maillage-texture-check').addEventListener('change', function(event){
+    generaux.group.remove(generaux.lineModel);
+    Scene3D.scene.remove(generaux.lineModel);
+    generaux.group.remove(generaux.meshModel);
+    Scene3D.scene.remove(generaux.meshModel);
+    generaux.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
+    generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, material));
+    generaux.setGroup(new THREE.Group());
+    if(event.target.checked){
+        generaux.group.add(generaux.lineModel);
+        Scene3D.scene.add(generaux.group);
+        generaux.group.remove(generaux.meshModel);
+        Scene3D.scene.remove(generaux.meshModel);
+    }else{
+        generaux.group.add(generaux.meshModel);
+        Scene3D.scene.add(generaux.group);
+        generaux.group.remove(generaux.lineModel);
+        Scene3D.scene.remove(generaux.lineModel);
+    }
 });

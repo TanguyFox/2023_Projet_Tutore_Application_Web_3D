@@ -98,20 +98,22 @@ function setPoint3D(targetPoint, newPoint){
         let positionAttributeIndex = 0;
         //positionAttribute.setXYZ(0, newPoint.x, newPoint.y, newPoint.z);
         //EDGE
+        //console.log(targetPoint)
 
         for(let i = 0; i < positions.length; i += 3){
             let pointCourant = new Point(positions[i], positions[i+1],positions[i+2]);
-            //console.log(pointCourant);
+           //console.log(pointCourant);
             //console.log(pointCourant.equals(targetPoint))
             if(pointCourant.equals(targetPoint)){
                 positionAttribute.setXYZ(positionAttributeIndex, newPoint.x, newPoint.y, newPoint.z);
                 nbPointsSetted += 1;
+                //console.log(positionAttribute[positionAttributeIndex])
             }
             positionAttributeIndex++;
         }
         // Exemple : Création d'arêtes pour un objet Mesh
         majEdges();
-        console.log('SetPoint3D : ' + nbPointsSetted);
+        //console.log('SetPoint3D : ' + nbPointsSetted);
         // Mettez à jour le rendu
         geometry_model.computeBoundingSphere(); // Recalcul du sphere de la bounding box
         geometry_model.computeBoundingBox(); // Recalcul de la bounding box
@@ -173,8 +175,8 @@ export function setMouseDown(event){
                 pointSelectionne.position.y,  pointSelectionne.position.z);
             //transformedPosition = setTransformedPosition(meshCourant);
             Scene3D.transformControls.attach(pointSelectionne);
-            console.log(sauvegardeAncienPoint);
-            console.log(isMouseDown);
+            //console.log(sauvegardeAncienPoint);
+            //console.log(isMouseDown);
             break;
         }
     }
@@ -204,16 +206,30 @@ export function deplacerPoint(event) {
 }
 
 export function mouseUpReinitialisation(){
-    if (Scene3D.transformControls.object && isMouseDown && (typeof pointSelectionne !== 'undefined')) {
+    if ( isMouseDown && (typeof pointSelectionne !== 'undefined')) {
         console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
         let newPoint = new Point(pointSelectionne.position.x, pointSelectionne.position.y,  pointSelectionne.position.z);
         setCoord(sauvegardeAncienPoint, newPoint);
         setPoint3D(sauvegardeAncienPoint, newPoint);
-        //animate();
+        majInputPoint(pointSelectionne, newPoint);
         isMouseDown = false;
         pointSelectionne = undefined;
     }
 
 }
 
+function majInputPoint(pointSelectionne, newPoint){
+    let div = document.querySelector("[id=\'"+ pointSelectionne.uuid +"\']");
+    console.log(div);
+    setName_Value(div.children[0], newPoint.x);
+    setName_Value(div.children[1], newPoint.y);
+    setName_Value(div.children[2], newPoint.z);
+}
+
+function setName_Value(theChildren, theValue){
+    console.log(theChildren);
+    console.log(theValue);
+    theChildren.name = theValue;
+    theChildren.value = theValue;
+}
 
