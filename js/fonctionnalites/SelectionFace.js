@@ -7,6 +7,7 @@ import * as Scene3D from "../vue/Scene3D";
 import * as THREE from "three";
 import * as Scene3DControleur from "../controleurs/Scene3DControleur";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
+import {setMouseDown} from "./ModifCoordPoint";
 
 /**
  * Module pour la fonctionnalité de traitement de mode (selection de face)
@@ -113,6 +114,8 @@ function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
         transformedPosition[offsetValue][1], transformedPosition[offsetValue][2]);
     mesh.position.copy(vertex);
     Scene3D.scene.add(mesh);
+    console.log(mesh);
+    mesh.addEventListener('click', setMouseDown)
     return vertex;
 }
 
@@ -205,4 +208,10 @@ export function onPointerMove( event ){
         }
     }
 
+}
+
+export{
+    meshvA,
+    meshvB,
+    meshvC
 }

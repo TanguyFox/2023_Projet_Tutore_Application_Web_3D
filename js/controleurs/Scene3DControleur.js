@@ -141,9 +141,7 @@ export function onDoubleClick(event){
     }
 }
 
-export {
-    intersects
-}
+
 
 
 

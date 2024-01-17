@@ -6,13 +6,13 @@
 import {geometry_model, mesh} from "../tool/Element3DGeneraux";
 import {Point} from "../structure/Point";
 import * as THREE from "three";
-import {scene} from "../vue/Scene3D";
+import {camera, scene} from "../vue/Scene3D";
 import * as generaux from "../tool/Element3DGeneraux";
 import * as Scene3D from "../vue/Scene3D";
-import {animate, intersects} from "../controleurs/Scene3DControleur";
 import {afficherPoints3D, setTransformedPosition} from "./SelectionFace";
 import * as Raycaster from "../tool/Raycaster";
 import * as Generaux from "../tool/Element3DGeneraux";
+import * as SelectionFace from "./SelectionFace.js";
 
 //MODIFICATION DEPUIS LE MENU DE MODIFICATION
 
@@ -106,6 +106,9 @@ function setPoint3D(targetPoint, newPoint){
 
 }
 
+/**
+ * Méthode qui met à jour les arêtes de la structure 3D. Supprime les anciennes et redéfinit les nouvelles
+ */
 function majEdges(){
     generaux.group.remove(generaux.lineModel);
     scene.remove(generaux.group);
@@ -120,3 +123,41 @@ function majEdges(){
 
 
 //MODIFICATION SUR L'OBJET 3D
+let isMouseDown = false;
+let pointSelectionne ;
+export function setMouseDown(event){
+    Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
+    let intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
+
+    for(let i = 0 ; i < intersects.length; i++){
+        let meshCourant = isMesh(intersects[i].object.uuid)
+        if(meshCourant!==null){
+            console.log(meshCourant);
+            isMouseDown = true;
+            pointSelectionne = meshCourant;
+            break;
+        }
+    }
+}
+function isMesh(uuid){
+    if(uuid===SelectionFace.meshvA.uuid){
+        return SelectionFace.meshvA;
+    }
+    if(uuid===SelectionFace.meshvB.uuid){
+        return SelectionFace.meshvB;
+    }
+    if(uuid === SelectionFace.meshvC.uuid){
+        return SelectionFace.meshvC;
+    }
+    return null;
+}
+
+//document.addEventListener('mousemove', deplacer)
+function deplacer(event) {
+    if(isMouseDown && (typeof pointSelectionne !== 'undefined')) {
+        console.log('point sélectionné pouvant être déplacé')
+    }
+    isMouseDown = false;
+}
+
+
