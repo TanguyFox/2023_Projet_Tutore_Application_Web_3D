@@ -124,9 +124,9 @@ export function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
  */
 function afficherCoordPoints(vertexA, vertexB, vertexC){
     infoCoordPoints.innerHTML="";
-    afficherSingleCoordPoint('A', vertexA, '#eb4646');
-    afficherSingleCoordPoint('B', vertexB, '#42b0f5');
-    afficherSingleCoordPoint('C', vertexC, '#42f58d');
+    afficherSingleCoordPoint('A', meshvA, vertexA, '#eb4646');
+    afficherSingleCoordPoint('B', meshvB, vertexB, '#42b0f5');
+    afficherSingleCoordPoint('C', meshvC, vertexC, '#42f58d');
 }
 
 /**
@@ -135,13 +135,13 @@ function afficherCoordPoints(vertexA, vertexB, vertexC){
  * @param vertex
  * @param color
  */
-function afficherSingleCoordPoint(name, vertex, color){
+function afficherSingleCoordPoint(name, mesh, vertex, color){
     let divInfo = document.createElement("div");
     infoCoordPoints.appendChild(divInfo);
     divInfo.classList.add('info-point');
     let html = `
     <div class="color_point" style="background-color: ${color}"></div>
-    <div>${name} : 
+    <div id="${mesh.uuid}">${name} : 
     x <input type="number" name="${vertex.x}" title="x" value="${vertex.x.toFixed(3)}">
     y <input type="number" name="${vertex.y}" title="y" value="${vertex.y.toFixed(3)}">
     z <input type="number" name="${vertex.z}" title="x" value="${vertex.z.toFixed(3)}"></div>
