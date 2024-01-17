@@ -47,7 +47,7 @@ export function modifCoord(event){
             //console.log(halfedgeDep.vertex.point);
         }
     })
-    console.log("setCoord : " + nbPointModif);
+    //console.log("setCoord : " + nbPointModif);
 }
 
 /**
@@ -98,14 +98,16 @@ function setPoint3D(targetPoint, newPoint){
         let positionAttributeIndex = 0;
         //positionAttribute.setXYZ(0, newPoint.x, newPoint.y, newPoint.z);
         //EDGE
+        console.log(targetPoint)
 
         for(let i = 0; i < positions.length; i += 3){
             let pointCourant = new Point(positions[i], positions[i+1],positions[i+2]);
-            //console.log(pointCourant);
-            //console.log(pointCourant.equals(targetPoint))
+            console.log(pointCourant);
+            console.log(pointCourant.equals(targetPoint))
             if(pointCourant.equals(targetPoint)){
                 positionAttribute.setXYZ(positionAttributeIndex, newPoint.x, newPoint.y, newPoint.z);
                 nbPointsSetted += 1;
+                console.log(positionAttribute[positionAttributeIndex])
             }
             positionAttributeIndex++;
         }
@@ -173,8 +175,8 @@ export function setMouseDown(event){
                 pointSelectionne.position.y,  pointSelectionne.position.z);
             //transformedPosition = setTransformedPosition(meshCourant);
             Scene3D.transformControls.attach(pointSelectionne);
-            console.log(sauvegardeAncienPoint);
-            console.log(isMouseDown);
+            //console.log(sauvegardeAncienPoint);
+            //console.log(isMouseDown);
             break;
         }
     }
@@ -204,12 +206,11 @@ export function deplacerPoint(event) {
 }
 
 export function mouseUpReinitialisation(){
-    if (Scene3D.transformControls.object && isMouseDown && (typeof pointSelectionne !== 'undefined')) {
+    if ( isMouseDown && (typeof pointSelectionne !== 'undefined')) {
         console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
         let newPoint = new Point(pointSelectionne.position.x, pointSelectionne.position.y,  pointSelectionne.position.z);
         setCoord(sauvegardeAncienPoint, newPoint);
         setPoint3D(sauvegardeAncienPoint, newPoint);
-        //animate();
         isMouseDown = false;
         pointSelectionne = undefined;
     }

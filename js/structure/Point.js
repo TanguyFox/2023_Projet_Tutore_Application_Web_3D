@@ -10,9 +10,17 @@ export class Point{
 }
 
 Point.prototype.equals = function(point){
-    return (isCoordonneesEgales(this.x, point.x)&&
+    /*return (isCoordonneesEgales(this.x, point.x)&&
         isCoordonneesEgales(this.y, point.y) &&
         isCoordonneesEgales(this.z, point.z));
+
+     */
+    return (
+        (this.x.toFixed(5)===point.x.toFixed(5))
+        && (this.y.toFixed(5)===point.y.toFixed(5))
+        && (this.z.toFixed(5)===point.z.toFixed(5))
+    )
+
 }
 
 Point.prototype.compare = function (pointB){
@@ -37,5 +45,6 @@ Point.prototype.set = function (point){
 
 
 function isCoordonneesEgales(a, b){
+
     return Math.abs(a-b) < 1e-10;
 }
