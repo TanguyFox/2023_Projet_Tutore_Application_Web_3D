@@ -109,13 +109,12 @@ export function setTransformedPosition (intersectObject){
  * @param offsetValue la valeur dans le tableau de position
  * @returns {Vector3} le sommet
  */
-function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
+export function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
     let vertex = new THREE.Vector3(transformedPosition[offsetValue][0],
         transformedPosition[offsetValue][1], transformedPosition[offsetValue][2]);
     mesh.position.copy(vertex);
     Scene3D.scene.add(mesh);
     console.log(mesh);
-    mesh.addEventListener('click', setMouseDown)
     return vertex;
 }
 

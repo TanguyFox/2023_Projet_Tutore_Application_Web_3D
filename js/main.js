@@ -8,7 +8,7 @@ import {onPointerMove} from "./fonctionnalites/SelectionFace";
 import {mesh, geometry_model} from "./tool/Element3DGeneraux";
 //import {displayModal, exportMesh} from "./fonctionnalites/ExportModel"
 import * as modificationMenu from './controleurs/ModificationMenu.js';
-import {setMouseDown} from "./fonctionnalites/ModifCoordPoint";
+import {deplacerPoint, mouseUpReinitialisation, setMouseDown} from "./fonctionnalites/ModifCoordPoint";
 
 
 
@@ -38,5 +38,7 @@ renderer.domElement.addEventListener('dblclick', onDoubleClick, false);
 
 //évènement sur les points d'une face sélectionnée pour le déplacer
 Scene3D.sceneContrainer.addEventListener('mousedown', setMouseDown);
+Scene3D.sceneContrainer.addEventListener('mousemove', deplacerPoint);
+Scene3D.sceneContrainer.addEventListener('mouseup', mouseUpReinitialisation);
 
 console.log(mesh);

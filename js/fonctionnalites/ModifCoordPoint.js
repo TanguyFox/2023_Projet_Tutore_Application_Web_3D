@@ -6,10 +6,9 @@
 import {geometry_model, mesh} from "../tool/Element3DGeneraux";
 import {Point} from "../structure/Point";
 import * as THREE from "three";
-import {camera, scene} from "../vue/Scene3D";
 import * as generaux from "../tool/Element3DGeneraux";
 import * as Scene3D from "../vue/Scene3D";
-import {afficherPoints3D, setTransformedPosition} from "./SelectionFace";
+import {afficherPoints3D, afficherSinglePoint3d, setTransformedPosition} from "./SelectionFace";
 import * as Raycaster from "../tool/Raycaster";
 import * as Generaux from "../tool/Element3DGeneraux";
 import * as SelectionFace from "./SelectionFace.js";
@@ -91,7 +90,7 @@ function setPoint3D(targetPoint, newPoint){
         positionAttribute.needsUpdate = true;
 
         //MAJ point en couleur
-        console.log(scene);
+        console.log(Scene3D.scene);
 
         for(let i = 0 ; i < intersects.length; i++){
 
@@ -111,7 +110,7 @@ function setPoint3D(targetPoint, newPoint){
  */
 function majEdges(){
     generaux.group.remove(generaux.lineModel);
-    scene.remove(generaux.group);
+    Scene3D.scene.remove(generaux.group);
     let wireframe = new THREE.WireframeGeometry(geometry_model);
     //couleur de ligne
     generaux.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
@@ -125,6 +124,7 @@ function majEdges(){
 //MODIFICATION SUR L'OBJET 3D
 let isMouseDown = false;
 let pointSelectionne ;
+let transformedPosition;
 export function setMouseDown(event){
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
     let intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
@@ -135,6 +135,8 @@ export function setMouseDown(event){
             console.log(meshCourant);
             isMouseDown = true;
             pointSelectionne = meshCourant;
+            transformedPosition = setTransformedPosition(intersects[i]);
+            Scene3D.transformControls.attach(pointSelectionne);
             break;
         }
     }
@@ -153,11 +155,44 @@ function isMesh(uuid){
 }
 
 //document.addEventListener('mousemove', deplacer)
-function deplacer(event) {
+export function deplacerPoint(event) {
     if(isMouseDown && (typeof pointSelectionne !== 'undefined')) {
-        console.log('point sélectionné pouvant être déplacé')
+        console.log('point sélectionné pouvant être déplacé');
+        /*Raycaster.pointer.x = (event.clientX / Scene3D.renderer.domElement.clientWidth) * 2 - 1 - 0.005;
+        Raycaster.pointer.y = -(event.clientY / Scene3D.renderer.domElement.clientHeight) * 2 + 1 + 0.1;
+        Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
+
+         */
+        //let offset = Generaux.faceIndexSelected * 3;
+        //afficherSinglePoint3d(pointSelectionne, transformedPosition, offset);
+
+
+        /*let mouseVector = new THREE.Vector3(Raycaster.pointer.x,
+            Raycaster.pointer.y, 0);
+        var direction = mouseVector.sub(Scene3D.camera.position).normalize();
+        Raycaster.raycaster.set(Scene3D.camera.position, direction);
+        pointSelectionne.position.copy(mouseVector);
+        Scene3D.scene.add(pointSelectionne);
+        console.log(pointSelectionne);
+        mouseVector.unproject(Scene3D.camera);
+
+         */
+        if (Scene3D.transformControls.object) {
+            console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
+        }
+
+
     }
     isMouseDown = false;
+}
+
+export function mouseUpReinitialisation(){
+    console.log('réinitialisation isMouseDown & pointSelectionne')
+    if (Scene3D.transformControls.object) {
+        console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
+    }
+    isMouseDown = false;
+    pointSelectionne = null;
 }
 
 
