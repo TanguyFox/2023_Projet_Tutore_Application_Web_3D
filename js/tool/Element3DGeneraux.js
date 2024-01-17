@@ -1,8 +1,11 @@
-
 /**
  * module répertoriant tous les éléments de l'objet 3D susceptibles d'être utilisés dans d'autres
  * modules et nécessitant une seule instance
  */
+import * as THREE from "three";
+import {wireframe} from "../controleurs/ImportSTLfileEvent";
+import * as Scene3D from "../vue/Scene3D";
+
 
 //STL file
 let meshModel;
@@ -20,6 +23,9 @@ let group;
 let boundingBoxObject = {
     boundingBox: null
 };
+
+let plainMaterial = new THREE.MeshPhongMaterial({color: 0x2194ce, specular: 0x111111, shininess: 200});
+let wireframeMaterial = new THREE.MeshBasicMaterial({vertexColors: true, transparent: true, opacity: 0.65});
 
 //Maillage en données
 let mesh;
@@ -47,6 +53,23 @@ function setGroup(groupsetter){
     group = groupsetter;
 }
 
+function groupAsWireframe() {
+    Scene3D.transformControls.detach()
+    group = new THREE.Group();
+    setMeshModel(new THREE.Mesh(geometry_model, wireframeMaterial));
+    setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
+    group.add(meshModel);
+    group.add(lineModel);
+}
+
+function groupAsPlain() {
+    Scene3D.transformControls.detach()
+    group = new THREE.Group();
+    setMeshModel(new THREE.Mesh(geometry_model, plainMaterial));
+    group.add(meshModel);
+    group.remove(lineModel);
+}
+
 function setFaceIndexSelected(valeur){
     faceIndexSelected=valeur;
 }
@@ -67,6 +90,8 @@ export {
     faceIndexSelected,
     faceIndexAncien,
     mesh,
+    plainMaterial,
+    wireframeMaterial,
     setGeometryModel,
     setColorMesh,
     setLineModel,
@@ -74,5 +99,7 @@ export {
     setGroup,
     setFaceIndexSelected,
     setFaceIndexAncien,
-    setMesh
+    setMesh,
+    groupAsWireframe,
+    groupAsPlain
 }

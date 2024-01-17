@@ -21,12 +21,8 @@ let toolbar = document.getElementById('toolbar');
 const importButton = document.getElementById('import');
 
 let wireframe;
-let material;
+//let material;
 
-//Utilsisation d'un WORKER pour parallelisé l'affichage du modèle 3D ainsi que le remplissage des données
-//Tous les export ont été enlevés des classes pour le moment (car WORKER n'est pas compatible avec)
-//Si besoin des export, il faudra qu'on regarde pour une autre solution
-//let dataFiller = new Worker("js/tool/DataStructureImplementation.js");
 
 //Fonction de chargement du fichier STL
 export function handleFileSelect(event) {
@@ -40,9 +36,7 @@ export function handleFileSelect(event) {
         }
 
         loadSpin.showLoadingScreen();
-
-        const loadingmg = new THREE.LoadingManager()
-        const stlloader = new STLLoader(loadingmg);
+const stlloader = new STLLoader();
         try {
             stlloader.load(URL.createObjectURL(file), function (geometry) {
                     loadSpin.hideLoadingScreen();
@@ -59,13 +53,13 @@ export function handleFileSelect(event) {
                             generaux.color_mesh.r, generaux.color_mesh.g, generaux.color_mesh.b);
                     }
 
-                    generaux.geometry_model.center();
-                    material = new THREE.MeshBasicMaterial({vertexColors: true});
-                    console.log(material);
-                    material.transparent = true;
-                    material.opacity = 0.65;
-                    console.log(material);
-                    //material.setColorMesh = 0xFFFFFF;
+                    // generaux.geometry_model.center();
+                    // material = new THREE.MeshBasicMaterial({vertexColors: true});
+                    // console.log(material);
+                    // material.transparent = true;
+                    // material.opacity = 0.65;
+                    // console.log(material);
+                    // material.setColorMesh = 0xFFFFFF;
 
                     //add shadows
                     //generaux.geometry_model.
@@ -76,18 +70,19 @@ export function handleFileSelect(event) {
                     //par défaut, texture pleine
                     //generaux.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
 
-                    generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, material));
+                    //generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, generaux.wireframeMaterial));
 
                     console.log(generaux.meshModel);
 
-                    generaux.setGroup(new THREE.Group());
-                    generaux.group.add(generaux.meshModel)//, generaux.lineModel);
+                    //generaux.setGroup(new THREE.Group());
+                    generaux.groupAsWireframe();
+                    //generaux.group.add(generaux.meshModel)//, generaux.lineModel);
                     Scene3D.scene.add(generaux.group);
 
                     const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
                     generaux.setMesh(mesh);
                     console.log(generaux.mesh);
-            }
+                }
             );
 
         } catch (e) {
@@ -102,22 +97,10 @@ export function handleFileSelect(event) {
         toolbar.style.display = "flex";
         menuMD.style.display = "block";
         //panel.style.display = "block";
-    } /*else {
-
-        if (lineModel) {
-            scene.remove(lineModel);
-        }
-    }*/
-
+    }
 }
-
-/*dataFiller.addEventListener("message", function (e) {
-    //console.log("loadBar");
-    loadBar.progressBarMajworker(this);
-})*/
 
 
 export {
     wireframe,
-    material
 }

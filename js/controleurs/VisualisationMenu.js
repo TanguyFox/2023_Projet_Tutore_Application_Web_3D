@@ -7,7 +7,8 @@ import {STLLoader} from "three/addons/loaders/STLLoader";
 import * as loadBar from "../tool/loadBarData";
 import * as generaux from "../tool/Element3DGeneraux.js";
 import {animate} from "./Scene3DControleur";
-import {wireframe, material} from "./ImportSTLfileEvent.js";
+import {wireframe} from "./ImportSTLfileEvent.js";
+import {MeshPhongMaterial} from "three";
 
 
 /**
@@ -31,22 +32,25 @@ document.getElementById('grid-check').addEventListener('change', function(event)
 });
 
 document.getElementById('maillage-texture-check').addEventListener('change', function(event){
-    generaux.group.remove(generaux.lineModel);
-    Scene3D.scene.remove(generaux.lineModel);
-    generaux.group.remove(generaux.meshModel);
-    Scene3D.scene.remove(generaux.meshModel);
-    generaux.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));    
-    generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, material));
-    generaux.setGroup(new THREE.Group());
+
+    Scene3D.scene.remove(generaux.group);
     if(event.target.checked){
-        generaux.group.add(generaux.lineModel);
+        //Scene3D.transformControls.detach();
+        generaux.groupAsWireframe();
         Scene3D.scene.add(generaux.group);
-        generaux.group.remove(generaux.meshModel);
         Scene3D.scene.remove(generaux.meshModel);
     }else{
-        generaux.group.add(generaux.meshModel);
+        //generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, generaux.plainMaterial));
+        //generaux.group.add(generaux.meshModel);
+        //Scene3D.transformControls.detach();
+        generaux.groupAsPlain();
         Scene3D.scene.add(generaux.group);
-        generaux.group.remove(generaux.lineModel);
         Scene3D.scene.remove(generaux.lineModel);
     }
+    let compteur = 0;
+    Scene3D.scene.traverse(function (child) {
+        if (child.isGroup) {
+            compteur++;
+        }
+    });
 });
