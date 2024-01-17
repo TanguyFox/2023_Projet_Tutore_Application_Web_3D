@@ -20,6 +20,9 @@ let menuMD = document.getElementById('menuModification');
 let toolbar = document.getElementById('toolbar');
 const importButton = document.getElementById('import');
 
+let wireframe;
+let material;
+
 //Utilsisation d'un WORKER pour parallelisé l'affichage du modèle 3D ainsi que le remplissage des données
 //Tous les export ont été enlevés des classes pour le moment (car WORKER n'est pas compatible avec)
 //Si besoin des export, il faudra qu'on regarde pour une autre solution
@@ -57,21 +60,28 @@ export function handleFileSelect(event) {
                     }
 
                     generaux.geometry_model.center();
-                    let material = new THREE.MeshBasicMaterial({vertexColors: true});
+                    material = new THREE.MeshBasicMaterial({vertexColors: true});
+                    console.log(material);
                     material.transparent = true;
                     material.opacity = 0.65;
+                    console.log(material);
+                    //material.setColorMesh = 0xFFFFFF;
 
-                    let wireframe = new THREE.WireframeGeometry(geometry);
+                    //add shadows
+                    //generaux.geometry_model.
+
+                    wireframe = new THREE.WireframeGeometry(geometry);
 
                     //couleur de ligne
-                    generaux.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
+                    //par défaut, texture pleine
+                    //generaux.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
 
                     generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, material));
 
                     console.log(generaux.meshModel);
 
                     generaux.setGroup(new THREE.Group());
-                    generaux.group.add(generaux.meshModel, generaux.lineModel);
+                    generaux.group.add(generaux.meshModel)//, generaux.lineModel);
                     Scene3D.scene.add(generaux.group);
 
                     /*
@@ -108,3 +118,7 @@ dataFiller.addEventListener("message", function (e) {
 })
 
 
+export {
+    wireframe,
+    material
+}

@@ -76,7 +76,7 @@ function setOppositeEdge(h) {
     const opp = sommetDepart.halfedgesTab.find(he => he.tailVertex() === sommetDepart && he.headVertex() === sommetArrivee)
     if(opp !== undefined) {
 
-        if (opp.opposite !== null) console.error("HalfEdge already define" + opp)
+        if (opp.opposite !== null) console.error("HalfEdge already defined" + opp)
         else {
             h.setOpposite(opp)
             opp.setOpposite(h)
