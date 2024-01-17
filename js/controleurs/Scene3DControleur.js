@@ -55,20 +55,19 @@ export function animate(){
     executeRenderHelper();
 }
 
-//animate();
 
-console.log(Scene3D.transformControls)
-if(typeof Scene3D.transformControls!=='undefined'){
-    Scene3D.transformControls.addEventListener('change', render);
-}
+// semble iutile
+// console.log(Scene3D.transformControls)
+// if(typeof Scene3D.transformControls!=='undefined'){
+//     console.log("transformControls")
+//     Scene3D.transformControls.addEventListener('change', render);
+// }
 
 /**
  * génère un boundingBox pour l'objet, sélectionne la face et sélection l'objet
  * @param event
  */
 export function onPointerClick( event ){
-
-    // console.log("x:"+pointer.x + " y:" + pointer.y);
 
     let clickOnObject = false;
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
@@ -129,7 +128,6 @@ export function onPointerClick( event ){
                 Scene3D.transformControls.detach();
             }
         }
-
     }
 }
 

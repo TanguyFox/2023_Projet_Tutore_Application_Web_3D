@@ -28,7 +28,7 @@ animate();
 
 renderer.domElement.addEventListener('mousemove', onPointerMove, false);
 
-Scene3D.sceneContrainer.addEventListener('mousedown', onPointerClick);
+renderer.domElement.addEventListener('mousedown', onPointerClick);
 
 
 
@@ -42,8 +42,8 @@ exportButton.addEventListener("click", function () {
 newModel.onclick = () => {input.click()};
 
 //évènement sur les points d'une face sélectionnée pour le déplacer
-Scene3D.sceneContrainer.addEventListener('mousedown', setMouseDown);
-Scene3D.sceneContrainer.addEventListener('mousemove', deplacerPoint);
-Scene3D.sceneContrainer.addEventListener('mouseup', mouseUpReinitialisation);
+renderer.domElement.addEventListener('mousedown', setMouseDown);
+renderer.domElement.addEventListener('mousemove', deplacerPoint);
+renderer.domElement.addEventListener('mouseup', mouseUpReinitialisation);
 
 console.log(mesh);
