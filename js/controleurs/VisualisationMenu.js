@@ -1,6 +1,10 @@
 import * as Scene3D from "../vue/Scene3D.js";
 import {handleModeSelect} from "../fonctionnalites/SelectionFace";
-import {scene, gridHelper} from "../vue/Scene3D.js";
+import {scene, gridHelper, renderer} from "../vue/Scene3D.js";
+import * as THREE from "three";
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {TransformControls} from 'three/addons/controls/TransformControls.js';
+
 
 /**
  * Module gérant les évènements liés au menu de modification, section Visualisation
@@ -20,4 +24,9 @@ document.getElementById('grid-check').addEventListener('change', function(event)
     }else{
         scene.remove(gridHelper);
     }
+});
+
+document.getElementById('anti-aliasing-check').addEventListener('change', function(event){
+    let antialiasEtat = event.target.checked;
+    Scene3D.rebuildAll(antialiasEtat);
 });

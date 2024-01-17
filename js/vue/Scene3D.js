@@ -4,6 +4,9 @@ import {TransformControls} from 'three/addons/controls/TransformControls.js';
 import {createBoundingBox, removeBoundingBox} from "./BoundingBoxHandler.js";
 import * as THREE from "three";
 import {initViewHelper} from "./viewhelper";
+import {onPointerMove} from "../fonctionnalites/SelectionFace";
+import {onDoubleClick, onPointerClick} from "../controleurs/Scene3DControleur";
+import {deplacerPoint, mouseUpReinitialisation, setMouseDown} from "../fonctionnalites/ModifCoordPoint";
 
 
 /**
@@ -43,7 +46,7 @@ console.log("initScene3D")
 //------------------------------------------
 
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
-    renderer = new THREE.WebGLRenderer({antialias: true});
+    renderer = new THREE.WebGLRenderer({antialias: false});
     renderer.setSize(widthS, heightS);
 
 
@@ -82,6 +85,50 @@ console.log("initScene3D")
     return renderer;
 }
 
+function rebuildAll(antialiasStat){
+    scene.remove(transformControls);
+    renderer.domElement.remove();
+
+
+    let oldEtat_OrbitControls = orbitcontrols.target;
+    let objetAttach = transformControls.object;
+
+    //Eviter fuite de mémoire
+    transformControls.dispose();
+    orbitcontrols.dispose();
+    renderer.dispose();
+
+    renderer = new THREE.WebGLRenderer({antialias: antialiasStat});
+    renderer.setSize(widthS, heightS);
+
+    sceneContrainer.appendChild(renderer.domElement);
+
+    orbitcontrols = new OrbitControls(camera, renderer.domElement);
+    orbitcontrols.target = oldEtat_OrbitControls;
+    orbitcontrols.update();
+
+    transformControls = new TransformControls(camera, renderer.domElement);
+    transformControls.addEventListener('dragging-changed', function (event) {
+        console.log("dragging-changed");
+        orbitcontrols.enabled = !event.value;
+    });
+
+    scene.add(transformControls);
+
+    if(objetAttach != null){
+        transformControls.attach(objetAttach);
+    }
+
+    renderer.domElement.addEventListener('mousemove', onPointerMove, false);
+    renderer.domElement.addEventListener('mousedown', onPointerClick);
+    renderer.domElement.addEventListener('dblclick', onDoubleClick, false);
+    renderer.domElement.addEventListener('mousedown', setMouseDown);
+    renderer.domElement.addEventListener('mousemove', deplacerPoint);
+    renderer.domElement.addEventListener('mouseup', mouseUpReinitialisation);
+}
+
+
+
 export {
     initScene3D,
     renderer,
@@ -92,5 +139,6 @@ export {
     transformControls,
     orbitcontrols,
     widthS,
-    heightS
+    heightS,
+    rebuildAll
 }

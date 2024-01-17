@@ -17,7 +17,7 @@ function initViewHelper(){
     sceneContainerHelper.appendChild(renderer.domElement);
     viewhelper = new ViewHelper(camera, renderer.domElement);
     viewhelper.controls = orbitcontrols;
-    viewhelper.controls.cennter = orbitcontrols.target;
+    viewhelper.controls.center = orbitcontrols.target;
     sceneContainerHelper.addEventListener('pointerup', (event) => viewhelper.handleClick(event));
     // animate();
 }
