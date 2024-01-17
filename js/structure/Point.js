@@ -30,6 +30,8 @@ Point.prototype.compare = function (pointB){
         return this.y - pointB.y;
     }else if(!isCoordonneesEgales(this.z, pointB.z)){
         return this.z - pointB.z
+    } else {
+        return 0;
     }
 }
 
