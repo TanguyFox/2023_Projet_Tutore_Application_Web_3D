@@ -61,61 +61,6 @@ function creerSommet(point, sommets) {
     return existingVertex
 }
 
-<<<<<<< HEAD
-function setOppositeEdge(h) {
-    const sommetDepart = h.headVertex();
-    const sommetArrivee = h.tailVertex();
-    const opp = sommetDepart.halfedgesTab.find(he => he.tailVertex() === sommetDepart && he.headVertex() === sommetArrivee)
-    if(opp !== undefined) {
-
-        if (opp.opposite !== null) console.error("HalfEdge already defined" + opp)
-        else {
-            h.setOpposite(opp)
-            opp.setOpposite(h)
-        }
-
-
-            // removeFromHalfedgesTab(sommetDepart.halfedgesTab, [h, opp])
-            // removeFromHalfedgesTab(sommetArrivee.halfedgesTab, [h, opp])
-        }
-}
-
-function removeFromHalfedgesTab(halfedgesTab, halfedgesToRemove) {
-    halfedgesToRemove.forEach(he => {
-        const index = halfedgesTab.indexOf(he);
-        if (index !== -1) {
-            halfedgesTab.splice(index, 1);
-        }
-    });
-}
-
-
-function onProgress(progress){
-    self.postMessage({type: 'progress', value: progress});
-}
-function progression(i, totalSize){
-    if(i%2===0){
-        if(envoie){
-            envoie = false;
-            onProgress((i/totalSize)*100);
-        } else {
-            envoie = true;
-        }
-
-    }
-}
-
-self.addEventListener("message", function (e) {
-    const positions = e.data;
-    convertSTLToData(positions);
-
-
-    //PROBLEME ICI, WORKER NE GERE PAS LES REFERENCES BIDIRECTIONNELLE (Halfedge <--> Halfedge opposée)
-    //self.postMessage({type: 'mesh', value: result});
-});
-
-=======
->>>>>>> 48f168f411f776e274a14a0fb7b86c339a9528ce
 function setPrevAndNext(h, hPrev, hNext) {
     h.setNext(hNext);
     h.setPrev(hPrev);
