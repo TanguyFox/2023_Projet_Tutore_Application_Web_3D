@@ -24,7 +24,7 @@ let boundingBoxObject = {
     boundingBox: null
 };
 
-let plainMaterial = new THREE.MeshPhongMaterial({color: 0x2194ce, specular: 0x111111, shininess: 200});
+let plainMaterial = new THREE.MeshPhongMaterial({color: new THREE.Color("rgb(205,179,179)"), specular: new THREE.Color("rgb(230,145,56)"), shininess: 200});
 let wireframeMaterial = new THREE.MeshBasicMaterial({vertexColors: true, transparent: true, opacity: 0.65});
 
 //Maillage en données
