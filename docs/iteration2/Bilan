@@ -1,8 +1,10 @@
 Cette itération a été plutôt fructueuse. La structure de données est consolidée et la conversion entre le
-fichier STL et les données brutes est beaucoup plus rapide.
+fichier STL et les données brutes est beaucoup plus rapide. La structure de données nous permet maintenant de connaître
+les half-edges qui posent potentiellement problème (half-edges ne possédant pas d'half-edge opposée). Cependant, nous ne
+sommes pas encore en mesure d'identifier le problème (trou ? half-edge dans le mauvais sens car la face est mal orientée ? Autre ?)
 
 L'exportation de l'objet 3D modifié est fonctionnel mais l'objet 3D disparait de la scène une fois
-l'exportation faite.
+l'exportation faite. Les formats d'export supporté pour le moment sont STL et OBJ.
 
 Lorsqu'on sélectionne une face, on peut modifier les coordonnées des points dans le menu de modification.
 La touche entrée valide la saisie et le modèle 3D se met à jour (comme la structure de données interne).
@@ -20,4 +22,5 @@ Il est possible de rajouter "l'anti-aliasing" à l'objet. Cette fonctionnalité 
 
 Pour finir, il est possible de passer de la vue "fil de fer" initiale à l'import du fichier en "vue matérielle"
 et vise versa. Bien que fonctionnelle, le changement de mode présente un bug : si l'objet 3D est déplacé dans la
-scène, au changement de vue, l'objet est repositionné au centre du plan.
+scène, au changement de vue, l'objet est repositionné au centre du plan et la boundingBox de l'ancien objet reste affichée
+mais disparait au clic.
