@@ -1,0 +1,23 @@
+Cette itération a été plutôt fructueuse. La structure de données est consolidée et la conversion entre le
+fichier STL et les données brutes est beaucoup plus rapide.
+
+L'exportation de l'objet 3D modifié est fonctionnel mais l'objet 3D disparait de la scène une fois
+l'exportation faite.
+
+Lorsqu'on sélectionne une face, on peut modifier les coordonnées des points dans le menu de modification.
+La touche entrée valide la saisie et le modèle 3D se met à jour (comme la structure de données interne).
+Il est aussi possible de modifier la position d'un point en le sélectionnant directement sur l'objet 3D
+(point mis en couleur lors de la sélection d'une face). Au relâchement de la souris, le modèle 3D se met
+à jour. Cette fonctionnalité peut présenter un bug dont on a pas encore réussi à déterminer la cause :
+Après avoir déplacé plusieurs fois un point, il est possible qu'au relâchement de la souris,
+le modèle 3D ne se mette pas à jour pour positionner le coin correspondant à l'endroit où le
+point a été bougé. Il suffit de re-sélectionner la face en cliquant deux fois dessus, pour saisir à
+nouveau le point et le déplacer à l'endroit désiré. On cherchera à corriger ce bug dans les prochaines itérations.
+
+En sélectionnant la globalité de l'objet, si on double-clique dessus l'objet est positionné au milieu de l'écran.
+
+Il est possible de rajouter "l'anti-aliasing" à l'objet. Cette fonctionnalité ne présente pas de bug.
+
+Pour finir, il est possible de passer de la vue "fil de fer" initiale à l'import du fichier en "vue matérielle"
+et vise versa. Bien que fonctionnelle, le changement de mode présente un bug : si l'objet 3D est déplacé dans la
+scène, au changement de vue, l'objet est repositionné au centre du plan.
