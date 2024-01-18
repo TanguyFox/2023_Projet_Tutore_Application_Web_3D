@@ -97,8 +97,10 @@ function rebuildAll(antialiasStat){
     transformControls.dispose();
     orbitcontrols.dispose();
     renderer.dispose();
+    renderer.forceContextLoss();
 
     renderer = new THREE.WebGLRenderer({antialias: antialiasStat});
+
     renderer.setSize(widthS, heightS);
 
     sceneContrainer.appendChild(renderer.domElement);

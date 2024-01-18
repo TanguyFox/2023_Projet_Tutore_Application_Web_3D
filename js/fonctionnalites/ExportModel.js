@@ -42,7 +42,6 @@ function exportInObj(scene) {
 function exportMesh(scene) {
     let file;
     let newScene = clearScene(scene)
-    clearScene(scene)
     const fileExtension = document.getElementById("formatSelector").value
     switch (fileExtension) {
         case "stl" :
@@ -55,7 +54,6 @@ function exportMesh(scene) {
             file = exportInGLTF(scene)
         }*/
     }
-    console.log(file)
     createDowloadLink(file, fileExtension);
 }
 
@@ -77,7 +75,6 @@ function clearScene(scene) {
            sceneToExport.add(child)
        }
    })
-
     return sceneToExport
 }
 
