@@ -53,7 +53,7 @@ const stlloader = new STLLoader();
                             generaux.color_mesh.r, generaux.color_mesh.g, generaux.color_mesh.b);
                     }
 
-                    // generaux.geometry_model.center();
+                     generaux.geometry_model.center();
                     // material = new THREE.MeshBasicMaterial({vertexColors: true});
                     // console.log(material);
                     // material.transparent = true;
