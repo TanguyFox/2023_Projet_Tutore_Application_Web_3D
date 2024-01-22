@@ -9,6 +9,7 @@ import {mesh, geometry_model} from "./tool/Element3DGeneraux";
 import {displayModal, exportMesh} from "./fonctionnalites/ExportModel"
 import * as modificationMenu from './controleurs/ModificationMenu.js';
 import {deplacerPoint, mouseUpReinitialisation, setMouseDown} from "./fonctionnalites/ModifCoordPoint";
+import {appearMenuContextuel} from "./vue/MenuContextuel";
 
 
 
@@ -46,5 +47,9 @@ newModel.onclick = () => {input.click()};
 renderer.domElement.addEventListener('mousedown', setMouseDown);
 renderer.domElement.addEventListener('mousemove', deplacerPoint);
 renderer.domElement.addEventListener('mouseup', mouseUpReinitialisation);
+
+//évènement du menu contextuel
+renderer.domElement.addEventListener('contextmenu', appearMenuContextuel);
+
 
 console.log(mesh);
