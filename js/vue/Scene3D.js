@@ -7,6 +7,7 @@ import {initViewHelper} from "./viewhelper";
 import {onPointerMove} from "../fonctionnalites/SelectionFace";
 import {onDoubleClick, onPointerClick} from "../controleurs/Scene3DControleur";
 import {deplacerPoint, mouseUpReinitialisation, setMouseDown} from "../fonctionnalites/ModifCoordPoint";
+import {mesh} from "../tool/Element3DGeneraux";
 
 
 /**
@@ -128,6 +129,21 @@ function rebuildAll(antialiasStat){
     renderer.domElement.addEventListener('mouseup', mouseUpReinitialisation);
 }
 
+function showSnackBar() {
+    let snackbar = document.createElement("div");
+    snackbar.id = "snackbar";
+
+    if (mesh.badHalfEdges.length > 0) {
+        snackbar.className = "warning";
+        snackbar.innerHTML = `Nous avons détecté ${mesh.badHalfEdges.length} problème(s) sur votre modèle`;
+    } else {
+        snackbar.className = "success";
+        snackbar.innerHTML = "Nous n'avons détecté aucun problème sur votre modèle";
+    }
+    document.body.appendChild(snackbar);
+    setTimeout(function(){ document.body.removeChild(snackbar)}, 5000);
+}
+
 
 
 export {
@@ -141,5 +157,6 @@ export {
     orbitcontrols,
     widthS,
     heightS,
-    rebuildAll
+    rebuildAll,
+    showSnackBar
 }
