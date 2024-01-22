@@ -1,5 +1,6 @@
 import {OBJExporter, STLExporter} from "three/addons";
 import * as THREE from "three";
+import {meshModel} from "../tool/Element3DGeneraux";
 
 const exportModal = document.getElementById("exportModal");
 //const exportButton = document.getElementById("exportButton");
@@ -41,7 +42,8 @@ function exportInObj(scene) {
 
 function exportMesh(scene) {
     let file;
-    let newScene = clearScene(scene)
+    // let newScene = clearScene(scene)
+    let newScene = meshModel;
     const fileExtension = document.getElementById("formatSelector").value
     switch (fileExtension) {
         case "stl" :
@@ -68,15 +70,15 @@ function createDowloadLink(blob, extension) {
     document.body.removeChild(link)
 }
 
-function clearScene(scene) {
-    let sceneToExport = new THREE.Scene();
-   scene.traverse(child => {
-       if (child.isGroup) {
-           sceneToExport.add(child)
-       }
-   })
-    return sceneToExport
-}
+// function clearScene(scene) {
+//     let sceneToExport = new THREE.Scene();
+//    scene.traverse(child => {
+//        if (child.isGroup) {
+//            sceneToExport.add(child)
+//        }
+//    })
+//     return sceneToExport
+// }
 
 export {
     displayModal,
