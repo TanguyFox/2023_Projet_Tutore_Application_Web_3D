@@ -15,12 +15,19 @@ export function appearMenuContextuel(event){
     menuContextuelDiv.innerHTML = html;
     menuContextuelDiv.style.top = event.clientY + "px";
     menuContextuelDiv.style.left = event.clientX + "px";
+    menuContextuelDiv.style.display = "initial";
     console.log("menuContextuel : " + event.clientX + " : " + event.clientY);
     menuContextuelDiv.children[0].style.opacity = "1";
-
+    menuContextuelDiv.children[0].addEventListener('click', hiddenMenuContextuel);
 }
 
-menuContextuelDiv.addEventListener('mouseleave', function(){
-    menuContextuelDiv.innerHTML='';
-})
+menuContextuelDiv.addEventListener('mouseleave', hiddenMenuContextuel);
+function hiddenMenuContextuel(){
+    setTimeout(function (){
+        menuContextuelDiv.innerHTML='';
+        menuContextuelDiv.style.top = "120%";
+        menuContextuelDiv.style.left = "120%";
+        menuContextuelDiv.style.display = "none";
+    }, 350);
+}
 
