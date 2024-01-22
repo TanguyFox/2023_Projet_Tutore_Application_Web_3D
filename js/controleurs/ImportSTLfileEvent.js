@@ -6,6 +6,8 @@ import * as loadBar from "../tool/loadBarData";
 import * as Scene3D from "../vue/Scene3D.js";
 import * as generaux from "../tool/Element3DGeneraux.js";
 import {convertSTLToData} from "../tool/DataStructureImplementation.js";
+import {boundingBoxObject} from "../tool/Element3DGeneraux.js";
+import {removeBoundingBox} from "../vue/BoundingBoxHandler";
 
 
 /**
@@ -28,15 +30,33 @@ let wireframe;
 export function handleFileSelect(event) {
 
     const file = event.target.files[0];
+
+    let input = document.getElementById("inputfile");
+    input.value = '';
+
     if (file) {
 
         //S'il y a déjà un model 3D de chargé, on l'enlève
         if (generaux.group) {
+            Scene3D.transformControls.detach();
             Scene3D.scene.remove(generaux.group);
+            Scene3D.transformControls.detach();
+
+            let modeFaceHtml = document.getElementById('face-mode-check');
+            if(modeFaceHtml.checked){
+                modeFaceHtml.checked = false;
+                modeFaceHtml.dispatchEvent(new Event('change'));
+            }
+
+            if(boundingBoxObject.boundingBox){
+                removeBoundingBox(boundingBoxObject);
+            }
+
         }
 
         loadSpin.showLoadingScreen();
-const stlloader = new STLLoader();
+
+    const stlloader = new STLLoader();
         try {
             stlloader.load(URL.createObjectURL(file), function (geometry) {
                     loadSpin.hideLoadingScreen();
@@ -54,34 +74,23 @@ const stlloader = new STLLoader();
                     }
 
                      generaux.geometry_model.center();
-                    // material = new THREE.MeshBasicMaterial({vertexColors: true});
-                    // console.log(material);
-                    // material.transparent = true;
-                    // material.opacity = 0.65;
-                    // console.log(material);
-                    // material.setColorMesh = 0xFFFFFF;
-
-                    //add shadows
-                    //generaux.geometry_model.
 
                     wireframe = new THREE.WireframeGeometry(geometry);
 
-                    //couleur de ligne
-                    //par défaut, texture pleine
-                    //generaux.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
-
-                    //generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, generaux.wireframeMaterial));
-
                     console.log(generaux.meshModel);
 
-                    //generaux.setGroup(new THREE.Group());
                     generaux.groupAsWireframe();
-                    //generaux.group.add(generaux.meshModel)//, generaux.lineModel);
+
                     Scene3D.scene.add(generaux.group);
 
                     const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
                     generaux.setMesh(mesh);
-                    console.log(generaux.mesh);
+                    console.log(mesh);
+                    Scene3D.showSnackBar();
+                    if (mesh.badHalfEdges.length > 0) {
+                        console.log(mesh.badHalfEdges.length + "Problem detected")
+                        mesh.highlightEdge()
+                    }
                 }
             );
 
@@ -89,7 +98,6 @@ const stlloader = new STLLoader();
             console.log(e.message);
         }
 
-        console.log(generaux.mesh)
         document.getElementById("export").style.display = "block"
         document.getElementById("new-model").style.display = "block"
         importButton.style.display = "none";

@@ -34,4 +34,30 @@
 }
 
 
+#snackbar {
+    max-width: calc(100% - 350px);; /* Set a default minimum width */
+    max-height: 200px;
+    text-align: center; /* Centered text */
+    border: solid 2px black; /* Add a solid border */
+    border-radius: 2px; /* Rounded borders */
+    padding: 5px; /* Padding */
+    position: absolute;
+    justify-content: flex-start;
+    box-sizing: border-box;
+    box-shadow: 0 0 4px black;
+    bottom: 50px;
+    left: 10%;
+}
+
+.warning {
+    background-color: #f44336;
+    color: black;
+}
+
+.success {
+    background-color: #4CAF50;
+    color: black;
+}
+
+
 
