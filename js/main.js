@@ -24,6 +24,7 @@ input.addEventListener('change', handleFileSelect);
 importButton.addEventListener('click', function () {
     input.click();
 });
+
 animate();
 
 renderer.domElement.addEventListener('mousemove', onPointerMove, false);

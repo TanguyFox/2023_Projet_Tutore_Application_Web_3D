@@ -6,6 +6,8 @@ import * as loadBar from "../tool/loadBarData";
 import * as Scene3D from "../vue/Scene3D.js";
 import * as generaux from "../tool/Element3DGeneraux.js";
 import {convertSTLToData} from "../tool/DataStructureImplementation.js";
+import {boundingBoxObject} from "../tool/Element3DGeneraux.js";
+import {removeBoundingBox} from "../vue/BoundingBoxHandler";
 
 
 /**
@@ -28,15 +30,32 @@ let wireframe;
 export function handleFileSelect(event) {
 
     const file = event.target.files[0];
+
+    let input = document.getElementById("inputfile");
+    input.value = '';
+
     if (file) {
 
         //S'il y a déjà un model 3D de chargé, on l'enlève
         if (generaux.group) {
             Scene3D.scene.remove(generaux.group);
+            Scene3D.transformControls.detach();
+
+            let modeFaceHtml = document.getElementById('face-mode-check');
+            if(modeFaceHtml.checked){
+                modeFaceHtml.checked = false;
+                modeFaceHtml.dispatchEvent(new Event('change'));
+            }
+
+            if(boundingBoxObject.boundingBox){
+                removeBoundingBox(boundingBoxObject);
+            }
+
         }
 
         loadSpin.showLoadingScreen();
-const stlloader = new STLLoader();
+
+    const stlloader = new STLLoader();
         try {
             stlloader.load(URL.createObjectURL(file), function (geometry) {
                     loadSpin.hideLoadingScreen();
