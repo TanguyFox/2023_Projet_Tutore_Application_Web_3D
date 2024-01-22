@@ -141,9 +141,9 @@ export function onDoubleClick(event){
             if(Generaux.faceIndexSelected == null){
                 const boundingBox = new THREE.Box3().setFromObject(Generaux.meshModel);
                 const center = boundingBox.getCenter(new THREE.Vector3());
-                const offset = center.clone().sub(orbitcontrols.target);
-                camera.position.add(offset);
-                orbitcontrols.target.copy(center);
+                const offset = center.clone().sub(Scene3D.orbitcontrols.target);
+                Scene3D.camera.position.add(offset);
+                Scene3D.orbitcontrols.target.copy(center);
                 viewhelper.center.copy(center);
                 return;
             }

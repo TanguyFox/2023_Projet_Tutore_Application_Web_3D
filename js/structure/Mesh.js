@@ -38,7 +38,7 @@ Mesh.prototype.highlightEdge = function () {
             let edgesLine = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({color: 0xff0000, linewidth : 10}));
             group.add(edgesLine);
     });
-console.log(group);
+    console.log(group);
 }
 
 
