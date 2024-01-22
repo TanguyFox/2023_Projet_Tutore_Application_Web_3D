@@ -40,7 +40,6 @@ export function handleFileSelect(event) {
         if (generaux.group) {
             Scene3D.transformControls.detach();
             Scene3D.scene.remove(generaux.group);
-            Scene3D.transformControls.detach();
 
             let modeFaceHtml = document.getElementById('face-mode-check');
             if(modeFaceHtml.checked){
@@ -105,6 +104,9 @@ export function handleFileSelect(event) {
         toolbar.style.display = "flex";
         menuMD.style.display = "block";
         //panel.style.display = "block";
+
+        //resize the scene
+        window.dispatchEvent(new Event('resize'));
     }
 }
 
