@@ -55,14 +55,6 @@ export function animate(){
     executeRenderHelper();
 }
 
-
-// semble iutile
-// console.log(Scene3D.transformControls)
-// if(typeof Scene3D.transformControls!=='undefined'){
-//     console.log("transformControls")
-//     Scene3D.transformControls.addEventListener('change', render);
-// }
-
 /**
  * génère un boundingBox pour l'objet, sélectionne la face et sélection l'objet
  * @param event
