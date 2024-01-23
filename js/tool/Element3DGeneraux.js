@@ -56,8 +56,8 @@ function setGroup(groupsetter){
 function groupAsWireframe() {
     if (!group) {
         group = new THREE.Group();
-    setMeshModel(new THREE.Mesh(geometry_model, wireframeMaterial));
-    group.add(meshModel);
+        setMeshModel(new THREE.Mesh(geometry_model, wireframeMaterial));
+        group.add(meshModel);
     } else {
         meshModel.material = wireframeMaterial;
     }
