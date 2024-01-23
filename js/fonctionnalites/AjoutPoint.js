@@ -23,7 +23,13 @@ export function ajoutPoint(menuContextuel){
     let sphere = ajPoint3D();
     afficherSingleCoordPoint('', sphere, sphere.position, "#ffff00");
     //initEventInputCoord();
-    remplirStructureDeDonnees(sphere.position);
+   // remplirStructureDeDonnees(sphere.position);
+    let newPoint = new Point(sphere.position.x, sphere.position.y, sphere.position.z);
+    let troisPointsProches = trouver3ptsProche(newPoint);
+    majBufferGeometry(newPoint, troisPointsProches[0].point, troisPointsProches[1].point);
+    majBufferGeometry(newPoint, troisPointsProches[1].point, troisPointsProches[2].point);
+    majBufferGeometry(newPoint, troisPointsProches[0].point, troisPointsProches[2].point);
+
 }
 
 /**
@@ -75,32 +81,70 @@ function ajPoint3D(){
     console.log(sphere.uuid)
     console.log(Scene3D.scene)
 
-    majBufferGeometry(sphere.position);
+
     return sphere;
 }
 
-function majBufferGeometry(coordonnees){
+function trouver3ptsProche(newPoint){
+    //trouver les trois points les plus proches
+    let troisPoints = [];
+    let pointsDejaAjoutes = new Set();
+    let faces = mesh.faces;
+    faces.forEach((uneFace) => {
+        let distanceP1 = uneFace.edge.vertex.point.distance(newPoint);
+        let distanceP2 = uneFace.edge.next.vertex.point.distance(newPoint);
+        let distanceP3 = uneFace.edge.prev.vertex.point.distance(newPoint);
+
+        // Ajouter les distances et les points à un tableau temporaire, uniquement si le point n'a pas déjà été ajouté
+        if (!pointsDejaAjoutes.has(uneFace.edge.vertex.point)) {
+            troisPoints.push({ distance: distanceP1, point: uneFace.edge.vertex.point });
+            pointsDejaAjoutes.add(uneFace.edge.vertex.point);
+        }
+
+        if (!pointsDejaAjoutes.has(uneFace.edge.next.vertex.point)) {
+            troisPoints.push({ distance: distanceP2, point: uneFace.edge.next.vertex.point });
+            pointsDejaAjoutes.add(uneFace.edge.next.vertex.point);
+        }
+
+        if (!pointsDejaAjoutes.has(uneFace.edge.prev.vertex.point)) {
+            troisPoints.push({ distance: distanceP3, point: uneFace.edge.prev.vertex.point });
+            pointsDejaAjoutes.add(uneFace.edge.prev.vertex.point);
+        }
+
+
+
+    })
+    // Trier le tableau en fonction de la distance croissante
+    troisPoints.sort((a, b) => a.distance - b.distance);
+// Sélectionner les trois premiers points du tableau trié
+    troisPoints = troisPoints.slice(0, 3);
+
+    return troisPoints;
+}
+
+function majBufferGeometry(newPoint, p1, p2){
     let positionAttribute = geometry_model.attributes.position;
     console.log(geometry_model.attributes.position)
     let positions = Array.from(positionAttribute.array);
-    console.log(positions)
-    positions.push(coordonnees.x);
-    positions.push(coordonnees.y);
-    positions.push(coordonnees.z);
+    console.log(positions);
 
     /*
     Il faut rentrer trois points sinon ça bug ! donc je dois trouver les points les plus proches au nouveau
     point avant de mettre à jour la structure
      */
+    positions.push(newPoint.x);
+    positions.push(newPoint.y);
+    positions.push(newPoint.z);
 
+    positions.push(p1.x);
+    positions.push(p1.y);
+    positions.push(p1.z);
 
-    /*let newPositions = new Float32Array([
-        ...positionAttribute.array,
-        coordonnees.x,
-        coordonnees.y,
-        coordonnees.z
-    ]);*/
-    console.log(positions)
+    positions.push(p2.x);
+    positions.push(p2.y);
+    positions.push(p2.z);
+
+    //console.log(positions)
     geometry_model.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array(positions), 3 ) );
     console.log(geometry_model);
 
@@ -109,19 +153,10 @@ function majBufferGeometry(coordonnees){
     //geometry_model.computeFaceNormals(); // Recalcul des normales des faces
     geometry_model.computeVertexNormals();
     geometry_model.attributes.position.needsUpdate = true;
-    let hasNaN = geometry_model.attributes.position.array.some(isNaN);
-    if (hasNaN) {
-        console.error('Les données de position contiennent des valeurs NaN.');
-    }
+    Scene3D.transformControls.detach();
     majEdges();
 }
 
 function remplirStructureDeDonnees(coordonnees){
-    //trouver les trois points les plus proches
-    let newPoint = new Point(coordonnees.x, coordonnees.y, coordonnees.z);
-    let troisPoints = [];
-    let faces = mesh.faces;
-    faces.forEach((uneFace) => {
 
-    })
 }
