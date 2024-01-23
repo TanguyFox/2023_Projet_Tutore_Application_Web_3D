@@ -45,6 +45,16 @@ Point.prototype.set = function (point){
         this.z = point.z;
 }
 
+Point.prototype.distance = function (point){
+    // Supposons que Point a des propriétés x, y et z
+    let dx = this.x - point.x;
+    let dy = this.y - point.y;
+    let dz = this.z - point.z;
+
+    // Retourner la distance euclidienne entre les deux points
+    return Math.sqrt(dx*dx + dy*dy + dz*dz);
+}
+
 
 function isCoordonneesEgales(a, b){
     return Math.abs(a-b) < 1e-10;
