@@ -1,6 +1,3 @@
-import * as THREE from 'three';
-import {mesh, setMesh} from "./Element3DGeneraux";
-
 /**
  * Module gérant la barre de progression du chargement des données
  */
@@ -9,19 +6,19 @@ let progressBarData = document.querySelector('#progress-barData');
 let loadingMessage = document.getElementById('loading-message');
 
 // Afficher la barre de chargement de chargement
-function showLoadingScreen() {
+function showProgressBar() {
     document.querySelector("#progressBarData").style.display = 'flex';
 }
 
 // Masquer la barre de chargement de chargement
-function hideLoadingScreen() {
+function hideProgressBar() {
     document.querySelector("#progressBarData").style.display = 'none';
 }
 
 
 // Fonction à appeler une fois le fichier chargé
 function onObjectLoad(object) {
-    hideLoadingScreen();
+    hideProgressBar()
 }
 
 /**
@@ -33,12 +30,12 @@ function progressBarMaj(progression) {
     progressBarData.style.width = progression + '%';
     loadingMessage.innerHTML = 'Chargement des données... ' + Math.round(progression) + '%';
     if (progression === 100) {
-        hideLoadingScreen()
+        hideProgressBar();
     }
 }
 
 export {
-    showLoadingScreen,
-    hideLoadingScreen,
+    showProgressBar,
+    hideProgressBar,
     progressBarMaj
 }
