@@ -42,8 +42,6 @@ console.log("initScene3D")
 //Camera
 //------------------------------------------
     camera = new THREE.PerspectiveCamera(75, widthS / heightS, 0.1, 1000);
-    camera.position.set(5, 5, 10);
-    camera.lookAt(0, 0, 0);
 //------------------------------------------
 
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins

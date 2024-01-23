@@ -34,6 +34,10 @@ export function handleFileSelect(event) {
     let input = document.getElementById("inputfile");
     input.value = '';
 
+    //reset camera
+    Scene3D.camera.position.set(5, 5, 10);
+    Scene3D.orbitcontrols.target.set(0, 0, 0);
+
     if (file) {
 
         //S'il y a déjà un model 3D de chargé, on l'enlève
@@ -60,7 +64,7 @@ export function handleFileSelect(event) {
         try {
             stlloader.load(URL.createObjectURL(file), function (geometry) {
                     loadSpin.hideLoadingScreen();
-                    loadBar.showLoadingScreen();
+                    loadBar.showProgressBar();
                     generaux.setGeometryModel(geometry);
 
                     // configure the color
