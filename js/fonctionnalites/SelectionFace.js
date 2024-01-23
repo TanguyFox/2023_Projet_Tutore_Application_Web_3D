@@ -135,7 +135,7 @@ function afficherCoordPoints(vertexA, vertexB, vertexC){
  * @param vertex
  * @param color
  */
-function afficherSingleCoordPoint(name, mesh, vertex, color){
+export function afficherSingleCoordPoint(name, mesh, vertex, color){
     let divInfo = document.createElement("div");
     infoCoordPoints.appendChild(divInfo);
     divInfo.classList.add('info-point');
