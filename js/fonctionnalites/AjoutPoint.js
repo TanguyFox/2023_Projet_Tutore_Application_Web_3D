@@ -11,8 +11,13 @@ import * as Scene3D from "../vue/Scene3D";
 import * as Raycaster from "../tool/Raycaster";
 import {int} from "three/nodes";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
+import {geometry_model, groupAsWireframe, mesh} from "../tool/Element3DGeneraux";
+import {Point} from "../structure/Point";
+import {majEdges} from "./ModifCoordPoint";
+import {camera} from "../vue/Scene3D";
+import * as generaux from "../tool/Element3DGeneraux";
 
-let pointColor = 0xFFFF00;
+
 
 export function ajoutPoint(menuContextuel){
     let sphere = ajPoint3D();
@@ -35,13 +40,12 @@ function ajPoint3D(){
 
     // Obtenez la liste des objets intersectés
     let intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
-    console.log(intersects)
 
     let isObject = false;
 
     // Créez une nouvelle sphère à la position du clic
     let geometry = new THREE.SphereGeometry(0.1, 32, 32);
-    let material = new THREE.MeshBasicMaterial({ color: pointColor });
+    let material = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
     let sphere = new THREE.Mesh(geometry, material);
 
     for(let i = 0; i < intersects.length; i ++ ){
@@ -68,9 +72,51 @@ function ajPoint3D(){
     }
 
     Scene3D.scene.add(sphere);
+    console.log(sphere.uuid)
+    console.log(Scene3D.scene)
+
+    majBufferGeometry(sphere.position);
     return sphere;
 }
 
-function remplirStructureDeDonnees(coordonnees){
+function majBufferGeometry(coordonnees){
+    let positionAttribute = geometry_model.attributes.position;
+    console.log(geometry_model.attributes.position)
+    let positions = Array.from(positionAttribute.array);
+    console.log(positions)
+    positions.push(coordonnees.x);
+    positions.push(coordonnees.y);
+    positions.push(coordonnees.z);
 
+
+    /*let newPositions = new Float32Array([
+        ...positionAttribute.array,
+        coordonnees.x,
+        coordonnees.y,
+        coordonnees.z
+    ]);*/
+    console.log(positions)
+    geometry_model.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array(positions), 3 ) );
+    console.log(geometry_model);
+
+    geometry_model.computeBoundingSphere(); // Recalcul du sphere de la bounding box
+    geometry_model.computeBoundingBox(); // Recalcul de la bounding box
+    //geometry_model.computeFaceNormals(); // Recalcul des normales des faces
+    geometry_model.computeVertexNormals();
+    geometry_model.attributes.position.needsUpdate = true;
+    let hasNaN = geometry_model.attributes.position.array.some(isNaN);
+    if (hasNaN) {
+        console.error('Les données de position contiennent des valeurs NaN.');
+    }
+    majEdges();
+}
+
+function remplirStructureDeDonnees(coordonnees){
+    //trouver les trois points les plus proches
+    let newPoint = new Point(coordonnees.x, coordonnees.y, coordonnees.z);
+    let troisPoints = [];
+    let faces = mesh.faces;
+    faces.forEach((uneFace) => {
+
+    })
 }

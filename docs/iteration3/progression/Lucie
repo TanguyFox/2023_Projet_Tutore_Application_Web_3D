@@ -16,5 +16,10 @@ Impossible d'avoir le point exactement à l'endroit du clic de la souris, j'y ar
 Xin m'a aidée sur le problème du point qui ne se générait pas à l'endroit du clic de la souris.
 Je passe donc à la suite : remplir et modifier la structure de données en conséquence
 
+La mise à jour de l'objet 3D (mise à jour des arètes pour inclure le nouveau point dans la structure du
+geometry_model) se fait mal : mon geometry_model intègre bien les nouvelles coordonnées or je dois recréer un
+WireFrameGeometry avec ce nouveau geometry_model et là, j'ai des NaN qui arrivent. Ca fait lancer une erreur
+sur le wireFrame. Mais étant donné que me geometry_model à l'air correct dans ses nombres, je ne vois pas pourquoi
+le wireframe ne l'est pas
 
 

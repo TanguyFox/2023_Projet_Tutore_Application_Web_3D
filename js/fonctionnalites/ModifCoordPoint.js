@@ -40,14 +40,17 @@ export function modifCoord(event){
     console.log(ancienPoint);
     faces.forEach((uneFace) => {
         let halfedgeDep = uneFace.edge;
-        if(halfedgeDep.vertex.point.equals(ancienPoint)){
-            halfedgeDep.vertex.point.set(newPoint);
-            nbPointModif += 1;
-            //console.log('nouvelles coordonnees : ');
-            //console.log(halfedgeDep.vertex.point);
-        }
+        modifCoordPointOfHalfedge(halfedgeDep, ancienPoint, newPoint);
+        modifCoordPointOfHalfedge(halfedgeDep.next, ancienPoint, newPoint);
+        modifCoordPointOfHalfedge(halfedgeDep.prev, ancienPoint, newPoint);
     })
     console.log("setCoord : " + nbPointModif);
+}
+
+function modifCoordPointOfHalfedge(halfedge, ancienPoint, newPoint){
+    if(halfedge.vertex.point.equals(ancienPoint)){
+        halfedge.vertex.point.set(newPoint);
+    }
 }
 
 /**
@@ -143,7 +146,7 @@ function setPointColore(){
 /**
  * Méthode qui met à jour les arêtes de la structure 3D. Supprime les anciennes et redéfinit les nouvelles
  */
-function majEdges(){
+export function majEdges(){
     generaux.group.remove(generaux.lineModel);
     Scene3D.scene.remove(generaux.group);
     let wireframe = new THREE.WireframeGeometry(geometry_model);
