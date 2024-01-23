@@ -64,7 +64,7 @@ export function handleFileSelect(event) {
         try {
             stlloader.load(URL.createObjectURL(file), function (geometry) {
                     loadSpin.hideLoadingScreen();
-                    loadBar.showLoadingScreen();
+                    loadBar.showProgressBar();
                     generaux.setGeometryModel(geometry);
 
                     // configure the color
