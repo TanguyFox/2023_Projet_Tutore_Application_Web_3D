@@ -40,6 +40,7 @@ export function handleFileSelect(event) {
         if (generaux.group) {
             Scene3D.transformControls.detach();
             Scene3D.scene.remove(generaux.group);
+            generaux.setGroup(null);
 
             let modeFaceHtml = document.getElementById('face-mode-check');
             if(modeFaceHtml.checked){
@@ -72,7 +73,7 @@ export function handleFileSelect(event) {
                             generaux.color_mesh.r, generaux.color_mesh.g, generaux.color_mesh.b);
                     }
 
-                     generaux.geometry_model.center();
+                    generaux.geometry_model.center();
 
                     wireframe = new THREE.WireframeGeometry(geometry);
 

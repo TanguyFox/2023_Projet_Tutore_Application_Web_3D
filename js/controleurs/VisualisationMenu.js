@@ -25,8 +25,7 @@ document.getElementById('grid-check').addEventListener('change', function(event)
 });
 
 document.getElementById('anti-aliasing-check').addEventListener('change', function(event){
-    let antialiasEtat = event.target.checked;
-    Scene3D.rebuildAll(antialiasEtat);
+    Scene3D.rebuildAll(event.target.checked);
 });
 
 document.getElementById('maillage-texture-check').addEventListener('change', function(event){
