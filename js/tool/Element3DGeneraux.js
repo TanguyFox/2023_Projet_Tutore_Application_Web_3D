@@ -54,19 +54,19 @@ function setGroup(groupsetter){
 }
 
 function groupAsWireframe() {
-    Scene3D.transformControls.detach()
-    group = new THREE.Group();
+    if (!group) {
+        group = new THREE.Group();
     setMeshModel(new THREE.Mesh(geometry_model, wireframeMaterial));
-    setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
     group.add(meshModel);
+    } else {
+        meshModel.material = wireframeMaterial;
+    }
+    setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
     group.add(lineModel);
 }
 
 function groupAsPlain() {
-    Scene3D.transformControls.detach()
-    group = new THREE.Group();
-    setMeshModel(new THREE.Mesh(geometry_model, plainMaterial));
-    group.add(meshModel);
+    meshModel.material =  plainMaterial;
     group.remove(lineModel);
 }
 

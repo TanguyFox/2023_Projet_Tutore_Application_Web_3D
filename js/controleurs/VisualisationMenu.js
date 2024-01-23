@@ -30,19 +30,5 @@ document.getElementById('anti-aliasing-check').addEventListener('change', functi
 });
 
 document.getElementById('maillage-texture-check').addEventListener('change', function(event){
-
-    Scene3D.scene.remove(generaux.group);
-    if(event.target.checked){
-        //Scene3D.transformControls.detach();
-        generaux.groupAsWireframe();
-        Scene3D.scene.add(generaux.group);
-        Scene3D.scene.remove(generaux.meshModel);
-    }else{
-        //generaux.setMeshModel(new THREE.Mesh(generaux.geometry_model, generaux.plainMaterial));
-        //generaux.group.add(generaux.meshModel);
-        //Scene3D.transformControls.detach();
-        generaux.groupAsPlain();
-        Scene3D.scene.add(generaux.group);
-        Scene3D.scene.remove(generaux.lineModel);
-    }
+    event.target.checked ? generaux.groupAsWireframe() : generaux.groupAsPlain();
 });
