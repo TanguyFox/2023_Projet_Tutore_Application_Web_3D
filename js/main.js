@@ -8,6 +8,7 @@ import {onPointerMove} from "./fonctionnalites/SelectionFace";
 import {mesh, geometry_model} from "./tool/Element3DGeneraux";
 import {displayModal, exportMesh} from "./fonctionnalites/ExportModel"
 import * as modificationMenu from './controleurs/ModificationMenu.js';
+import * as MenuContextuelControleur from "./controleurs/MenuContextuelControleur.js";
 import {deplacerPoint, mouseUpReinitialisation, setMouseDown} from "./fonctionnalites/ModifCoordPoint";
 import {appearMenuContextuel} from "./vue/MenuContextuel";
 

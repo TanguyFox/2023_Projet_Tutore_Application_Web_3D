@@ -1,7 +1,20 @@
-Lundi 22/01
+### Lundi 22/01
  ** Matin **
 Apparition d'un menu contextuel au clic droit de la souris dans la scène.
 Problème par rapport aux élément <a> qui ne s'affichent pas (alors que ce sont les plus important
-à afficher). J'ai beaucoup de mal à comprendre pourquoi
+à afficher). J'ai beaucoup de mal à comprendre pourquoi.
 
-Mardi 23/01
+ ** après-midi **
+mise en place de l'évènement sur le bouton du menu contextuel "point"
+A bout d'une heure j'affiche un point mais pas au bon endroit dans le plan. J'ai encore beaucoup de mal
+avec l'histoire d'intersection par rapport à la caméra et au pointer dans le plan 3D. Je tâtonne beaucoup
+
+Impossible d'avoir le point exactement à l'endroit du clic de la souris, j'y arrive pas
+
+### Mardi 23/01
+ ** Matin **
+Xin m'a aidée sur le problème du point qui ne se générait pas à l'endroit du clic de la souris.
+Je passe donc à la suite : remplir et modifier la structure de données en conséquence
+
+
+

@@ -1,10 +1,12 @@
+import {initEventAjPoint} from "../controleurs/MenuContextuelControleur";
+
 const html = `
 <div class="menuContextuel">
-  <a href="#"><div id="suppMenuContextuel">Point</div></a>
+  <a href="#"><div id="ajPoint">Point</div></a>
   <a href="#"><div></div></a>
   <a href="#"><div></div></a>
   <a href="#"><div></div></a>
-  <a href="#"><div></div></a>
+  <a href="#"><div id="suppMenuContextuel"></div></a>
 </div>
 `;
 
@@ -16,9 +18,9 @@ export function appearMenuContextuel(event){
     menuContextuelDiv.style.top = event.clientY + "px";
     menuContextuelDiv.style.left = event.clientX + "px";
     menuContextuelDiv.style.display = "initial";
-    console.log("menuContextuel : " + event.clientX + " : " + event.clientY);
     menuContextuelDiv.children[0].style.opacity = "1";
     menuContextuelDiv.children[0].addEventListener('click', hiddenMenuContextuel);
+    initEventAjPoint();
 }
 
 menuContextuelDiv.addEventListener('mouseleave', hiddenMenuContextuel);

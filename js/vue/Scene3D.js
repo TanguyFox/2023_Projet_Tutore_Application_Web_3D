@@ -24,8 +24,8 @@ let transformControls;
 let orbitcontrols;
 
 //width / height Scene / a modifier temps en temps pour la Précision de RayCaster
-const widthS = window.innerWidth - 300;
-const heightS = window.innerHeight;
+let widthS = window.innerWidth;
+let heightS = window.innerHeight;
 
 function initScene3D() {
 console.log("initScene3D")
@@ -49,7 +49,6 @@ console.log("initScene3D")
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
     renderer = new THREE.WebGLRenderer({antialias: false});
     renderer.setSize(widthS, heightS);
-
 
     sceneContrainer.appendChild(renderer.domElement);
 
@@ -129,6 +128,11 @@ function rebuildAll(antialiasStat){
     renderer.domElement.addEventListener('mouseup', mouseUpReinitialisation);
 }
 
+function setWidth_Height(width, height) {
+    widthS = width;
+    heightS = height;
+}
+
 function showSnackBar() {
     let snackbar = document.createElement("div");
     snackbar.id = "snackbar";
@@ -158,5 +162,6 @@ export {
     widthS,
     heightS,
     rebuildAll,
+    setWidth_Height,
     showSnackBar
 }
