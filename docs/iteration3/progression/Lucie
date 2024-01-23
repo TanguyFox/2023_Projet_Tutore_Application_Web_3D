@@ -4,7 +4,7 @@ Apparition d'un menu contextuel au clic droit de la souris dans la scène.
 Problème par rapport aux élément <a> qui ne s'affichent pas (alors que ce sont les plus important
 à afficher). J'ai beaucoup de mal à comprendre pourquoi.
 
- ** après-midi **
+ ** Après-midi **
 mise en place de l'évènement sur le bouton du menu contextuel "point"
 A bout d'une heure j'affiche un point mais pas au bon endroit dans le plan. J'ai encore beaucoup de mal
 avec l'histoire d'intersection par rapport à la caméra et au pointer dans le plan 3D. Je tâtonne beaucoup
@@ -22,4 +22,10 @@ WireFrameGeometry avec ce nouveau geometry_model et là, j'ai des NaN qui arrive
 sur le wireFrame. Mais étant donné que me geometry_model à l'air correct dans ses nombres, je ne vois pas pourquoi
 le wireframe ne l'est pas
 
-
+ ** Après-midi **
+Xi a retrouvé la source de mon problème !
+Lorsque je rajoute le point dans le tableau de coordonnées du geometry_model, je dois rajouter trois points
+car le buffer cherche à construire ses faces. Or là il y a un point sans deux autres points pour fermer la face.
+Il créait donc les autres points avec des valeurs NaN lorsque je voulais créer le wireFrameGeometry.
+Je dois donc trouver les points les plus proches avant de mettre à jour le modèle 3D pour qu'il puisse créer
+le structre et toute ses faces.

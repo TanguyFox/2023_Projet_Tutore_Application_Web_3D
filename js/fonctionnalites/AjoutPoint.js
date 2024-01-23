@@ -88,6 +88,11 @@ function majBufferGeometry(coordonnees){
     positions.push(coordonnees.y);
     positions.push(coordonnees.z);
 
+    /*
+    Il faut rentrer trois points sinon ça bug ! donc je dois trouver les points les plus proches au nouveau
+    point avant de mettre à jour la structure
+     */
+
 
     /*let newPositions = new Float32Array([
         ...positionAttribute.array,
