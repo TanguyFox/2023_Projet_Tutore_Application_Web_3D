@@ -15,9 +15,17 @@ import * as SelectionFace from "./SelectionFace.js";
 import {animate, intersects} from "../controleurs/Scene3DControleur";
 
 //MODIFICATION DEPUIS LE MENU DE MODIFICATION
+let allUuid = [] ;
 
+function getAllUuid (){
+    let inputDiv = document.querySelectorAll('.info-point');
+    inputDiv.forEach((element) => {
+        allUuid.push(element.children[1].id);
+    })
+}
 
 export function modifCoord(event){
+    getAllUuid();
     let divParent = event.target.parentNode;
     console.log(divParent);
     let ancienPoint = recreatePointDivParent(divParent);
@@ -165,12 +173,14 @@ let pointSelectionne ;
 //let transformedPosition;
 let sauvegardeAncienPoint;
 export function setMouseDown(event){
+    getAllUuid();
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
     let intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
 
     for(let i = 0 ; i < intersects.length; i++){
-        let meshCourant = isMesh(intersects[i].object.uuid)
-        if(meshCourant!==null){
+        console.log(intersects[i].object);
+        if(isMesh(intersects[i].object.uuid)){
+            let meshCourant = intersects[i].object;
             console.log(meshCourant);
             isMouseDown = true;
             pointSelectionne = meshCourant;
@@ -185,16 +195,13 @@ export function setMouseDown(event){
     }
 }
 function isMesh(uuid){
-    if(uuid===SelectionFace.meshvA.uuid){
-        return SelectionFace.meshvA;
+    console.log(allUuid);
+    console.log(uuid);
+    if(allUuid.includes(uuid)){
+        return true;
+    } else {
+        return false;
     }
-    if(uuid===SelectionFace.meshvB.uuid){
-        return SelectionFace.meshvB;
-    }
-    if(uuid === SelectionFace.meshvC.uuid){
-        return SelectionFace.meshvC;
-    }
-    return null;
 }
 
 //document.addEventListener('mousemove', deplacer)

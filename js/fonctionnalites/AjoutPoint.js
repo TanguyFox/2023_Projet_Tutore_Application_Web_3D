@@ -40,6 +40,7 @@ export function ajoutPoint(menuContextuel){
     Scene3D.transformControls.detach();
 
     majEdges();
+    initEventInputCoord();
 }
 
 /**
@@ -60,7 +61,7 @@ function ajPoint3D(){
     let isObject = false;
 
     // Créez une nouvelle sphère à la position du clic
-    let geometry = new THREE.SphereGeometry(0.1, 32, 32);
+    let geometry = new THREE.SphereGeometry(0.05, 16, 16);
     let material = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
     let sphere = new THREE.Mesh(geometry, material);
 

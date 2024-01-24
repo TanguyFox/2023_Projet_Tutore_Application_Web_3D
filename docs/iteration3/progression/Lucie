@@ -45,3 +45,15 @@ Si c'est bien un problème de sens dans lequel je stock mes points, je dois revo
 
 Donc c'est toujours pas ça le problème. Le soucis vient de la suppression de la ligne dans le mesh_geometry pour
 retirer la grande face. Je dois supprimer des points qui servent de liens donc je perds d'autres faces
+
+
+### Mercredi 24/01
+ ** Matin **
+Ce matin je veux rajouter l'évènement de modification des coordonnées du point pour pouvoir ajuster sa position
+après sa création
+
+9h36 voilà c'est fait
+
+Maintenant faudrait que je fasse disparaitre mon point jaune quand on clique sur la sélection de face ou quand
+on crée un nouveau point.
+
