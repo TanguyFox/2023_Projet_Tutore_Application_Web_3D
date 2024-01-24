@@ -28,3 +28,17 @@ mais peu sur comment les réparer.
 On recommande souvent d'utiliser des logiciels professionnels.
 
 Demain, je vais chercher des méthodes dans la littérature scientifique.
+
+# 24/01/2024
+
+## Tavail effectué
+- Corriger les bugs
+- Trouver une méthode pour réparer les faces mal orientées (Faut encore valider)
+
+La difficulté actuelle est de trouver un moyen de 
+réparer les erreurs détectées.
+
+On peut réparer les erreurs de normals pour les faces, 
+mais pour des erreurs plus complexes, 
+comme réparer un trou, 
+il n'y a toujours pas de progrès significatifs.
