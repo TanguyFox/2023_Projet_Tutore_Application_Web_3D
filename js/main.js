@@ -22,7 +22,7 @@ const exportButton = document.getElementById("exportButton")
 const newModel = document.getElementById("new-model");
 
 
-input.addEventListener('change', handleFileSelect);
+input.addEventListener('change', async () => await handleFileSelect(input.files[0]));
 importButton.addEventListener('click', function () {
     input.click();
 });
