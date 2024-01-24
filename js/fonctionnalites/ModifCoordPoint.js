@@ -15,11 +15,19 @@ import * as SelectionFace from "./SelectionFace.js";
 import {animate, intersects} from "../controleurs/Scene3DControleur";
 
 //MODIFICATION DEPUIS LE MENU DE MODIFICATION
+let allUuid = [] ;
 
+function getAllUuid (){
+    let inputDiv = document.querySelectorAll('.info-point');
+    inputDiv.forEach((element) => {
+        allUuid.push(element.children[1].id);
+    })
+}
 
 export function modifCoord(event){
+    getAllUuid();
     let divParent = event.target.parentNode;
-    console.log(divParent);
+    //console.log(divParent);
     let ancienPoint = recreatePointDivParent(divParent);
     majNameDiv(event.target);
     let nouveauPoint = createNewPoint(divParent);
@@ -37,14 +45,14 @@ export function modifCoord(event){
     //console.log(mesh);
     let faces = mesh.faces;
     let nbPointModif = 0;
-    console.log(ancienPoint);
+    //console.log(ancienPoint);
     faces.forEach((uneFace) => {
         let halfedgeDep = uneFace.edge;
         modifCoordPointOfHalfedge(halfedgeDep, ancienPoint, newPoint);
         modifCoordPointOfHalfedge(halfedgeDep.next, ancienPoint, newPoint);
         modifCoordPointOfHalfedge(halfedgeDep.prev, ancienPoint, newPoint);
     })
-    console.log("setCoord : " + nbPointModif);
+    //console.log("setCoord : " + nbPointModif);
 }
 
 function modifCoordPointOfHalfedge(halfedge, ancienPoint, newPoint){
@@ -165,13 +173,15 @@ let pointSelectionne ;
 //let transformedPosition;
 let sauvegardeAncienPoint;
 export function setMouseDown(event){
+    getAllUuid();
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
     let intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
 
     for(let i = 0 ; i < intersects.length; i++){
-        let meshCourant = isMesh(intersects[i].object.uuid)
-        if(meshCourant!==null){
-            console.log(meshCourant);
+        //console.log(intersects[i].object);
+        if(isMesh(intersects[i].object.uuid)){
+            let meshCourant = intersects[i].object;
+            //console.log(meshCourant);
             isMouseDown = true;
             pointSelectionne = meshCourant;
             sauvegardeAncienPoint = new Point(pointSelectionne.position.x,
@@ -185,16 +195,13 @@ export function setMouseDown(event){
     }
 }
 function isMesh(uuid){
-    if(uuid===SelectionFace.meshvA.uuid){
-        return SelectionFace.meshvA;
+    //console.log(allUuid);
+    //console.log(uuid);
+    if(allUuid.includes(uuid)){
+        return true;
+    } else {
+        return false;
     }
-    if(uuid===SelectionFace.meshvB.uuid){
-        return SelectionFace.meshvB;
-    }
-    if(uuid === SelectionFace.meshvC.uuid){
-        return SelectionFace.meshvC;
-    }
-    return null;
 }
 
 //document.addEventListener('mousemove', deplacer)
@@ -210,7 +217,7 @@ export function deplacerPoint(event) {
 
 export function mouseUpReinitialisation(){
     if ( isMouseDown && (typeof pointSelectionne !== 'undefined')) {
-        console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
+        //console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
         let newPoint = new Point(pointSelectionne.position.x, pointSelectionne.position.y,  pointSelectionne.position.z);
         setCoord(sauvegardeAncienPoint, newPoint);
         setPoint3D(sauvegardeAncienPoint, newPoint);
@@ -223,15 +230,15 @@ export function mouseUpReinitialisation(){
 
 function majInputPoint(pointSelectionne, newPoint){
     let div = document.querySelector("[id=\'"+ pointSelectionne.uuid +"\']");
-    console.log(div);
+    //console.log(div);
     setName_Value(div.children[0], newPoint.x);
     setName_Value(div.children[1], newPoint.y);
     setName_Value(div.children[2], newPoint.z);
 }
 
 function setName_Value(theChildren, theValue){
-    console.log(theChildren);
-    console.log(theValue);
+    //console.log(theChildren);
+    //console.log(theValue);
     theChildren.name = theValue;
     theChildren.value = theValue;
 }

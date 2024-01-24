@@ -8,6 +8,7 @@ import * as THREE from "three";
 import * as Scene3DControleur from "../controleurs/Scene3DControleur";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
 import {setMouseDown} from "./ModifCoordPoint";
+import {removeSphere} from "./AjoutPoint";
 
 /**
  * Module pour la fonctionnalité de traitement de mode (selection de face)
@@ -65,7 +66,7 @@ export function handleModeSelect (event){
  * @param transformedPositions
  */
 export function afficherPoints3D(transformedPositions){
-
+    removeSphere();
     if(Scene3D.scene.children.includes(meshvA)){
         Scene3D.scene.remove(meshvA);
         Scene3D.scene.remove(meshvB);

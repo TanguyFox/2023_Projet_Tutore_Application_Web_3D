@@ -8,6 +8,7 @@ import * as generaux from "../tool/Element3DGeneraux.js";
 import {convertSTLToData} from "../tool/DataStructureImplementation.js";
 import {boundingBoxObject} from "../tool/Element3DGeneraux.js";
 import {removeBoundingBox} from "../vue/BoundingBoxHandler";
+import { VertexNormalsHelper } from 'three/addons/helpers/VertexNormalsHelper.js';
 
 
 /**
@@ -79,6 +80,41 @@ export function handleFileSelect(event) {
 
                     generaux.geometry_model.center();
 
+                    // console.log(generaux.geometry_model.attributes.normal.array);
+
+                    const originalNormals = [];
+                    for (let i = 0; i < generaux.geometry_model.attributes.normal.array.length; i += 9){
+                        originalNormals.push(
+                            generaux.geometry_model.attributes.normal.array[i],
+                            generaux.geometry_model.attributes.normal.array[i+1],
+                            generaux.geometry_model.attributes.normal.array[i+2]
+                        );
+                    }
+
+                    // console.log(originalNormals);
+
+                    generaux.geometry_model.computeVertexNormals();
+
+                    let nbChanged = 0;
+                    let j = 0;
+                    let tolerance = 1e-2;
+                    for(let i = 0; i < generaux.geometry_model.attributes.normal.array.length; i += 9){
+                        if(
+                            Math.abs(originalNormals[j] - generaux.geometry_model.attributes.normal.array[i]) > tolerance ||
+                            Math.abs(originalNormals[j + 1] - generaux.geometry_model.attributes.normal.array[i + 1]) > tolerance ||
+                            Math.abs(originalNormals[j + 2] - generaux.geometry_model.attributes.normal.array[i + 2]) > tolerance
+                        ){
+                            nbChanged++;
+                            // console.log("normal changed");
+                            // console.log(originalNormals[j], generaux.geometry_model.attributes.normal.array[i]);
+                            // console.log(originalNormals[j+1], generaux.geometry_model.attributes.normal.array[i+1]);
+                            // console.log(originalNormals[j+2], generaux.geometry_model.attributes.normal.array[i+2]);
+                        }
+                        j += 3;
+                    }
+
+                    console.log("changed Normal:" + nbChanged);
+
                     wireframe = new THREE.WireframeGeometry(geometry);
 
                     console.log(generaux.meshModel);
@@ -86,6 +122,14 @@ export function handleFileSelect(event) {
                     generaux.groupAsWireframe();
 
                     Scene3D.scene.add(generaux.group);
+
+                    //
+                    // let normalHelper = new VertexNormalsHelper(generaux.meshModel, 2, 0x00ff00, 1);
+                    // Scene3D.scene.add(normalHelper);
+
+
+
+                    //
 
                     const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
                     generaux.setMesh(mesh);
