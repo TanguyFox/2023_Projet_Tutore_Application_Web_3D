@@ -111,13 +111,26 @@
     display: none;
 }
 
+#problem_content
+{
+    display: none;
+}
+
+#problem_panel p {
+    font-size: 1.5em;
+    font-weight: 80;
+    font-variant: all-petite-caps;
+    margin: 0 0 10px;
+
+}
+
 
 #indicator
 {
     position: absolute;
     top: 0.2%;
     left: 0.5%;
-    width: 50%;
+    width: 33%;
     height: 30%;
     background-color: #e88146;
     /*background-color: #e7a27a;*/
