@@ -32,3 +32,20 @@ certains petits problèmes qu'elles ont rencontrés dans leur fonctionnalité.
 - Trouver des algorithmes de détection des problèmes adaptées à notre nouvelle structure de données.
 - Si possible, commencer à tester ces algorithmes.
 ---
+
+### 24/01/2024 :
+
+Cette journée a été riche en tests pour ma part, malheureusement peu fructuant. En effet, j'ai cherché à différencier
+les halfedges étant dupliquées de celles proches d'un potentiel trou.
+
+Comme ces deux type d'halfedge ont comme point commun de ne pas avoir d'arête opposée. Il faut donc trouver d'autres conditons
+permettant de les différencier. Je vais sûrement rechercher ce soir comment les différencier.
+
+Nous avons également discuter avec Xin sur le problème des faces mal orientées. Il semble avoir trouvé une solution, il faudra
+la mettre à l'épreuve.
+
+Enfin, j'ai ajouté un nouvel onglet dans notre menu, permettant de visualisé le nombre de problèmes (trous potentiels, halfedges dupliquées, faces mal orientées).
+
+###### Objectif pour la prochaine fois :
+* Trouver comment différencier les halfedges étant dupliquées de celles proches d'un potentiel trou.
+---
