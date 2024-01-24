@@ -57,3 +57,9 @@ après sa création
 Maintenant faudrait que je fasse disparaitre mon point jaune quand on clique sur la sélection de face ou quand
 on crée un nouveau point.
 9h48 voilà c'est fait
+
+Le problème de suppression de la grande face peut être dû aux normales enregistrées dans three.js. A Etudier.
+Je dois aussi mettre à jour la structure de données. Pour le moment je mets à jour que la géométrie.
+
+  ** Après-midi **
+Mise à jour de la structure de données et préparation des documents pour la soutenance de demain
