@@ -17,10 +17,11 @@ import {majEdges} from "./ModifCoordPoint";
 import {camera} from "../vue/Scene3D";
 import * as generaux from "../tool/Element3DGeneraux";
 
-
+let sphere;
 
 export function ajoutPoint(menuContextuel){
-    let sphere = ajPoint3D();
+    removeSphere();
+    ajPoint3D();
     afficherSingleCoordPoint('', sphere, sphere.position, "#ffff00");
     //initEventInputCoord();
    // remplirStructureDeDonnees(sphere.position);
@@ -63,7 +64,7 @@ function ajPoint3D(){
     // Créez une nouvelle sphère à la position du clic
     let geometry = new THREE.SphereGeometry(0.05, 16, 16);
     let material = new THREE.MeshBasicMaterial({ color: 0xFFFF00 });
-    let sphere = new THREE.Mesh(geometry, material);
+    sphere = new THREE.Mesh(geometry, material);
 
     for(let i = 0; i < intersects.length; i ++ ){
 
@@ -93,9 +94,6 @@ function ajPoint3D(){
     console.log(Scene3D.scene)
 
     */
-
-
-    return sphere;
 }
 
 function trouver3ptsProches(newPoint){
@@ -213,4 +211,11 @@ function includePoint(liste, point){
 
 function remplirStructureDeDonnees(coordonnees){
 
+}
+
+export function removeSphere(){
+    if(typeof sphere !== 'undefined'){
+        Scene3D.scene.remove(sphere);
+        sphere = undefined;
+    }
 }
