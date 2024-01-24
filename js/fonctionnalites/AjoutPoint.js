@@ -61,10 +61,6 @@ export function ajoutPoint(menuContextuel) {
  */
 function ajPoint3D() {
 
-    let mouse = {x: 0, y: 0};
-    mouse.x = Raycaster.pointer.x;
-    mouse.y = Raycaster.pointer.y;
-
     // Utilisez la fonction unproject pour convertir les coordonnées de l'écran en coordonnées de la scène en 3D
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
 

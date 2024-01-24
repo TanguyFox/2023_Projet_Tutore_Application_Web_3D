@@ -8,6 +8,8 @@ import {onPointerMove} from "../fonctionnalites/SelectionFace";
 import {onDoubleClick, onPointerClick} from "../controleurs/Scene3DControleur";
 import {deplacerPoint, mouseUpReinitialisation, setMouseDown} from "../fonctionnalites/ModifCoordPoint";
 import {mesh} from "../tool/Element3DGeneraux";
+import {initEventInputCoord} from "../controleurs/ModificationMenu";
+import {appearMenuContextuel} from "./MenuContextuel";
 
 
 /**
@@ -124,6 +126,7 @@ function rebuildAll(antialiasStat){
     renderer.domElement.addEventListener('mousedown', setMouseDown);
     renderer.domElement.addEventListener('mousemove', deplacerPoint);
     renderer.domElement.addEventListener('mouseup', mouseUpReinitialisation);
+    renderer.domElement.addEventListener('contextmenu', appearMenuContextuel);
 }
 
 function setWidth_Height(width, height) {
