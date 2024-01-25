@@ -36,4 +36,7 @@ HalfEdge.prototype.compare = function(halfedge){
     return this.vertex.compare(halfedge.vertex);
 }
 
+HalfEdge.prototype.equals = function(halfedge){
+    return this.headVertex().equals(halfedge.headVertex()) && this.tailVertex().equals(halfedge.tailVertex());
+}
 

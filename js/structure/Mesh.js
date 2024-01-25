@@ -35,7 +35,7 @@ Mesh.prototype.highlightEdge = function () {
         edges.push(new THREE.Vector3(he.headVertex().point.x, he.headVertex().point.y, he.headVertex().point.z));
         edges.push(new THREE.Vector3(he.tailVertex().point.x, he.tailVertex().point.y, he.tailVertex().point.z));
         let edgesGeometry = new THREE.BufferGeometry().setFromPoints(edges);
-            let edgesLine = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({color: 0xff0000, linewidth : 10}));
+            let edgesLine = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({color: "rgb(250,26,26)", linewidth : 10}));
             group.add(edgesLine);
     });
     console.log(group);

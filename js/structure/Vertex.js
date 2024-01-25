@@ -29,3 +29,7 @@ Vertex.prototype.addHalfEdge = function (he) {
         this.halfedgesTab.push(he)
     }
 }
+
+Vertex.prototype.equals = function (vertex) {
+    return this.compare(vertex) === 0;
+}
