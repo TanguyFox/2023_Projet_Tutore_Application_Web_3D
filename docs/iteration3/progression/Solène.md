@@ -8,7 +8,7 @@ change de vue.
 
 ### Après-midi
 
- Continuation de la matinée, tests sans succès.
+Continuation de la matinée, tests sans succès.
 
 ## Mardi 23/01
 ### Matin 
@@ -23,4 +23,14 @@ Continuation des recherches de la matinée
 ## Mercredi 24/01 
 ### Matin 
 
-Continuation des recherches de la veille
+Continuation & finalisation des recherches de la veille, notamment sur des algorithmes potentiels 
+
+### Après-midi
+
+Préparation du fichier récapitulatif de cette itération
+Recherches sur le calcul de la complexité de l'algorithme de conversion des données (prévu de base pour l'itération 4)
+
+## Jeudi 25/01
+### Matin
+
+Finalisation du fichier récapitulatif de cette itération
