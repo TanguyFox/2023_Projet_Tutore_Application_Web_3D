@@ -51,6 +51,7 @@ export function ajoutPoint(menuContextuel) {
     Scene3D.transformControls.detach();
 
     majEdges();
+    mesh.highlightEdge();
     initEventInputCoord();
 
     remplirStructureDeDonnees(newPoint, troisPointsProches);

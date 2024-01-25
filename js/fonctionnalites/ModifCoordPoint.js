@@ -132,6 +132,7 @@ function setPoint3D(targetPoint, newPoint){
         geometry_model.computeVertexNormals();
         geometry_model.attributes.position = positionAttribute;
         geometry_model.attributes.position.needsUpdate = true;
+        mesh.highlightEdge();
 
     }
 
