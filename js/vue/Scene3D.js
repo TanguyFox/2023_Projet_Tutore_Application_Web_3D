@@ -134,21 +134,6 @@ function setWidth_Height(width, height) {
     heightS = height;
 }
 
-function showSnackBar() {
-    let snackbar = document.createElement("div");
-    snackbar.id = "snackbar";
-
-    if (mesh.badHalfEdges.length > 0) {
-        snackbar.className = "warning";
-        snackbar.innerHTML = `Nous avons détecté ${mesh.badHalfEdges.length} problème(s) sur votre modèle`;
-    } else {
-        snackbar.className = "success";
-        snackbar.innerHTML = "Nous n'avons détecté aucun problème sur votre modèle";
-    }
-    document.body.appendChild(snackbar);
-    setTimeout(function(){ document.body.removeChild(snackbar)}, 5000);
-}
-
 
 
 export {
@@ -164,5 +149,4 @@ export {
     heightS,
     rebuildAll,
     setWidth_Height,
-    showSnackBar
 }
