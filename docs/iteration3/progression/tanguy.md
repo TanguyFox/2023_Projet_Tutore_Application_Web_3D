@@ -49,3 +49,9 @@ Enfin, j'ai ajouté un nouvel onglet dans notre menu, permettant de visualisé l
 ###### Objectif pour la prochaine fois :
 * Trouver comment différencier les halfedges étant dupliquées de celles proches d'un potentiel trou.
 ---
+
+### 25/01/2024 :
+Je me suis rendu compte qu'il n'y a potentiellent pas d'arêtes dupliquées, seulement des arêtes non définies dans le STL lui même.
+Tester avec le fichier ````sphere_error.stl````, celui affiche des erreurs de trous potentiels, alors qu'il n'y en a pas. 
+Cependant, si l'on déplace l'on change un point d'une de ces arêtes, alors le trou apparait, ce qui n'est pas le cas
+sur une face normale.
