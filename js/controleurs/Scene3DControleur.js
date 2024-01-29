@@ -1,5 +1,6 @@
 import * as Scene3D from "../vue/Scene3D.js";
 import * as THREE from "three";
+import * as SecondScene from "../vue/SecondScene.js";
 import {createBoundingBox, removeBoundingBox} from "../vue/BoundingBoxHandler";
 import * as Generaux from "../tool/Element3DGeneraux.js";
 import * as Raycaster from "../tool/Raycaster.js";
@@ -18,7 +19,9 @@ let intersects = [];
 
 //check mode face
 let modeFaceHtml = document.getElementById('face-mode-check');
-//face index
+
+//Scene change
+let ModificationMod = true;
 
 
 //Render
@@ -49,7 +52,12 @@ export function animate(){
     if(Generaux.boundingBoxObject.boundingBox){
         Generaux.boundingBoxObject.boundingBox.update();
     }
-    render();
+
+    if(ModificationMod){
+        render();
+    }else{
+        Scene3D.renderer.render(SecondScene.scene, Scene3D.camera);
+    }
 
     //viewhelper render
     executeRenderHelper();
@@ -90,7 +98,7 @@ export function onPointerClick( event ){
                         paintFace(Generaux.faceIndexSelected, colorAttribute, Generaux.color_mesh)
                     }
                     Generaux.setFaceIndexSelected(intersects[i].faceIndex);
-                    let color = new THREE.Color(0xff0000);
+                    let color = new THREE.Color(0x3655BA);
                     paintFace(Generaux.faceIndexSelected, colorAttribute, color);
 
                     // let geometry = intersects[i].object.geometry;
@@ -137,6 +145,10 @@ export function onDoubleClick(event){
                 Scene3D.camera.position.add(offset);
                 Scene3D.orbitcontrols.target.copy(center);
                 viewhelper.center.copy(center);
+
+                //Pour Deuxième scène
+                SecondScene.group.position.copy(Scene3D.orbitcontrols.target);
+
                 return;
             }
 
@@ -147,8 +159,28 @@ export function onDoubleClick(event){
     }
 }
 
+//Scene switch
+let secondSceneHtml = document.getElementById('scene-switch');
+
+let sceneMessageHtml = document.getElementById('scene-message');
+
+let sceneSwitchImgHtml = document.getElementById('scene-switch-img');
+secondSceneHtml.addEventListener('click', function () {
+    ModificationMod = !ModificationMod;
+
+    if(!ModificationMod){
+        sceneMessageHtml.style.animationName = "fadeIn";
+        sceneSwitchImgHtml.src = "resources/img/sceneChange/edit.svg";
+    }else{
+        sceneMessageHtml.style.animationName = "fadeOut";
+        sceneSwitchImgHtml.src = "resources/img/sceneChange/view.svg";
+    }
+});
+
+
 export {
-    intersects
+    intersects,
+    ModificationMod
 }
 
 

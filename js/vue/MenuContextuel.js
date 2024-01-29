@@ -1,4 +1,5 @@
 import {initEventAjPoint} from "../controleurs/MenuContextuelControleur";
+import * as Scene3DControleur from "../controleurs/Scene3DControleur";
 
 const html = `
 <div class="menuContextuel">
@@ -14,6 +15,10 @@ const menuContextuelDiv = document.querySelector("#menuContextuel");
 
 export function appearMenuContextuel(event){
     //event.preventDefault();
+    if(!Scene3DControleur.ModificationMod){
+        return;
+    }
+
     menuContextuelDiv.innerHTML = html;
     menuContextuelDiv.style.top = event.clientY + "px";
     menuContextuelDiv.style.left = event.clientX + "px";

@@ -71,7 +71,7 @@ export function afficherPoints3D(transformedPositions){
         Scene3D.scene.remove(meshvA);
         Scene3D.scene.remove(meshvB);
         Scene3D.scene.remove(meshvC);
-        console.log(Scene3D.scene);
+        // console.log(Scene3D.scene);
     }
 
     let offset = Generaux.faceIndexSelected * 3;
@@ -86,11 +86,11 @@ export function afficherPoints3D(transformedPositions){
 }
 export function setTransformedPosition (intersectObject){
     let positionAttribute = Generaux.geometry_model.attributes.position;
-    let normalAttribute = Generaux.geometry_model.attributes.normal;
+    // let normalAttribute = Generaux.geometry_model.attributes.normal;
     let matrixWorld = intersectObject.matrixWorld;
 
     let transformedPositions = [];
-    let transformedNormals = [];
+    // let transformedNormals = [];
 
     for(let i = 0; i < positionAttribute.count; i++){
         let localPosition = new THREE.Vector3(positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i));
@@ -112,7 +112,7 @@ export function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
         transformedPosition[offsetValue][1], transformedPosition[offsetValue][2]);
     mesh.position.copy(vertex);
     Scene3D.scene.add(mesh);
-    console.log(mesh);
+    // console.log(mesh);
     return vertex;
 }
 
@@ -198,7 +198,7 @@ export function onPointerMove( event ){
             }
 
             //couleur de face
-            let color = new THREE.Color(0xff0000);
+            let color = new THREE.Color(0x3655BA);
             paintFace(faceIndex, colorAttribute, color);
             Generaux.setFaceIndexAncien(faceIndex);
             break;

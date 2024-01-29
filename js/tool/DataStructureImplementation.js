@@ -42,6 +42,7 @@ export function convertSTLToData(positions) {
     }
     console.timeEnd("Data filling")
     const badHalfedges = sommets.getHalfEdgeProblem()
+    let mesh = new Mesh(faces);
     progressBarMaj(100)
 
     return new Mesh(faces, badHalfedges);

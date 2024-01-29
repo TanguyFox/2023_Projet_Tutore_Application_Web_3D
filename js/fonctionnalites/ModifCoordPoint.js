@@ -3,7 +3,7 @@
  */
 
 
-import {geometry_model, mesh} from "../tool/Element3DGeneraux";
+import {geometry_model, mesh, removeErrors} from "../tool/Element3DGeneraux";
 import {Point} from "../structure/Point";
 import * as THREE from "three";
 import * as generaux from "../tool/Element3DGeneraux";
@@ -132,6 +132,7 @@ function setPoint3D(targetPoint, newPoint){
         geometry_model.computeVertexNormals();
         geometry_model.attributes.position = positionAttribute;
         geometry_model.attributes.position.needsUpdate = true;
+        removeErrors();
         mesh.highlightEdge();
 
     }

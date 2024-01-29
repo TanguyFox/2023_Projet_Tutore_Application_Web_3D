@@ -1,11 +1,12 @@
 import * as THREE from "three";
-import {group} from "../tool/Element3DGeneraux";
+import {group, geometry_model, createTriangle, createCylinder} from "../tool/Element3DGeneraux.js";
+import {paintFace} from "../fonctionnalites/SelectionFace.js";
 
 
 export class Mesh {
-    constructor(faces, badHe) {
+    constructor(faces, bhe) {
         this.faces = faces;
-        this.badHalfEdges = badHe
+        this.boundaryEdges = bhe;
     }
 }
 
@@ -30,15 +31,43 @@ Mesh.prototype.setMeshGeneraux = async function (){
 
 Mesh.prototype.highlightEdge = function () {
 
-    this.badHalfEdges.forEach(he => {
-        let edges = [];
-        edges.push(new THREE.Vector3(he.headVertex().point.x, he.headVertex().point.y, he.headVertex().point.z));
-        edges.push(new THREE.Vector3(he.tailVertex().point.x, he.tailVertex().point.y, he.tailVertex().point.z));
-        let edgesGeometry = new THREE.BufferGeometry().setFromPoints(edges);
-            let edgesLine = new THREE.LineSegments(edgesGeometry, new THREE.LineBasicMaterial({color: "rgb(250,26,26)", linewidth : 10}));
-            group.add(edgesLine);
+    if (this.boundaryEdges.length ===0) {
+        return;
+    }
+    geometry_model.computeBoundingSphere();
+    let nbHoles = 0;
+    let problemHE = 0;
+
+    let errors = Array.from(this.boundaryEdges);
+
+    errors.forEach(he => {
+
+
+
+        //check if three hedges can form a triangle
+        let edge1 = errors.find(halfedge => halfedge.headVertex().equals(he.tailVertex()));
+        let edge2 = errors.find(halfedge => halfedge.tailVertex().equals(he.headVertex()));
+
+        if (edge1 !== undefined && edge2 !== undefined) {
+
+            let triangleMesh = createTriangle(he, edge1);
+            errors.splice(this.boundaryEdges.indexOf(edge1), 1);
+            errors.splice(this.boundaryEdges.indexOf(edge2), 1);
+            errors.splice(this.boundaryEdges.indexOf(he), 1);
+
+            group.add(triangleMesh);
+            nbHoles++
+
+        } else {
+           let cylinderMesh = createCylinder(he);
+            //add cylinder to the scene
+            group.add(cylinderMesh);
+            problemHE++;
+        }
     });
-    console.log(group);
+    document.getElementById("nb_trous").innerHTML = nbHoles;
+    document.getElementById("nb_hp").innerHTML = problemHE;
+
 }
 
 
