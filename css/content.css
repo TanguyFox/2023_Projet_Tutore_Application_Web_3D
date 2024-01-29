@@ -28,6 +28,10 @@
     margin-right: 3px;
 }
 
+.toolbar-div:hover{
+    background: #dfdfdf;
+}
+
 .toolbar-img{
     /*padding: 3px;*/
     pointer-events: none;
