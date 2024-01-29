@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {group, meshModel, geometry_model} from "../tool/Element3DGeneraux.js";
+import {group, geometry_model, createTriangle, createCylinder} from "../tool/Element3DGeneraux.js";
 import {paintFace} from "../fonctionnalites/SelectionFace.js";
 
 
@@ -34,27 +34,25 @@ Mesh.prototype.highlightEdge = function () {
     geometry_model.computeBoundingSphere();
 
     this.badHalfEdges.forEach(he => {
-        //set height of cylinder equals to the distance between the two vertices
-            let height = he.headVertex().point.distance(he.tailVertex().point);
-            //adapt radius to the size of the mesh
-            let radius = geometry_model.boundingSphere.radius > 2 ? geometry_model.boundingSphere.radius / 500 : 0.01;
 
-            //create cylinder
-            let cylinder = new THREE.CylinderGeometry(radius, radius, height, 32);
-            let material = new THREE.MeshBasicMaterial({color: "rgb(255, 0, 0)"});
-            let cylinderMesh = new THREE.Mesh(cylinder, material);
+        //check if three hedges can form a triangle
+        let edge1 = this.badHalfEdges.find(halfedge => halfedge.headVertex().point.equals(he.tailVertex().point));
+        let edge2 = this.badHalfEdges.find(halfedge => halfedge.tailVertex().point.equals(he.headVertex().point));
 
-            //align cylinder on edge
-            let center = new THREE.Vector3();
-            center.addVectors(he.headVertex().point, he.tailVertex().point);
-            center.divideScalar(2);
-            cylinderMesh.position.set(center.x, center.y, center.z);
-            let direction = new THREE.Vector3();
-            direction.subVectors(he.headVertex().point, he.tailVertex().point);
-            cylinderMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
+        if (edge1 !== undefined && edge2 !== undefined) {
 
+            let triangleMesh = createTriangle(he, edge1);
+            this.badHalfEdges.splice(this.badHalfEdges.indexOf(edge1), 1);
+            this.badHalfEdges.splice(this.badHalfEdges.indexOf(edge2), 1);
+
+            group.add(triangleMesh);
+            console.log(group)
+        } else {
+           let cylinderMesh = createCylinder(he);
             //add cylinder to the scene
             group.add(cylinderMesh);
+            console.log("missing twin edge")
+        }
     });
 }
 

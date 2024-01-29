@@ -4,7 +4,6 @@
  */
 import * as THREE from "three";
 import {wireframe} from "../controleurs/ImportSTLfileEvent";
-import * as Scene3D from "../vue/Scene3D";
 
 
 //STL file
@@ -80,6 +79,50 @@ function setFaceIndexAncien(valeur){
 function setMesh(newMesh){
     mesh=newMesh;
 }
+
+
+function createTriangle(edge1, edge2){
+    //create triangle
+    let triangle = new THREE.BufferGeometry();
+    //vertices tab counterclockwise
+    let vertices = new Float32Array([
+        edge2.tailVertex().point.x, edge2.tailVertex().point.y, edge2.tailVertex().point.z,
+        edge1.tailVertex().point.x, edge1.tailVertex().point.y, edge1.tailVertex().point.z,
+        edge1.headVertex().point.x, edge1.headVertex().point.y, edge1.headVertex().point.z
+    ]);
+
+    triangle.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+    let material = new THREE.MeshBasicMaterial({color: "rgb(255,104,0)"});
+    triangle.computeVertexNormals();
+
+    return new THREE.Mesh(triangle, material);
+
+}
+
+function createCylinder(edge) {
+    //set height of cylinder equals to the distance between the two vertices
+    let height = edge.headVertex().point.distance(edge.tailVertex().point);
+    //adapt radius to the size of the mesh
+    let radius = geometry_model.boundingSphere.radius > 2 ? geometry_model.boundingSphere.radius / 500 : 0.01;
+
+    //create cylinder
+    let cylinder = new THREE.CylinderGeometry(radius, radius, height, 32);
+    let material = new THREE.MeshBasicMaterial({color: "rgb(255, 0, 0)"});
+    let cylinderMesh = new THREE.Mesh(cylinder, material);
+
+    //align cylinder on edge
+    let center = new THREE.Vector3();
+    center.addVectors(edge.headVertex().point, edge.tailVertex().point);
+    center.divideScalar(2);
+    cylinderMesh.position.set(center.x, center.y, center.z);
+    let direction = new THREE.Vector3();
+    direction.subVectors(edge.headVertex().point, edge.tailVertex().point);
+    cylinderMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
+
+    return cylinderMesh;
+}
+
+
 export {
     geometry_model,
     color_mesh,
@@ -101,5 +144,7 @@ export {
     setFaceIndexAncien,
     setMesh,
     groupAsWireframe,
-    groupAsPlain
+    groupAsPlain,
+    createTriangle,
+    createCylinder
 }
