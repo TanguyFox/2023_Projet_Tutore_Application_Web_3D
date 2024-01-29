@@ -5,6 +5,7 @@ import {STLLoader} from "three/addons/loaders/STLLoader";
 import * as loadBar from "../tool/loadBarData";
 import * as Scene3D from "../vue/Scene3D.js";
 import * as generaux from "../tool/Element3DGeneraux.js";
+import * as SecondScene from "../vue/SecondScene.js";
 import {convertSTLToData} from "../tool/DataStructureImplementation.js";
 import {boundingBoxObject} from "../tool/Element3DGeneraux.js";
 import {removeBoundingBox} from "../vue/BoundingBoxHandler";
@@ -21,6 +22,7 @@ let menuMD = document.getElementById('menuModification');
 //toolbar pour Rotation, Translation, Scale
 let toolbar = document.getElementById('toolbar');
 const importButton = document.getElementById('import');
+let secondScene = document.getElementById('scene-switch');
 const stlloader = new STLLoader();
 
 let wireframe;
@@ -49,6 +51,7 @@ export async function handleFileSelect(file) {
         Scene3D.sceneContrainer.style.display = "block";
         toolbar.style.display = "flex";
         menuMD.style.display = "block";
+        secondScene.style.display = "block";
 
         loadSpin.showLoadingScreen();
 
@@ -127,6 +130,9 @@ function resetScene() {
             removeBoundingBox(boundingBoxObject);
         }
 
+        //Deuxième scène
+        SecondScene.scene.remove(SecondScene.group);
+        SecondScene.setGroup(null);
     }
 
 }
@@ -162,6 +168,9 @@ async function loadfile(file) {
             generaux.groupAsWireframe();
 
             Scene3D.scene.add(generaux.group);
+
+            //Deuxième scène
+            SecondScene.scene.add(SecondScene.group);
 
 }
 

@@ -4,7 +4,7 @@
  */
 import * as THREE from "three";
 import {wireframe} from "../controleurs/ImportSTLfileEvent";
-import * as Scene3D from "../vue/Scene3D";
+import * as SecondScene from "../vue/SecondScene";
 
 
 //STL file
@@ -58,16 +58,32 @@ function groupAsWireframe() {
         group = new THREE.Group();
         setMeshModel(new THREE.Mesh(geometry_model, wireframeMaterial));
         group.add(meshModel);
+
+        //Deuxième scène
+        SecondScene.setGroup(new THREE.Group());
+        SecondScene.setMeshModel(new THREE.Mesh(geometry_model.clone(), wireframeMaterial));
+        SecondScene.group.add(SecondScene.meshModel);
     } else {
         meshModel.material = wireframeMaterial;
+
+        //Deuxième scène
+        SecondScene.meshModel.material = wireframeMaterial;
     }
     setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
     group.add(lineModel);
+
+    //Deuxième scène
+    SecondScene.setLineModel(new THREE.LineSegments(wireframe, new THREE.LineBasicMaterial({color: 0x000000})));
+    SecondScene.group.add(SecondScene.lineModel);
 }
 
 function groupAsPlain() {
     meshModel.material =  plainMaterial;
     group.remove(lineModel);
+
+    //Deuxième scène
+    SecondScene.meshModel.material = plainMaterial;
+    SecondScene.group.remove(SecondScene.lineModel);
 }
 
 function setFaceIndexSelected(valeur){

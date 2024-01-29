@@ -1,5 +1,6 @@
 import * as Scene3D from "../vue/Scene3D.js";
 import * as THREE from "three";
+import * as SecondScene from "../vue/SecondScene.js";
 import {createBoundingBox, removeBoundingBox} from "../vue/BoundingBoxHandler";
 import * as Generaux from "../tool/Element3DGeneraux.js";
 import * as Raycaster from "../tool/Raycaster.js";
@@ -18,7 +19,9 @@ let intersects = [];
 
 //check mode face
 let modeFaceHtml = document.getElementById('face-mode-check');
-//face index
+
+//Scene change
+let sMod = true;
 
 
 //Render
@@ -49,7 +52,12 @@ export function animate(){
     if(Generaux.boundingBoxObject.boundingBox){
         Generaux.boundingBoxObject.boundingBox.update();
     }
-    render();
+
+    if(sMod){
+        render();
+    }else{
+        Scene3D.renderer.render(SecondScene.scene, Scene3D.camera);
+    }
 
     //viewhelper render
     executeRenderHelper();
@@ -137,6 +145,10 @@ export function onDoubleClick(event){
                 Scene3D.camera.position.add(offset);
                 Scene3D.orbitcontrols.target.copy(center);
                 viewhelper.center.copy(center);
+
+                //Pour Deuxième scène
+                SecondScene.group.position.copy(Scene3D.orbitcontrols.target);
+
                 return;
             }
 
@@ -146,6 +158,13 @@ export function onDoubleClick(event){
         }
     }
 }
+
+//Scene switch
+let secondSceneHtml = document.getElementById('scene-button');
+secondSceneHtml.addEventListener('click', function () {
+    sMod = !sMod;
+});
+
 
 export {
     intersects
