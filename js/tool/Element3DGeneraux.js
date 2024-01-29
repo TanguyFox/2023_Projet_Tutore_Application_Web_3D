@@ -98,7 +98,7 @@ function setMesh(newMesh){
 }
 
 
-function createTriangle(edge1, edge2){
+export function createTriangle(edge1, edge2){
     //create triangle
     let triangle = new THREE.BufferGeometry();
     //vertices tab counterclockwise
@@ -116,7 +116,7 @@ function createTriangle(edge1, edge2){
 
 }
 
-function createCylinder(edge) {
+export function createCylinder(edge) {
     //set height of cylinder equals to the distance between the two vertices
     let height = edge.headVertex().point.distance(edge.tailVertex().point);
     //adapt radius to the size of the mesh
