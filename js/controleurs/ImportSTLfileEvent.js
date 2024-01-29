@@ -61,12 +61,16 @@ export async function handleFileSelect(file) {
             generaux.setMesh(mesh);
             console.log(mesh);
 
-                document.getElementById("nb_trous").innerHTML += mesh.badHalfEdges.length;
-                if (mesh.badHalfEdges.length > 0) mesh.highlightEdge()
+
+                if (mesh.badHalfEdges.length > 0) {
+                    mesh.highlightEdge()
+                    document.getElementById("nb_trous").innerHTML = mesh.badHalfEdges.length;
+                }
+
 
 
         } catch (e) {
-            console.log(e.message);
+            console.log(e);
         }
 
 
@@ -159,7 +163,7 @@ async function loadfile(file) {
 
             // console.log(generaux.geometry_model.attributes.normal.array);
 
-            repairFacesNormals();
+            //repairFacesNormals();
 
             wireframe = new THREE.WireframeGeometry(geometry);
 

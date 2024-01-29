@@ -45,6 +45,6 @@ listeButton.forEach((ele) =>
 )
 
 export function resetProblemPanel() {
-    document.getElementById("face_mo").innerHTML = "Nombre de face(s) mal orientée(s) réparée(s) : ";
-    document.getElementById("nb_trous").innerHTML = "Nombre de trou(s) potentiel(s) : ";
+    document.getElementById("face_mo").innerHTML = "0";
+    document.getElementById("nb_trous").innerHTML = "0";
 }
