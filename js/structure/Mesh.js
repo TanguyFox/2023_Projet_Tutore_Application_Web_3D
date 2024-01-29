@@ -49,8 +49,8 @@ Mesh.prototype.highlightEdge = function () {
         if (edge1 !== undefined && edge2 !== undefined) {
 
             let triangleMesh = createTriangle(he, edge1);
-            this.boundaryEdges.splice(this.boundaryEdges.indexOf(edge1), 1);
-            this.boundaryEdges.splice(this.boundaryEdges.indexOf(edge2), 1);
+            //this.boundaryEdges.splice(this.boundaryEdges.indexOf(edge1), 1);
+            //this.boundaryEdges.splice(this.boundaryEdges.indexOf(edge2), 1);
 
             group.add(triangleMesh);
             nbHoles++
