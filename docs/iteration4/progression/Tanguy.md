@@ -9,3 +9,4 @@
 - [ ] Revoir l'affichage des erreurs
 - [ ] Effectuer des tests sur l'affichage des erreurs
 - [ ] Trouver un moyen ludique d'expliquer à l'utilisateur comment régler les erreurs
+- [ ] Rechercher problèmes de nombre d'erreur variant d'un import à l'autre
