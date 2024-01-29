@@ -12,22 +12,31 @@
     position: absolute;
     top: 55px;
     left: 15px;
-    background-color: transparent;
     user-select: none;
-    width: calc(100% - 350px);
-    justify-content: flex-start;
+    width: 120px;
+
 }
 
-.toolbar-button{
+.toolbar-div{
     cursor: pointer;
     user-select: none;
-    text-align: center;
+    background: #efefef;
+    border: 2px solid black;
+    border-radius: 5px;
+    width: 30px;
+    height: 30px;
+    margin-right: 3px;
+}
+
+.toolbar-div:hover{
+    background: #dfdfdf;
 }
 
 .toolbar-img{
+    /*padding: 3px;*/
     pointer-events: none;
-    width: 15px;
-    height: 15px;
+    width: 30px;
+    height: 30px;
 }
 
 #panel{
@@ -62,10 +71,55 @@
 
 #scene-switch{
     position: absolute;
-    top: 90px;
-    left: 15px;
+    top: 20px;
+    right: 20px;
     user-select: none;
     display: none;
+    width: 30px;
+    height: 30px;
+
+    background: #efefef;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+#scene-switch:hover{
+    cursor: pointer;
+    background: #dfdfdf;
+}
+
+#scene-switch-img{
+    width: 30px;
+    height: 30px;
 }
 
 
+#scene-message{
+    /*display: none;*/
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+
+    opacity: 0;
+    animation-duration: 1s;
+    animation-fill-mode: forwards;
+}
+
+#container{
+    position: relative;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+@keyframes fadeOut {
+    from {opacity: 1;}
+    to {opacity: 0;}
+}
