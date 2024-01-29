@@ -198,7 +198,7 @@ export function onPointerMove( event ){
             }
 
             //couleur de face
-            let color = new THREE.Color(0xff0000);
+            let color = new THREE.Color(0x3655BA);
             paintFace(faceIndex, colorAttribute, color);
             Generaux.setFaceIndexAncien(faceIndex);
             break;

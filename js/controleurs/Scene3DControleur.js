@@ -98,7 +98,7 @@ export function onPointerClick( event ){
                         paintFace(Generaux.faceIndexSelected, colorAttribute, Generaux.color_mesh)
                     }
                     Generaux.setFaceIndexSelected(intersects[i].faceIndex);
-                    let color = new THREE.Color(0xff0000);
+                    let color = new THREE.Color(0x3655BA);
                     paintFace(Generaux.faceIndexSelected, colorAttribute, color);
 
                     // let geometry = intersects[i].object.geometry;
