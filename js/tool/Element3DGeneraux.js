@@ -86,6 +86,10 @@ function groupAsPlain() {
     SecondScene.group.remove(SecondScene.lineModel);
 }
 
+function removeErrors() {
+    group.children.splice(3, group.children.length - 2);
+}
+
 function setFaceIndexSelected(valeur){
     faceIndexSelected=valeur;
 }
@@ -161,5 +165,6 @@ export {
     setFaceIndexAncien,
     setMesh,
     groupAsWireframe,
-    groupAsPlain
+    groupAsPlain,
+    removeErrors
 }

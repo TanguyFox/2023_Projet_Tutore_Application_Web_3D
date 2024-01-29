@@ -38,19 +38,22 @@ Mesh.prototype.highlightEdge = function () {
     let nbHoles = 0;
     let problemHE = 0;
 
-    this.boundaryEdges.forEach(he => {
+    let errors = Array.from(this.boundaryEdges);
+
+    errors.forEach(he => {
 
 
 
         //check if three hedges can form a triangle
-        let edge1 = this.boundaryEdges.find(halfedge => halfedge.headVertex().equals(he.tailVertex()));
-        let edge2 = this.boundaryEdges.find(halfedge => halfedge.tailVertex().equals(he.headVertex()));
+        let edge1 = errors.find(halfedge => halfedge.headVertex().equals(he.tailVertex()));
+        let edge2 = errors.find(halfedge => halfedge.tailVertex().equals(he.headVertex()));
 
         if (edge1 !== undefined && edge2 !== undefined) {
 
             let triangleMesh = createTriangle(he, edge1);
-            //this.boundaryEdges.splice(this.boundaryEdges.indexOf(edge1), 1);
-            //this.boundaryEdges.splice(this.boundaryEdges.indexOf(edge2), 1);
+            errors.splice(this.boundaryEdges.indexOf(edge1), 1);
+            errors.splice(this.boundaryEdges.indexOf(edge2), 1);
+            errors.splice(this.boundaryEdges.indexOf(he), 1);
 
             group.add(triangleMesh);
             nbHoles++
