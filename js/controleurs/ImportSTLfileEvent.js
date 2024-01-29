@@ -22,7 +22,7 @@ let menuMD = document.getElementById('menuModification');
 //toolbar pour Rotation, Translation, Scale
 let toolbar = document.getElementById('toolbar');
 const importButton = document.getElementById('import');
-let secondScene = document.getElementById('scene-switch');
+let secondSceneHtml = document.getElementById('scene-switch');
 const stlloader = new STLLoader();
 
 let wireframe;
@@ -51,7 +51,7 @@ export async function handleFileSelect(file) {
         Scene3D.sceneContrainer.style.display = "block";
         toolbar.style.display = "flex";
         menuMD.style.display = "block";
-        secondScene.style.display = "block";
+        secondSceneHtml.style.display = "block";
 
         loadSpin.showLoadingScreen();
 
@@ -72,7 +72,6 @@ export async function handleFileSelect(file) {
         } catch (e) {
             console.log(e);
         }
-
 
         //panel.style.display = "block";
 

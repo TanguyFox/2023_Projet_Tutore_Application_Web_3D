@@ -21,7 +21,7 @@ let intersects = [];
 let modeFaceHtml = document.getElementById('face-mode-check');
 
 //Scene change
-let sMod = true;
+let ModificationMod = true;
 
 
 //Render
@@ -53,7 +53,7 @@ export function animate(){
         Generaux.boundingBoxObject.boundingBox.update();
     }
 
-    if(sMod){
+    if(ModificationMod){
         render();
     }else{
         Scene3D.renderer.render(SecondScene.scene, Scene3D.camera);
@@ -160,14 +160,27 @@ export function onDoubleClick(event){
 }
 
 //Scene switch
-let secondSceneHtml = document.getElementById('scene-button');
+let secondSceneHtml = document.getElementById('scene-switch');
+
+let sceneMessageHtml = document.getElementById('scene-message');
+
+let sceneSwitchImgHtml = document.getElementById('scene-switch-img');
 secondSceneHtml.addEventListener('click', function () {
-    sMod = !sMod;
+    ModificationMod = !ModificationMod;
+
+    if(!ModificationMod){
+        sceneMessageHtml.style.animationName = "fadeIn";
+        sceneSwitchImgHtml.src = "resources/img/sceneChange/edit.svg";
+    }else{
+        sceneMessageHtml.style.animationName = "fadeOut";
+        sceneSwitchImgHtml.src = "resources/img/sceneChange/view.svg";
+    }
 });
 
 
 export {
-    intersects
+    intersects,
+    ModificationMod
 }
 
 

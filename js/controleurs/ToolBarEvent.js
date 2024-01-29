@@ -8,7 +8,7 @@ let toolbarElements = document.querySelector('#toolbar').childNodes;
 
 //toolbar event
 toolbarElements.forEach((e) => {
-        if (e.nodeName === 'BUTTON') {
+        if (e.nodeName === 'DIV') {
             e.addEventListener('click', eventToolbar);
         }
     }
@@ -16,6 +16,6 @@ toolbarElements.forEach((e) => {
 
 
 function eventToolbar(event) {
-    console.log(event.target.id);
+    // console.log(event.target.id);
     transformControls.setMode(event.target.id)
 }

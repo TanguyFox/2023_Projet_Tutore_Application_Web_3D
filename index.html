@@ -30,26 +30,34 @@
         <input type="file" hidden id="inputfile" accept=".stl"/>
     </button>
 
-    <div id="scene-container">
-<!--    repère du plan-->
-        <div id="viewHelper"></div>
+
+    <div id="container">
+        <div id="scene-container">
+            <!--    repère du plan-->
+            <div id="viewHelper"></div>
+            <!-- Scene Message-->
+            <div id="scene-message">l'objet 3D original</div>
+        </div>
+
+        <div id="scene-switch">
+            <img id="scene-switch-img" src="resources/img/sceneChange/view.svg" alt="view">
+        </div>
     </div>
+
 
     <div id="toolbar">
-        <button class="toolbar-button" id="translate">
+        <div class="toolbar-div" id="translate">
             <img class="toolbar-img" src="resources/img/toolbar/translate.svg" alt="translate">
-        </button>
-        <button class="toolbar-button" id="rotate">
+        </div>
+        <div class="toolbar-div" id="rotate">
             <img class="toolbar-img" src="resources/img/toolbar/rotate.svg" alt="rotate">
-        </button>
-        <button class="toolbar-button" id="scale">
+        </div>
+        <div class="toolbar-div" id="scale">
             <img class="toolbar-img" src="resources/img/toolbar/scale.svg" alt="scale">
-        </button>
+        </div>
     </div>
 
-    <div id="scene-switch">
-        <button id="scene-button">switch</button>
-    </div>
+
 
 
     <div id="menuModification">
