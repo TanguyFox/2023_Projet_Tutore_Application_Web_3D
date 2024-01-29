@@ -60,13 +60,7 @@ export async function handleFileSelect(file) {
             const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
             generaux.setMesh(mesh);
             console.log(mesh);
-
-
-                if (mesh.problemes.missingFaces > 0 || mesh.problemes.problemHalfEdges > 0) {
-                    document.getElementById("nb_trous").innerHTML = mesh.problemes.missingFaces;
-                    document.getElementById("nb_hp").innerHTML = mesh.problemes.problemHalfEdges;
-                }
-
+            mesh.highlightEdge();
 
 
         } catch (e) {

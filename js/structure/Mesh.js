@@ -4,9 +4,9 @@ import {paintFace} from "../fonctionnalites/SelectionFace.js";
 
 
 export class Mesh {
-    constructor(faces) {
+    constructor(faces, bhe) {
         this.faces = faces;
-        this.problemes = {missingFaces : 0, problemHalfEdges : 0};
+        this.boundaryEdges = bhe;
     }
 }
 
@@ -29,35 +29,42 @@ Mesh.prototype.setMeshGeneraux = async function (){
     return mesh;
 }
 
-Mesh.prototype.highlightEdge = function (boundaryEdges) {
+Mesh.prototype.highlightEdge = function () {
 
-    if (boundaryEdges.length ===0) {
+    if (this.boundaryEdges.length ===0) {
         return;
     }
     geometry_model.computeBoundingSphere();
+    let nbHoles = 0;
+    let problemHE = 0;
 
-    boundaryEdges.forEach(he => {
+    this.boundaryEdges.forEach(he => {
+
+
 
         //check if three hedges can form a triangle
-        let edge1 = boundaryEdges.find(halfedge => halfedge.headVertex().equals(he.tailVertex()));
-        let edge2 = boundaryEdges.find(halfedge => halfedge.tailVertex().equals(he.headVertex()));
+        let edge1 = this.boundaryEdges.find(halfedge => halfedge.headVertex().equals(he.tailVertex()));
+        let edge2 = this.boundaryEdges.find(halfedge => halfedge.tailVertex().equals(he.headVertex()));
 
         if (edge1 !== undefined && edge2 !== undefined) {
 
             let triangleMesh = createTriangle(he, edge1);
-            boundaryEdges.splice(boundaryEdges.indexOf(edge1), 1);
-            boundaryEdges.splice(boundaryEdges.indexOf(edge2), 1);
+            this.boundaryEdges.splice(this.boundaryEdges.indexOf(edge1), 1);
+            this.boundaryEdges.splice(this.boundaryEdges.indexOf(edge2), 1);
 
             group.add(triangleMesh);
-            this.problemes.missingFaces++;
+            nbHoles++
 
         } else {
            let cylinderMesh = createCylinder(he);
             //add cylinder to the scene
             group.add(cylinderMesh);
-            this.problemes.problemHalfEdges++;
+            problemHE++;
         }
     });
+    document.getElementById("nb_trous").innerHTML = nbHoles;
+    document.getElementById("nb_hp").innerHTML = problemHE;
+
 }
 
 
