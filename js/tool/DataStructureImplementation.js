@@ -42,9 +42,11 @@ export function convertSTLToData(positions) {
     }
     console.timeEnd("Data filling")
     const badHalfedges = sommets.getHalfEdgeProblem()
+    let mesh = new Mesh(faces);
+    mesh.highlightEdge(badHalfedges)
     progressBarMaj(100)
 
-    return new Mesh(faces, badHalfedges);
+    return mesh;
 }
 
 function creerSommet(point, sommets) {

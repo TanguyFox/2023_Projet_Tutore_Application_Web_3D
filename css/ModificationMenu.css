@@ -171,3 +171,16 @@
     bottom: 10px;
     left: 10px;
 }
+
+#structure_problem {
+    list-style-type: square;
+}
+
+#face_case::marker {
+    color : darkorange;
+    width: 20px;
+}
+
+#hp_case::marker {
+    color : red;
+}

@@ -62,9 +62,9 @@ export async function handleFileSelect(file) {
             console.log(mesh);
 
 
-                if (mesh.badHalfEdges.length > 0) {
-                    mesh.highlightEdge()
-                    document.getElementById("nb_trous").innerHTML = mesh.badHalfEdges.length;
+                if (mesh.problemes.missingFaces > 0 || mesh.problemes.problemHalfEdges > 0) {
+                    document.getElementById("nb_trous").innerHTML = mesh.problemes.missingFaces;
+                    document.getElementById("nb_hp").innerHTML = mesh.problemes.problemHalfEdges;
                 }
 
 

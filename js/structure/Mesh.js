@@ -4,9 +4,9 @@ import {paintFace} from "../fonctionnalites/SelectionFace.js";
 
 
 export class Mesh {
-    constructor(faces, badHe) {
+    constructor(faces) {
         this.faces = faces;
-        this.badHalfEdges = badHe
+        this.problemes = {missingFaces : 0, problemHalfEdges : 0};
     }
 }
 
@@ -29,29 +29,33 @@ Mesh.prototype.setMeshGeneraux = async function (){
     return mesh;
 }
 
-Mesh.prototype.highlightEdge = function () {
+Mesh.prototype.highlightEdge = function (boundaryEdges) {
 
+    if (boundaryEdges.length ===0) {
+        return;
+    }
     geometry_model.computeBoundingSphere();
 
-    this.badHalfEdges.forEach(he => {
+    boundaryEdges.forEach(he => {
 
         //check if three hedges can form a triangle
-        let edge1 = this.badHalfEdges.find(halfedge => halfedge.headVertex().point.equals(he.tailVertex().point));
-        let edge2 = this.badHalfEdges.find(halfedge => halfedge.tailVertex().point.equals(he.headVertex().point));
+        let edge1 = boundaryEdges.find(halfedge => halfedge.headVertex().equals(he.tailVertex()));
+        let edge2 = boundaryEdges.find(halfedge => halfedge.tailVertex().equals(he.headVertex()));
 
         if (edge1 !== undefined && edge2 !== undefined) {
 
             let triangleMesh = createTriangle(he, edge1);
-            this.badHalfEdges.splice(this.badHalfEdges.indexOf(edge1), 1);
-            this.badHalfEdges.splice(this.badHalfEdges.indexOf(edge2), 1);
+            boundaryEdges.splice(boundaryEdges.indexOf(edge1), 1);
+            boundaryEdges.splice(boundaryEdges.indexOf(edge2), 1);
 
             group.add(triangleMesh);
-            console.log(group)
+            this.problemes.missingFaces++;
+
         } else {
            let cylinderMesh = createCylinder(he);
             //add cylinder to the scene
             group.add(cylinderMesh);
-            console.log("missing twin edge")
+            this.problemes.problemHalfEdges++;
         }
     });
 }
