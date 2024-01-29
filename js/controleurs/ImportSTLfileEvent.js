@@ -112,7 +112,7 @@ function repairFacesNormals() {
         j += 3;
     }
 
-    document.getElementById("face_mo").innerHTML += nbChanged;
+    document.getElementById("face_mo").textContent = ""+nbChanged;
 }
 
 function resetScene() {
@@ -162,7 +162,7 @@ async function loadfile(file) {
 
             // console.log(generaux.geometry_model.attributes.normal.array);
 
-            //repairFacesNormals();
+            repairFacesNormals();
 
             wireframe = new THREE.WireframeGeometry(geometry);
 
