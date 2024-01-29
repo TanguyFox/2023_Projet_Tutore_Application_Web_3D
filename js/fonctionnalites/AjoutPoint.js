@@ -33,27 +33,18 @@ export function ajoutPoint(menuContextuel) {
     removeSphere();
     ajPoint3D();
     afficherSingleCoordPoint('', sphere, sphere.position, "#ffff00");
-    //initEventInputCoord();
-    // remplirStructureDeDonnees(sphere.position);
     let newPoint = new Point(sphere.position.x, sphere.position.y, sphere.position.z);
-    let troisPointsProches = trouver3ptsProches2(newPoint);
-    //console.log(troisPointsProches);
-    //supprimerAncienneFace(troisPointsProches);
-    majBufferGeometry(newPoint, troisPointsProches[2], troisPointsProches[1]);
-    majBufferGeometry(newPoint, troisPointsProches[1], troisPointsProches[0]);
-    majBufferGeometry(newPoint, troisPointsProches[0], troisPointsProches[2]);
+    let troisPointsProches = trouver3ptsProches(newPoint);
+    supprimerAncienneFace(troisPointsProches, newPoint);
     geometry_model.computeBoundingSphere(); // Recalcul du sphere de la bounding box
     geometry_model.computeBoundingBox(); // Recalcul de la bounding box
-    //geometry_model.computeFaceNormals(); // Recalcul des normales des faces
     geometry_model.computeVertexNormals();
     geometry_model.attributes.position.needsUpdate = true;
     meshModel.geometry = geometry_model;
     Scene3D.transformControls.detach();
-
     majEdges();
     mesh.highlightEdge();
     initEventInputCoord();
-
     remplirStructureDeDonnees(newPoint, troisPointsProches);
 }
 
@@ -111,49 +102,6 @@ function ajPoint3D() {
  * @returns {*[]}
  */
 function trouver3ptsProches(newPoint) {
-    //trouver les trois points les plus proches
-    let troisPoints = [];
-    let pointsDejaAjoutes = new Set();
-    let faces = mesh.faces;
-    faces.forEach((uneFace) => {
-        let distanceP1 = uneFace.edge.vertex.point.distance(newPoint);
-        let distanceP2 = uneFace.edge.next.vertex.point.distance(newPoint);
-        let distanceP3 = uneFace.edge.prev.vertex.point.distance(newPoint);
-
-        // Ajouter les distances et les points à un tableau temporaire, uniquement si le point n'a pas déjà été ajouté
-        if (!pointsDejaAjoutes.has(uneFace.edge.vertex.point)) {
-            troisPoints.push({distance: distanceP1, point: uneFace.edge.vertex.point});
-            pointsDejaAjoutes.add(uneFace.edge.vertex.point);
-        }
-
-        if (!pointsDejaAjoutes.has(uneFace.edge.next.vertex.point)) {
-            troisPoints.push({distance: distanceP2, point: uneFace.edge.next.vertex.point});
-            pointsDejaAjoutes.add(uneFace.edge.next.vertex.point);
-        }
-
-        if (!pointsDejaAjoutes.has(uneFace.edge.prev.vertex.point)) {
-            troisPoints.push({distance: distanceP3, point: uneFace.edge.prev.vertex.point});
-            pointsDejaAjoutes.add(uneFace.edge.prev.vertex.point);
-        }
-
-
-    })
-    // Trier le tableau en fonction de la distance croissante
-    troisPoints.sort((a, b) => a.distance - b.distance);
-// Sélectionner les trois premiers points du tableau trié
-
-    troisPoints = troisPoints.slice(0, 3);
-    troisPoints = troisPoints.map((element) => element.point);
-
-    return troisPoints;
-}
-
-/**
- * Méthode qui retourne les trois points les plus proches du nouveau point créé
- * @param newPoint
- * @returns {*[]}
- */
-function trouver3ptsProches2(newPoint) {
     let positions = Array.from(generaux.geometry_model.getAttribute("position").array);
     let distances = [];
     //console.log(positions);
@@ -176,35 +124,19 @@ function trouver3ptsProches2(newPoint) {
 /**
  * Méthode mettant à jour la géométrie du modèle pour inclure le nouveau point et créer les
  * faces autour
+ * @param index
+ * @param positions
  * @param newPoint
  * @param p1
  * @param p2
  */
-function majBufferGeometry(newPoint, p1, p2) {
-    let positionAttribute = geometry_model.attributes.position;
-    //console.log(geometry_model.attributes.position)
-    let positions = Array.from(positionAttribute.array);
-    //console.log(positions);
-
-    /*
-    Il faut rentrer trois points sinon ça bug ! donc je dois trouver les points les plus proches au nouveau
-    point avant de mettre à jour la structure
-     */
-    positions.push(newPoint.x);
-    positions.push(newPoint.y);
-    positions.push(newPoint.z);
-
-    positions.push(p1.x);
-    positions.push(p1.y);
-    positions.push(p1.z);
-
-    positions.push(p2.x);
-    positions.push(p2.y);
-    positions.push(p2.z);
-
-    //console.log(positions)
-    geometry_model.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-    // console.log(geometry_model);
+function majBufferGeometry(index, positions, newPoint, p1, p2) {
+    positions.splice(index, 0,
+        newPoint.x, newPoint.y, newPoint.z,
+        p1.x, p1.y, p1.z,
+        p2.x, p2.y, p2.z
+        );
+    return positions;
 }
 
 /**
@@ -212,20 +144,20 @@ function majBufferGeometry(newPoint, p1, p2) {
  * comme point commun le point du milieu)
  * @param troisPoints
  */
-function supprimerAncienneFace(troisPoints) {
-    //console.log('dans suppression')
-    //console.log(troisPoints);
+function supprimerAncienneFace(troisPoints, newPoint) {
     let positions = Array.from(generaux.geometry_model.getAttribute("position").array);
     //console.log(positions);
     for (let i = 0; i < positions.length; i += 9) {
-        //console.log(i);
         let p1 = new Point(positions[i], positions[i + 1], positions[i + 2]);
         let p2 = new Point(positions[i + 3], positions[i + 4], positions[i + 5]);
         let p3 = new Point(positions[i + 6], positions[i + 7], positions[i + 8]);
 
         if (includePoint(troisPoints, p1) && includePoint(troisPoints, p2) && includePoint(troisPoints, p3)) {
-            //console.log('contains point à i = ' + i);
-            positions.splice(i, i + 9);
+            console.log('contains point à i = ' + i);
+            positions.splice(i, 9);
+            positions= majBufferGeometry(i, positions, newPoint, troisPoints[2], troisPoints[1]);
+            positions =  majBufferGeometry(i+9, positions, newPoint, troisPoints[1], troisPoints[0]);
+            positions = majBufferGeometry(i+18, positions, newPoint, troisPoints[0], troisPoints[2]);
             geometry_model.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
         }
     }
