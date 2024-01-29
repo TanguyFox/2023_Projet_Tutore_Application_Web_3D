@@ -14,3 +14,13 @@ Et voilàààà la face se supprime bien sans problème
 hé bin non finalement. Ca part sur un épluchage de la liste de coordonnées
 
 Cette fois c'est bon. Juste une mauvaise utilisation de la méthode splice
+
+
+
+Je rejoins Solène sur le calcul de complexité des deux algos
+
+    * Après-midi *
+Calcul de complexité (pas juste pour ce premier jet). Monsieur Dupont nous a un peu aiguillé
+en fin de journée (visio) donc on doit bien reprendre les algos, faire les calculs de complexités pour
+les algorithmes de tris (par rapport à un tri de tableau et à un tri de skiplist) et on devrait
+le revoir demain.
