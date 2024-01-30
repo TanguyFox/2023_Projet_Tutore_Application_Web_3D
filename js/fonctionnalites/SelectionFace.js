@@ -7,7 +7,7 @@ import * as Scene3D from "../vue/Scene3D";
 import * as THREE from "three";
 import * as Scene3DControleur from "../controleurs/Scene3DControleur";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
-import {setMouseDown} from "./ModifCoordPoint";
+import {setMouseClick} from "./ModifCoordPoint";
 import {removeSphere} from "./AjoutPoint";
 
 /**

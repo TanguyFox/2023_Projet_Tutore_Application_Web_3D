@@ -174,8 +174,15 @@ let isMouseDown = false;
 let pointSelectionne ;
 //let transformedPosition;
 let sauvegardeAncienPoint;
-export function setMouseDown(event){
+export function setMouseClick(event){
     getAllUuid();
+
+    if(Scene3D.transformControls.object){
+        sauvegardeAncienPoint = new Point(pointSelectionne.position.x,
+            pointSelectionne.position.y,  pointSelectionne.position.z);
+        return;
+    }
+
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
     let intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
 
@@ -224,8 +231,11 @@ export function mouseUpReinitialisation(){
         setCoord(sauvegardeAncienPoint, newPoint);
         setPoint3D(sauvegardeAncienPoint, newPoint);
         majInputPoint(pointSelectionne, newPoint);
-        isMouseDown = false;
-        pointSelectionne = undefined;
+        if(!Scene3D.transformControls.object){
+            isMouseDown = false;
+            pointSelectionne = undefined;
+        }
+
     }
 
 }
