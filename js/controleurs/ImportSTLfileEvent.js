@@ -10,6 +10,7 @@ import {convertSTLToData} from "../tool/DataStructureImplementation.js";
 import {boundingBoxObject} from "../tool/Element3DGeneraux.js";
 import {removeBoundingBox} from "../vue/BoundingBoxHandler";
 import {resetProblemPanel} from "../vue/ModificationMenuVue.js";
+import {removeSphere} from "../fonctionnalites/AjoutPoint";
 
 /**
  * module gérant l'évènement d'import d'un fichier STL
@@ -52,6 +53,10 @@ export async function handleFileSelect(file) {
         toolbar.style.display = "flex";
         menuMD.style.display = "block";
         secondSceneHtml.style.display = "block";
+
+        //remove the sphere
+        removeSphere();
+        document.getElementById("infoCoordPoints").innerHTML = "";
 
         loadSpin.showLoadingScreen();
 
