@@ -28,4 +28,5 @@ le revoir demain.
 
 ### Mardi 30/01
     * Matin * 
-Calcul de complexité. Hier ce qu'on a fait n'était vraiment pas correct. C'est pas si facile que ça. 
+Calcul de complexité. Hier ce qu'on a fait n'était vraiment pas correct. C'est pas si facile que ça. Monsieur 
+Dupont est venu vers 9h30 pour nous aider à comprendre le principe 
