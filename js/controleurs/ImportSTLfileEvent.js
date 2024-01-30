@@ -61,7 +61,7 @@ export async function handleFileSelect(file) {
         loadSpin.showLoadingScreen();
 
         try {
-            await loadfile(file);
+            await loadFile(file);
             const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
             generaux.setMesh(mesh);
             console.log(mesh);
@@ -139,7 +139,7 @@ function resetScene() {
 
 }
 
-async function loadfile(file) {
+async function loadFile(file) {
 
     let geometry = await stlloader.loadAsync(URL.createObjectURL(file));
     loadSpin.hideLoadingScreen();

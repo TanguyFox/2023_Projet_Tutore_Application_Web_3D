@@ -68,7 +68,7 @@ VertexSkipList.prototype.searchVertex = function (key) {
 VertexSkipList.prototype.size = function () {return this.size}
 
 VertexSkipList.prototype.getHalfEdgeProblem = function() {
-    const result = [];
+    const result = new Set();
     let node = this.head.down;
 
     while (node) {
@@ -77,8 +77,7 @@ VertexSkipList.prototype.getHalfEdgeProblem = function() {
         while (currentNode) {
             if (currentNode.value.halfedgesTab.length > 0) {
                 currentNode.value.halfedgesTab.forEach(halfedge => {
-                    if (result.indexOf(halfedge) === -1)
-                    result.push(halfedge);
+                    result.add(halfedge);
                 })
             }
 
@@ -88,5 +87,5 @@ VertexSkipList.prototype.getHalfEdgeProblem = function() {
         node = node.down;
     }
 
-    return result;
+    return Array.from(result);
 }

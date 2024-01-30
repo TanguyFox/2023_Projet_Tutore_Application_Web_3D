@@ -174,8 +174,15 @@ let isMouseDown = false;
 let pointSelectionne ;
 //let transformedPosition;
 let sauvegardeAncienPoint;
-export function setMouseDown(event){
+export function setMouseClick(event){
     getAllUuid();
+
+    if(Scene3D.transformControls.object instanceof THREE.Mesh && Scene3D.transformControls.object.geometry.type === "SphereGeometry"){
+        sauvegardeAncienPoint = new Point(pointSelectionne.position.x,
+            pointSelectionne.position.y,  pointSelectionne.position.z);
+        return;
+    }
+
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
     let intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
 
@@ -188,10 +195,12 @@ export function setMouseDown(event){
             pointSelectionne = meshCourant;
             sauvegardeAncienPoint = new Point(pointSelectionne.position.x,
                 pointSelectionne.position.y,  pointSelectionne.position.z);
-            //transformedPosition = setTransformedPosition(meshCourant);
+
+            if(pointSelectionne.geometry.type === "SphereGeometry"){
+                Scene3D.transformControls.setMode("translate");
+            }
+
             Scene3D.transformControls.attach(pointSelectionne);
-            //console.log(sauvegardeAncienPoint);
-            //console.log(isMouseDown);
             break;
         }
     }
@@ -224,8 +233,11 @@ export function mouseUpReinitialisation(){
         setCoord(sauvegardeAncienPoint, newPoint);
         setPoint3D(sauvegardeAncienPoint, newPoint);
         majInputPoint(pointSelectionne, newPoint);
-        isMouseDown = false;
-        pointSelectionne = undefined;
+        if(!Scene3D.transformControls.object){
+            isMouseDown = false;
+            pointSelectionne = undefined;
+        }
+
     }
 
 }
@@ -243,5 +255,10 @@ function setName_Value(theChildren, theValue){
     //console.log(theValue);
     theChildren.name = theValue;
     theChildren.value = theValue;
+}
+
+export function resetMouseDown_PointSelectionne(){
+    isMouseDown = false;
+    pointSelectionne = undefined;
 }
 

@@ -7,7 +7,7 @@ import * as Scene3D from "../vue/Scene3D";
 import * as THREE from "three";
 import * as Scene3DControleur from "../controleurs/Scene3DControleur";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
-import {setMouseDown} from "./ModifCoordPoint";
+import {resetMouseDown_PointSelectionne, setMouseClick} from "./ModifCoordPoint";
 import {removeSphere} from "./AjoutPoint";
 
 /**
@@ -33,6 +33,12 @@ meshvC = new THREE.Mesh(highlightGeometry, highlightMaterial);
 
 export function handleModeSelect (event){
     if(!modeFaceHtml.checked && scene.children.includes(arrowHelper)){
+
+        //Supprimer le point jaune
+        Scene3D.transformControls.detach();
+        resetMouseDown_PointSelectionne();
+        removeSphere();
+
         scene.remove(arrowHelper);
         let colorAttribute = geometry_model.attributes.color;
 

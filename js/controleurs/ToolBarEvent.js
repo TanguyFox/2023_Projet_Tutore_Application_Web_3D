@@ -1,4 +1,5 @@
 import {transformControls} from "../vue/Scene3D";
+import * as THREE from "three";
 
 /**
  *Module gérant les évènements de la toolbar
@@ -17,5 +18,10 @@ toolbarElements.forEach((e) => {
 
 function eventToolbar(event) {
     // console.log(event.target.id);
+    if(transformControls.object instanceof THREE.Mesh && transformControls.object.geometry.type === "SphereGeometry"){
+        transformControls.setMode("translate");
+        return;
+    }
+
     transformControls.setMode(event.target.id)
 }

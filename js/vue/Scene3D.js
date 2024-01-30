@@ -6,7 +6,7 @@ import * as THREE from "three";
 import {initViewHelper} from "./viewhelper";
 import {onPointerMove} from "../fonctionnalites/SelectionFace";
 import {onDoubleClick, onPointerClick} from "../controleurs/Scene3DControleur";
-import {deplacerPoint, mouseUpReinitialisation, setMouseDown} from "../fonctionnalites/ModifCoordPoint";
+import {deplacerPoint, mouseUpReinitialisation, setMouseClick} from "../fonctionnalites/ModifCoordPoint";
 import {mesh} from "../tool/Element3DGeneraux";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
 import {appearMenuContextuel} from "./MenuContextuel";
@@ -123,7 +123,7 @@ function rebuildAll(antialiasStat){
     renderer.domElement.addEventListener('mousemove', onPointerMove, false);
     renderer.domElement.addEventListener('mousedown', onPointerClick);
     renderer.domElement.addEventListener('dblclick', onDoubleClick, false);
-    renderer.domElement.addEventListener('mousedown', setMouseDown);
+    renderer.domElement.addEventListener('click', setMouseClick);
     renderer.domElement.addEventListener('mousemove', deplacerPoint);
     renderer.domElement.addEventListener('mouseup', mouseUpReinitialisation);
     renderer.domElement.addEventListener('contextmenu', appearMenuContextuel);
