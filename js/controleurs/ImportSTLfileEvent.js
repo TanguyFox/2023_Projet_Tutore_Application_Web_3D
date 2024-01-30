@@ -10,6 +10,7 @@ import {convertSTLToData} from "../tool/DataStructureImplementation.js";
 import {boundingBoxObject} from "../tool/Element3DGeneraux.js";
 import {removeBoundingBox} from "../vue/BoundingBoxHandler";
 import {resetProblemPanel} from "../vue/ModificationMenuVue.js";
+import {removeSphere} from "../fonctionnalites/AjoutPoint";
 
 /**
  * module gérant l'évènement d'import d'un fichier STL
@@ -53,10 +54,14 @@ export async function handleFileSelect(file) {
         menuMD.style.display = "block";
         secondSceneHtml.style.display = "block";
 
+        //remove the sphere
+        removeSphere();
+        document.getElementById("infoCoordPoints").innerHTML = "";
+
         loadSpin.showLoadingScreen();
 
         try {
-            await loadfile(file);
+            await loadFile(file);
             const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
             generaux.setMesh(mesh);
             console.log(mesh);
@@ -134,7 +139,7 @@ function resetScene() {
 
 }
 
-async function loadfile(file) {
+async function loadFile(file) {
 
     let geometry = await stlloader.loadAsync(URL.createObjectURL(file));
     loadSpin.hideLoadingScreen();

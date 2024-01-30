@@ -31,5 +31,5 @@ Vertex.prototype.addHalfEdge = function (he) {
 }
 
 Vertex.prototype.equals = function (vertex) {
-    return this.compare(vertex) === 0;
+    return this.point.equals(vertex.point);
 }
