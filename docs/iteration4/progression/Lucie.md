@@ -24,3 +24,8 @@ Calcul de complexité (pas juste pour ce premier jet). Monsieur Dupont nous a un
 en fin de journée (visio) donc on doit bien reprendre les algos, faire les calculs de complexités pour
 les algorithmes de tris (par rapport à un tri de tableau et à un tri de skiplist) et on devrait
 le revoir demain.
+
+
+### Mardi 30/01
+    * Matin * 
+Calcul de complexité. Hier ce qu'on a fait n'était vraiment pas correct. C'est pas si facile que ça. 
