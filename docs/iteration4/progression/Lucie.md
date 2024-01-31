@@ -32,4 +32,7 @@ Calcul de complexité. Hier ce qu'on a fait n'était vraiment pas correct. C'est
 Dupont est venu vers 9h30 pour nous aider à comprendre le principe 
 
     * Après-midi * 
-Rédaction du rapport et diagramme uml 
+Rédaction du rapport et diagramme uml
+
+### Mercredi 31/01 
+rédaction du rapport, entrevue avec Monsieur Dupont, power point 
