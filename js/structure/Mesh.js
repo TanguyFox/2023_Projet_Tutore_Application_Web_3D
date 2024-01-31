@@ -1,7 +1,4 @@
-import * as THREE from "three";
 import {group, geometry_model, createTriangle, createCylinder} from "../tool/Element3DGeneraux.js";
-import {paintFace} from "../fonctionnalites/SelectionFace.js";
-
 
 export class Mesh {
     constructor(faces, bhe) {
@@ -10,9 +7,9 @@ export class Mesh {
     }
 }
 
-Mesh.prototype.detectHoles = function(){
+Mesh.prototype.detectHoles = function () {
     let holes = [];
-    for(let face in this.faces) {
+    for (let face in this.faces) {
         if (face.getAdjHole() !== 3) {
             holes.push(face);
         }
@@ -20,54 +17,55 @@ Mesh.prototype.detectHoles = function(){
     return holes;
 }
 
-Mesh.prototype.setMeshGeneraux = async function (){
-    const { setMesh } = await import('../tool/Element3DGeneraux.js');
-    console.log(setMesh);
-    setMesh(this);
-    const { mesh } = await import('../tool/Element3DGeneraux.js');
-    console.log(mesh);
-    return mesh;
-}
-
 Mesh.prototype.highlightEdge = function () {
 
-    if (this.boundaryEdges.length ===0) {
+    if (this.boundaryEdges.length === 0) {
+        document.getElementById("repair_button").disabled = true;
         return;
     }
-    geometry_model.computeBoundingSphere();
+
+    document.getElementById("repair_button").disabled = false;
+
     let nbHoles = 0;
     let problemHE = 0;
 
     let errors = Array.from(this.boundaryEdges);
 
-    errors.forEach(he => {
+    while (errors.length > 2) {
 
+        let startEdge = errors.shift();
+        console.log(startEdge)
+        let hole = [startEdge.headVertex(), startEdge.tailVertex()];
+        let nextEdgeIndex = errors.findIndex(edge => edge.headVertex().equals(startEdge.tailVertex()));
 
+        while(nextEdgeIndex !== -1) {
+            console.log("new triangle")
+            console.log(hole)
+            let nextEdge = errors[nextEdgeIndex];
+            hole.push(nextEdge.tailVertex());
+            errors.splice(nextEdgeIndex, 1);
+            if (hole.length === 3) {
+                let triangle = createTriangle(hole[0], hole[1], hole[2]);
+                group.add(triangle);
+                nbHoles++;
+                break;
+            }
 
-        //check if three hedges can form a triangle
-        let edge1 = errors.find(halfedge => halfedge.headVertex().equals(he.tailVertex()));
-        let edge2 = errors.find(halfedge => halfedge.tailVertex().equals(he.headVertex()));
-
-        if (edge1 !== undefined && edge2 !== undefined) {
-
-            let triangleMesh = createTriangle(he, edge1);
-            errors.splice(this.boundaryEdges.indexOf(edge1), 1);
-            errors.splice(this.boundaryEdges.indexOf(edge2), 1);
-            errors.splice(this.boundaryEdges.indexOf(he), 1);
-
-            group.add(triangleMesh);
-            nbHoles++
-
-        } else {
-           let cylinderMesh = createCylinder(he);
-            //add cylinder to the scene
-            group.add(cylinderMesh);
-            problemHE++;
+            nextEdgeIndex = errors.findIndex(edge => edge.headVertex().equals(nextEdge.tailVertex()));
         }
-    });
+    }
+    if (errors.length > 0) {
+        errors.forEach(edge => {
+            let cylinder = createCylinder(edge);
+            group.add(cylinder);
+            problemHE++;
+        });
+    }
+
     document.getElementById("nb_trous").innerHTML = nbHoles;
     document.getElementById("nb_hp").innerHTML = problemHE;
 
+    console.log(group)
 }
 
 
