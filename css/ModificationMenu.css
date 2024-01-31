@@ -100,7 +100,21 @@
 /* VISUALISATION */
 #visualisation_content
 {
+    display: none;
+}
+
+#visualisation_content label {
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+#filename {
     display: flex;
+    margin-top: 20px;
+    font-weight: bold;
+    font-variant: all-petite-caps;
+    align-items: center;
+    justify-content: center;
 }
 
 /* MODIFICATION */
@@ -111,14 +125,14 @@
 
 #problem_content
 {
-    display: none;
+    display: flex;
 }
 
 #problem_panel p {
     font-size: 1.5em;
     font-weight: 80;
     font-variant: all-petite-caps;
-    margin: 0 0 10px;
+    margin: 0 0 5px;
 
 }
 
@@ -176,7 +190,6 @@
 
 #face_case::marker {
     color : darkorange;
-    width: 20px;
 }
 
 #hp_case::marker {
