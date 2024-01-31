@@ -43,6 +43,9 @@ export async function handleFileSelect(file) {
     Scene3D.orbitcontrols.target.set(0, 0, 0);
 
     if (file) {
+        let filename = document.getElementById("filename")
+        filename.innerHTML = file.name;
+        filename.title = file.name;
         //reset the scene
         resetScene();
 
@@ -66,7 +69,8 @@ export async function handleFileSelect(file) {
             generaux.setMesh(mesh);
             console.log(mesh);
             mesh.highlightEdge();
-
+            document.getElementById("nb_faces").textContent = mesh.faces.length;
+            //document.getElementById("nb_vertex").textContent = mesh.faces.length * 3 - 1;
 
         } catch (e) {
             console.log(e);

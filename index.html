@@ -63,26 +63,30 @@
     <div id="menuModification">
         <div id="indicator">&nbsp;</div>
         <ul id="headerMenu">
+            <li id="problem_button">
+            Problèmes
+        </li>
             <li id="visualisation_button">
                 Visualisation
             </li>
             <li id="modification_button">
                 Modification
             </li>
-            <li id="problem_button">
-                Problèmes
-            </li>
         </ul>
 
 
+
         <div id="menuModifContent">
+            <div id="filename"></div>
+            <hr/>
             <div id="visualisation_content" class="contentModifMenu">
+
                 <label>
                     Grid
                     <input type="checkbox" id="grid-check" checked>
                 </label>
                 <label>
-                    Mode de selection d'une face(nom temporaire)
+                    Sélectionner une face
                     <input type="checkbox" id="face-mode-check">
                 </label>
                 <label>
@@ -93,6 +97,12 @@
                     Anti-aliasing
                     <input type="checkbox" id="anti-aliasing-check">
                 </label>
+                <hr/>
+                <h6>Données du modèle 3D : </h6>
+                <ul>
+                    <li>Nombre de faces : <p id="nb_faces"></p></li>
+                    <li>Nombre de sommets : <p id="nb_vertex"></p></li>
+                </ul>
 
             </div>
             <div id="modification_content" class="contentModifMenu">
@@ -111,7 +121,7 @@
                     <li id="face_case">Nombre de trou(s) potentiel(s) : <p id="nb_trous">0</p></li>
                     <li id="hp_case">Nombre d'arête(s) problématique(s) : <p id="nb_hp">0</p></li>
                 </ul>
-                <label  style="font-weight: bold">Nombre de faces mal orientées réparées : </label><p id="face_mo">0</p>
+                <label  style="font-weight: bold">Nombre de faces mal orientées réparées :</label><p id="face_mo">0</p>
             </div>
         </div>
     </div>
