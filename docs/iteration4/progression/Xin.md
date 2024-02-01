@@ -32,3 +32,18 @@ pour réduire le nombre de calculs.
 Je ne sais pas si je trouverai une solution viable demain. 
 Si ce n'est pas le cas, 
 je devrai me concentrer sur la rédaction du rapport de fin de semestre.
+
+# 31/01/2024
+
+## Travail effectué
+- Cherche sur la détection des faces qui se croisent
+
+Aujourd'hui, j'ai mis en pratique l'idée que j'avais hier, 
+mais j'ai découvert que cet algorithme rencontre toujours des problèmes 
+avec certains modèles et nécessite des corrections. 
+Quant à la question de la réduction du nombre de calcul, 
+j'ai pensé à diviser le modèle en 64 espaces 
+pour diminuer le nombre de calculs. 
+En somme, c'est un progrès significatif, 
+mais il faut encore du temps pour améliorer. 
+Je finirai cette méthode dans l'itération prochaine.

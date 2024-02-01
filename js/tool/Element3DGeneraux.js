@@ -102,25 +102,34 @@ function setMesh(newMesh){
 }
 
 
-export function createTriangle(edge1, edge2){
+export function createTriangle(v1, v2, v3){
     //create triangle
     let triangle = new THREE.BufferGeometry();
+
+    if (!isCounterClockwise(v1.point, v2.point, v3.point)) {
+        let temp = v2;
+        v2 = v3;
+        v3 = temp;
+    }
+
     //vertices tab counterclockwise
     let vertices = new Float32Array([
-        edge2.tailVertex().point.x, edge2.tailVertex().point.y, edge2.tailVertex().point.z,
-        edge1.tailVertex().point.x, edge1.tailVertex().point.y, edge1.tailVertex().point.z,
-        edge1.headVertex().point.x, edge1.headVertex().point.y, edge1.headVertex().point.z
+        v1.point.x, v1.point.y, v1.point.z,
+        v2.point.x, v2.point.y, v2.point.z,
+        v3.point.x, v3.point.y, v3.point.z
     ]);
 
     triangle.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
     let material = new THREE.MeshBasicMaterial({color: "rgb(255,104,0)"});
-    triangle.computeVertexNormals();
 
     return new THREE.Mesh(triangle, material);
 
 }
 
 export function createCylinder(edge) {
+
+    geometry_model.computeBoundingSphere();
+
     //set height of cylinder equals to the distance between the two vertices
     let height = edge.headVertex().point.distance(edge.tailVertex().point);
     //adapt radius to the size of the mesh
@@ -141,6 +150,15 @@ export function createCylinder(edge) {
     cylinderMesh.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), direction.clone().normalize());
 
     return cylinderMesh;
+}
+
+function isCounterClockwise(point1, point2, point3) {
+    let v1 = new THREE.Vector3().subVectors(point2, point1);
+    let v2 = new THREE.Vector3().subVectors(point3, point1);
+
+    let crossVector = new THREE.Vector3().crossVectors(v1, v2);
+
+    return crossVector.z > 0;
 }
 
 

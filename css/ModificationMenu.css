@@ -195,3 +195,26 @@
 #hp_case::marker {
     color : red;
 }
+
+#repair_button {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 50%;
+    height: 40px;
+    border: none;
+    border-radius: 15px;
+    font-size: 1em;
+    font-weight: 80;
+    font-variant: all-petite-caps;
+    background-color: #e88146;
+    align-self: center;
+}
+
+#repair_button:hover {
+    background-color: #fc6102;
+}
+
+#repair_button:disabled {
+    background-color: #afa5ad;
+    color: #868686;
+}
