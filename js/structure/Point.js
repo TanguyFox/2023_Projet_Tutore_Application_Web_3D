@@ -56,6 +56,6 @@ Point.prototype.distance = function (point){
 }
 
 
-function isCoordonneesEgales(a, b){
+export function isCoordonneesEgales(a, b){
     return Math.abs(a-b) < 1e-10;
 }

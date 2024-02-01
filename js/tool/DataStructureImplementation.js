@@ -5,7 +5,7 @@ import {Point} from "../structure/Point.js"
 import {Mesh} from "../structure/Mesh.js"
 import {VertexSkipList} from "../structure/VertexSkipList.js"
 import {progressBarMaj} from "./loadBarData";
-
+import {detecterFacesIntersectees} from "./DetectionIntersection";
 
 export function convertSTLToData(positions) {
 
@@ -43,6 +43,10 @@ export function convertSTLToData(positions) {
     console.timeEnd("Data filling")
     const badHalfedges = sommets.getHalfEdgeProblem()
     progressBarMaj(100)
+
+    //Detection des faces qui s'intersectent | expérimental
+    // console.log(faces);
+    // detecterFacesIntersectees(faces);
 
     return new Mesh(faces, badHalfedges);
 }

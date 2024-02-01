@@ -30,3 +30,12 @@ le revoir demain.
     * Matin * 
 Calcul de complexité. Hier ce qu'on a fait n'était vraiment pas correct. C'est pas si facile que ça. Monsieur 
 Dupont est venu vers 9h30 pour nous aider à comprendre le principe 
+
+    * Après-midi * 
+Rédaction du rapport et diagramme uml
+
+### Mercredi 31/01 
+rédaction du rapport, entrevue avec Monsieur Dupont, power point 
+Pour le rapport je rédige notamment les différences entre l'étude préalable et la réalisation, le calcul de complexité. 
+Pour ce dernier point j'ai tracé les courbes théoriques et je dois faire à présent les courbes de calcul réel (nuage
+de point)
