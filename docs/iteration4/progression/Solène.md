@@ -26,8 +26,14 @@ Continuation de la rédaction du rapport
 ### Matin
 ### En distanciel - déplacement
 
-Prévu: Rédaction du rapport de l'itération 4
+Rédaction du rapport de l'itération 4 (fonctionnalités réalisées, changements par rapport à l'étude préalable & itération 3, fonctionnalités prévues)
 
 ### Après-midi
 
 RDV Neurologue prévu
+Aide à la rédaction du rapport final
+
+## Jeudi 01/02
+### Matin
+
+Finalisation du rapport de fin de semestre (rédaction du planning de fin de projet, corrections diverses, rédaction des objectifs à atteindre)
