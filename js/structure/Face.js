@@ -1,8 +1,9 @@
 import * as THREE from 'three';
 
 export class Face {
-    constructor(edge) {
+    constructor(edge, indice) {
         this.edge = edge;
+        this.indice= indice;
     }
 }
 

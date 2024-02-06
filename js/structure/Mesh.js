@@ -18,7 +18,6 @@ Mesh.prototype.detectHoles = function () {
 }
 
 Mesh.prototype.highlightEdge = function () {
-
     if (this.boundaryEdges.length === 0) {
         document.getElementById("repair_button").disabled = true;
         return;
