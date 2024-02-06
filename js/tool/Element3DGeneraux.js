@@ -120,7 +120,7 @@ export function createTriangle(v1, v2, v3){
     ]);
 
     triangle.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    let material = new THREE.MeshBasicMaterial({color: "rgb(255,104,0)"});
+    let material = new THREE.MeshBasicMaterial({color: "rgb(255,104,0)", transparent: true});
 
     return new THREE.Mesh(triangle, material);
 

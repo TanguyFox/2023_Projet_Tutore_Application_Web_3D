@@ -63,8 +63,21 @@ Mesh.prototype.highlightEdge = function () {
 
     document.getElementById("nb_trous").innerHTML = nbHoles;
     document.getElementById("nb_hp").innerHTML = problemHE;
-
+    this.infoFichierMenuModif();
     console.log(group)
+}
+Mesh.prototype.infoFichierMenuModif= function(){
+    console.log(this.boundaryEdges);
+    let liste = document.createElement("ul");
+    document.querySelector("#problem_content").appendChild(liste);
+    this.boundaryEdges.forEach(e=>{
+        let ligne = document.createElement("li");
+        liste.appendChild(ligne);
+        ligne.innerHTML = `
+        <p>Face n° ${e.face.indice}, ligne ${(e.face.indice/9)*7+4}</p>
+        `;
+        console.log(liste.innerHTML);
+    })
 }
 
 

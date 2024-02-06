@@ -73,7 +73,7 @@
 {
     position: relative;
     height: auto;
-    max-height: 97%;
+    max-height: 2.5vh;
     min-height: 90%;
     background-color: #cbcbcb;
     padding-left: 20px;
@@ -82,6 +82,7 @@
     border-right: 0.1em solid #868686;
     border-left: 0.1em solid #868686;
     border-bottom: 0.1em solid #868686;
+    overflow:auto;
 }
 
 .contentModifMenu

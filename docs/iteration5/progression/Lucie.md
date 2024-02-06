@@ -19,3 +19,7 @@ Ok j'ai une petite équation qui permet de retourner l'indice de la face (demand
 et la ligne dans le fichier. J'implémente ça, je fais en sorte que ça s'affiche dans l'onglet problemes 
 du menu de modification et voilà 
 
+    * Après-midi * 
+J'ai fait en sorte d'afficher les informations mais je n'ai pas été très productives... 
+Tanguy a proposé que si le nombre d'arrêtes à problèmes excède un certain nombre, on mette en place des 
+menus déroulant pour que l'affichage ne soit pas surchargé. Ca sera pour demain. 
