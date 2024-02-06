@@ -45,7 +45,7 @@ function detecterFacesIntersectees(faces){
     let min = boundingBox.min;
     let max = boundingBox.max;
 
-    let divisions = 4;
+    let divisions = calculerDivisions(faces.length);
     let subSizeX = (max.x - min.x) / divisions;
     let subSizeY = (max.y - min.y) / divisions;
     let subSizeZ = (max.z - min.z) / divisions;
@@ -114,7 +114,6 @@ function detecterFacesIntersectees(faces){
             for (let z = 0; z < subSpaces[x][y].length; z++) {
 
                 let subSpace = subSpaces[x][y][z];
-
                 for(let i = 0; i < subSpace.length - 1; i++){
                     for (let j = i + 1; j < subSpace.length; j++){
                         IntersectionEntreDeuxTriangles(subSpace[i], subSpace[j]);
@@ -129,7 +128,19 @@ function detecterFacesIntersectees(faces){
     console.log(set_String_triangles);
     console.log("set_lignes");
     console.log(set_String_lignes);
+    console.log("subSpaces");
+    console.log(subSpaces);
 
+    for (let x = 0; x < subSpaces.length; x++) {
+        for (let y = 0; y < subSpaces[x].length; y++) {
+            for (let z = 0; z < subSpaces[x][y].length; z++) {
+                subSpaces[x][y][z] = null;
+            }
+            subSpaces[x][y] = null;
+        }
+        subSpaces[x] = null;
+    }
+    subSpaces = null;
 
 }
 
@@ -214,18 +225,18 @@ function intersectionTriangleEtLigne(triangle, line){
     if(intersect1){
         distance = Math.max(pA.distanceTo(intersect1), pB.distanceTo(intersect1));
         if(longueur > distance + tolerance){
-            console.log("========")
-            console.log("pA")
-            console.log(pA)
-            console.log("pB")
-            console.log(pB)
-            console.log("triangle")
-            console.log(triangle)
-            console.log("distance: " + distance)
-            console.log("longueur: " + longueur)
-            console.log("intersection1");
-            // console.log(intersect1);
-            console.log("========")
+            // console.log("========")
+            // console.log("pA")
+            // console.log(pA)
+            // console.log("pB")
+            // console.log(pB)
+            // console.log("triangle")
+            // console.log(triangle)
+            // console.log("distance: " + distance)
+            // console.log("longueur: " + longueur)
+            // console.log("intersection1");
+            // // console.log(intersect1);
+            // console.log("========")
             generateLineAndTriangle(triangle, line);
             return;
         }
@@ -237,22 +248,36 @@ function intersectionTriangleEtLigne(triangle, line){
     if(intersect2){
         distance = Math.max(pA.distanceTo(intersect2), pB.distanceTo(intersect2));
         if(longueur > distance + tolerance){
-            console.log("========")
-            console.log("pA")
-            console.log(pA)
-            console.log("pB")
-            console.log(pB)
-            console.log("triangle")
-            console.log(triangle)
-            console.log("distance: " + distance)
-            console.log("longueur: " + longueur)
-            console.log("intersection2");
-            // console.log(intersect2);
-            console.log("========")
+            // console.log("========")
+            // console.log("pA")
+            // console.log(pA)
+            // console.log("pB")
+            // console.log(pB)
+            // console.log("triangle")
+            // console.log(triangle)
+            // console.log("distance: " + distance)
+            // console.log("longueur: " + longueur)
+            // console.log("intersection2");
+            // // console.log(intersect2);
+            // console.log("========")
             generateLineAndTriangle(triangle, line);
             return;
         }
     }
+}
+
+function calculerDivisions(nb_faces){
+    // let min = 4;
+    // let max = 500;
+
+    // let result = min + (max - min) * Math.pow(nb_faces / 200000, 0.5);
+    //
+    // result = Math.round(Math.min(Math.max(result, min), max));
+    //
+    // console.log("divisions_result: " + result);
+
+    // return result;
+    return 100;
 }
 
 export {

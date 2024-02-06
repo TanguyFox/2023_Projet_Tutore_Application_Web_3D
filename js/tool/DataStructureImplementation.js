@@ -57,7 +57,9 @@ export function convertSTLToData(positions) {
 
     //Detection des faces qui s'intersectent | expérimental
     // console.log(faces);
+    // console.time("Detection des faces qui s'intersectent")
     // detecterFacesIntersectees(faces);
+    // console.timeEnd("Detection des faces qui s'intersectent")
 
     return new Mesh(faces, badHalfedges);
 }

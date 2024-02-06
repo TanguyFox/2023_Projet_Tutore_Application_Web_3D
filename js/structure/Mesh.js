@@ -33,13 +33,13 @@ Mesh.prototype.highlightEdge = function () {
     while (errors.length > 2) {
 
         let startEdge = errors.shift();
-        console.log(startEdge)
+        // console.log(startEdge)
         let hole = [startEdge.headVertex(), startEdge.tailVertex()];
         let nextEdgeIndex = errors.findIndex(edge => edge.headVertex().equals(startEdge.tailVertex()));
 
         while(nextEdgeIndex !== -1) {
-            console.log("new triangle")
-            console.log(hole)
+            // console.log("new triangle")
+            // console.log(hole)
             let nextEdge = errors[nextEdgeIndex];
             hole.push(nextEdge.tailVertex());
             errors.splice(nextEdgeIndex, 1);
@@ -64,7 +64,7 @@ Mesh.prototype.highlightEdge = function () {
     document.getElementById("nb_trous").innerHTML = nbHoles;
     document.getElementById("nb_hp").innerHTML = problemHE;
     this.infoFichierMenuModif();
-    console.log(group)
+    // console.log(group)
 }
 Mesh.prototype.infoFichierMenuModif= function(){
     console.log(this.boundaryEdges);
