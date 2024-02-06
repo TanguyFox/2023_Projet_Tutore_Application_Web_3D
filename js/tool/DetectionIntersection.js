@@ -36,6 +36,9 @@ import * as Generaux from "../tool/Element3DGeneraux";
 //     }
 // }
 
+let set_String_triangles = new Set();
+let set_String_lignes = new Set();
+
 //Detecter les faces qui s'intersectent - version 2
 function detecterFacesIntersectees(faces){
     let boundingBox = new THREE.Box3().setFromObject(Generaux.meshModel);
@@ -121,6 +124,13 @@ function detecterFacesIntersectees(faces){
             }
         }
     }
+
+    console.log("set_triangles");
+    console.log(set_String_triangles);
+    console.log("set_lignes");
+    console.log(set_String_lignes);
+
+
 }
 
 //Distinguer les cas d'intersection entre deux triangles
@@ -150,7 +160,8 @@ function generateLineAndTriangle(triangle, line){
     let length = direction.length();
     direction.normalize();
 
-    let cylinderGeometry = new THREE.CylinderGeometry(0.005, 0.005, length, 8); // 半径设置为0.1
+    // let cylinderGeometry = new THREE.CylinderGeometry(0.1, 0.1, length, 8);
+    let cylinderGeometry = new THREE.CylinderGeometry(0.005, 0.005, length, 8);
     let cylinderMaterial = new THREE.MeshBasicMaterial({ color: 0x800080 });
     let cylinder = new THREE.Mesh(cylinderGeometry, cylinderMaterial);
 
@@ -159,19 +170,42 @@ function generateLineAndTriangle(triangle, line){
     let angle = Math.acos(new THREE.Vector3(0, 1, 0).dot(direction));
     cylinder.quaternion.setFromAxisAngle(axis.normalize(), angle);
 
-    Scene3D.scene.add(cylinder);
+    let key_ligne = `${pA.x},${pA.y},${pA.z},${pB.x},${pB.y},${pB.z}`;
+    if(!set_String_lignes.has(key_ligne)){
+        set_String_lignes.add(key_ligne);
+        set_String_lignes.add(`${pB.x},${pB.y},${pB.z},${pA.x},${pA.y},${pA.z}`);
+        Scene3D.scene.add(cylinder);
+    }
 
     let triangleGeometry = new THREE.BufferGeometry().setFromPoints([triangle.a, triangle.b, triangle.c]);
     let triangleMaterial = new THREE.MeshBasicMaterial({ color: 0xFFFF00, side: THREE.DoubleSide });
     let triangleG = new THREE.Mesh(triangleGeometry, triangleMaterial);
-    Scene3D.scene.add(triangleG);
+
+    let key_face = `${triangle.a.x},${triangle.a.y},${triangle.a.z},${triangle.b.x},${triangle.b.y},${triangle.b.z},${triangle.c.x},${triangle.c.y},${triangle.c.z}`;
+    if(!set_String_triangles.has(key_face)){
+        set_String_triangles.add(key_face);
+        Scene3D.scene.add(triangleG);
+    }
 }
 
 //Detecter si une ligne et un triangle s'intersectent
 function intersectionTriangleEtLigne(triangle, line){
     let [pA, pB] = line;
 
-    let tolerance = 1e-5;
+    if(
+        pA.equals(triangle.a) && pB.equals(triangle.b) ||
+        pA.equals(triangle.a) && pB.equals(triangle.c) ||
+        pA.equals(triangle.b) && pB.equals(triangle.a) ||
+        pA.equals(triangle.b) && pB.equals(triangle.c) ||
+        pA.equals(triangle.c) && pB.equals(triangle.a) ||
+        pA.equals(triangle.c) && pB.equals(triangle.b)
+    ){
+        return;
+    }
+
+
+
+    let tolerance = 1e-3;
     let distance;
     let longueur = pA.distanceTo(pB);
 
@@ -180,18 +214,18 @@ function intersectionTriangleEtLigne(triangle, line){
     if(intersect1){
         distance = Math.max(pA.distanceTo(intersect1), pB.distanceTo(intersect1));
         if(longueur > distance + tolerance){
-            // console.log("========")
-            // console.log("pA")
-            // console.log(pA)
-            // console.log("pB")
-            // console.log(pB)
-            // console.log("triangle")
-            // console.log(triangle)
-            // console.log("distance: " + distance)
-            // console.log("longueur: " + longueur)
+            console.log("========")
+            console.log("pA")
+            console.log(pA)
+            console.log("pB")
+            console.log(pB)
+            console.log("triangle")
+            console.log(triangle)
+            console.log("distance: " + distance)
+            console.log("longueur: " + longueur)
             console.log("intersection1");
             // console.log(intersect1);
-            // console.log("========")
+            console.log("========")
             generateLineAndTriangle(triangle, line);
             return;
         }
@@ -203,18 +237,18 @@ function intersectionTriangleEtLigne(triangle, line){
     if(intersect2){
         distance = Math.max(pA.distanceTo(intersect2), pB.distanceTo(intersect2));
         if(longueur > distance + tolerance){
-            // console.log("========")
-            // console.log("pA")
-            // console.log(pA)
-            // console.log("pB")
-            // console.log(pB)
-            // console.log("triangle")
-            // console.log(triangle)
-            // console.log("distance: " + distance)
-            // console.log("longueur: " + longueur)
+            console.log("========")
+            console.log("pA")
+            console.log(pA)
+            console.log("pB")
+            console.log(pB)
+            console.log("triangle")
+            console.log(triangle)
+            console.log("distance: " + distance)
+            console.log("longueur: " + longueur)
             console.log("intersection2");
             // console.log(intersect2);
-            // console.log("========")
+            console.log("========")
             generateLineAndTriangle(triangle, line);
             return;
         }
