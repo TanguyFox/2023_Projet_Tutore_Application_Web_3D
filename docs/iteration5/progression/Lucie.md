@@ -23,3 +23,23 @@ du menu de modification et voilà
 J'ai fait en sorte d'afficher les informations mais je n'ai pas été très productives... 
 Tanguy a proposé que si le nombre d'arrêtes à problèmes excède un certain nombre, on mette en place des 
 menus déroulant pour que l'affichage ne soit pas surchargé. Ca sera pour demain. 
+
+
+### Mercredi 07/02
+    * Après-midi * 
+Aujourd'hui ! Je gère l'affichage des informations des problèmes sur le fichier ! 
+1. j'ai rajouté un textarea dans lequel est noté les deux lignes type "STL" des coordonnées des points de
+l'halfedge concerné par le problème. Comme ça l'utilisateur peut copier ce qu'il y a d'écrit dans le textarea 
+pour faire une recherche dans le fichier et les voir se surligner directement. Comme ça, il retrouve directement 
+les deux points responsables de la création de cette halfedge. Et même sur l'application ça lui permet de les 
+identifier aussi. 
+2. Petit problème de ses informations qui ne se réinitialisaient pas lorsqu'on cliquait sur "nouveau modèle" et qu'on
+importait un nouveau fichier. Les informations du fichier précédent demeuraient. Voilà c'est réglé, c'était pas grand  chose. 
+3. A présent je dois fractionner l'affichage en plusieurs menus déroulants pour que tout ne s'affiche pas d'un coup dans 
+le menu problème. Ca sera plus lisible. Un peu comme lorsqu'on affiche une liste de 1000 éléments dans la console js : 
+les éléments sont présentés de manière fractionnée. Et je pense que je vais trier l'affichage par numéro de face
+
+Vers la fin de la séance, j'arrive à découper la liste et à ce que le dom HTML soit organisé en différentes listes 
+contenant un certain nombre d'éléments. Maintenant un peu de CSS pour faire le menu déroulant et c'est bon. 
+
+On est pas mal, il y a l'idée. Faut améliorer le design par contre. Prochaine heure. 

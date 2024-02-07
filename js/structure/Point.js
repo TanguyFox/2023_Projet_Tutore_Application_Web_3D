@@ -36,7 +36,7 @@ Point.prototype.compare = function (pointB){
 }
 
 Point.prototype.toString = function (){
-    return 'Point{'+ this.x + ","+ this.y + ","+ this.z + "}";
+    return ''+ this.x + " "+ this.y + " "+ this.z + "";
 }
 
 Point.prototype.set = function (point){

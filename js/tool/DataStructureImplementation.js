@@ -45,12 +45,14 @@ export function convertSTLToData(positions) {
     const badHalfedges = sommets.getHalfEdgeProblem()
     console.log(badHalfedges)
 
-    badHalfedges.forEach(e =>{
+    /*badHalfedges.forEach(e =>{
         console.log('-------');
         console.log(e.face.indice);
         console.log("numéro de ligne : " + ((e.face.indice/9)*7+4));
     }
     )
+
+     */
 
     console.log(faces.length);
     progressBarMaj(100)
