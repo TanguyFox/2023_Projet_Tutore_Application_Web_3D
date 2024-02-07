@@ -14,7 +14,8 @@ export function convertSTLToData(positions) {
     //let halfedges = []
 
     console.time("Data filling")
-    console.log("nbFaces : " + positions.length / 9)
+    console.log("nbFaces : " + positions.length / 9);
+    console.log(positions);
     for (let i = 0; i < positions.length; i += 9) {
 
         const currentVertices = [
@@ -31,7 +32,7 @@ export function convertSTLToData(positions) {
             vertex.addHalfEdge(halfedges[index])
         })
 
-        const face = new Face(halfedges[0]);
+        const face = new Face(halfedges[0], i);
         halfedges.forEach(he => he.setFace(face))
         //getOppositeEdge(face)
 
@@ -42,11 +43,23 @@ export function convertSTLToData(positions) {
     }
     console.timeEnd("Data filling")
     const badHalfedges = sommets.getHalfEdgeProblem()
+    console.log(badHalfedges)
+
+    badHalfedges.forEach(e =>{
+        console.log('-------');
+        console.log(e.face.indice);
+        console.log("numéro de ligne : " + ((e.face.indice/9)*7+4));
+    }
+    )
+
+    console.log(faces.length);
     progressBarMaj(100)
 
     //Detection des faces qui s'intersectent | expérimental
     // console.log(faces);
+    // console.time("Detection des faces qui s'intersectent")
     // detecterFacesIntersectees(faces);
+    // console.timeEnd("Detection des faces qui s'intersectent")
 
     return new Mesh(faces, badHalfedges);
 }
@@ -65,18 +78,21 @@ function setPrevAndNext(h, hPrev, hNext) {
     h.setPrev(hPrev);
 }
 
-/*
-function convertirSTLtoDonnees(positions) {
+
+
+
+/*export function convertSTLToDonnees(positions) {
     console.log("RENTREE TOOL");
     let points = [];
     let vertices = [];
     let faces = [];
     var totalSize = positions.length;
+    console.time("Data filling")
+    console.log("nbFaces : " + positions.length / 9)
     for (let i = 0; i < totalSize; i += 9) {
-        progression(i, totalSize);
+        //progression(i, totalSize);
 
 
-        console.time("création des 3 points")
         let x1 = positions[i];
         let y1 = positions[i + 1];
         let z1 = positions[i + 2];
@@ -91,13 +107,11 @@ function convertirSTLtoDonnees(positions) {
         let y3 = positions[i + 7];
         let z3 = positions[i + 8];
         let p3 = new Point(x3, y3, z3);
-        console.timeEnd("création des 3 points")
 
         ajouterPointAListe(p1, points);
         ajouterPointAListe(p2, points);
         ajouterPointAListe(p3, points);
 
-        console.time("création du triangle")
         let v1 = new Vertex(p1);
         let h1 = new HalfEdge(v1);
         v1.setEdge(h1);
@@ -113,7 +127,6 @@ function convertirSTLtoDonnees(positions) {
         setPrevAndNext(h1, h3, h2);
         setPrevAndNext(h2, h1, h3);
         setPrevAndNext(h3, h2, h1);
-        console.timeEnd("création du triangle");
 
 
         let newFace = new Face(h1);
@@ -124,15 +137,9 @@ function convertirSTLtoDonnees(positions) {
         faces.push(newFace);
 
         // détection des arêtes opposées pour compléter la structure de données
-        console.time("detection p1");
         detectionAretesOpposees(vertices, p1, p2, h1, "p1");
-        console.timeEnd("detection p1");
-        console.time("detection p2");
         detectionAretesOpposees(vertices, p2, p3, h2, "p2");
-        console.timeEnd("detection p2");
-        console.time("detection p3");
         detectionAretesOpposees(vertices, p3, p1, h3, "p3");
-        console.timeEnd("detection p3");
 
 
         vertices.push(v1);
@@ -140,21 +147,15 @@ function convertirSTLtoDonnees(positions) {
         vertices.push(v3);
     }
 
-    console.time("trierPoint");
     points = trierPoints(points);
-    console.timeEnd("trierPoint");
 
-    console.time("trierVertex");
     vertices = trierVertex(vertices);
-    console.timeEnd("trierVertex");
 
-    console.time("trierFaces");
     faces = trierFaces(faces);
-    console.timeEnd("trierFaces");
 
 
-    console.log("Data filled")
-    onProgress(100);
+    console.timeEnd("Data filling")
+    //onProgress(100);
     return new Mesh(vertices, faces, points);
 }
 
@@ -239,7 +240,7 @@ function detectionAretesOpposees(vertices, p1, p2, h, nom) {
     let vertex = vertices.filter(e => e.point.equals(p1));
     if (vertex.length !== 0) {
         //console.log(vertex)
-        let halfedgeOppose = vertex.map(e => e.edge.prev).filter(e => e.vertexDepart.point.equals(p2))[0];
+        let halfedgeOppose = vertex.map(e => e.edge.prev).filter(e => e.vertex.point.equals(p2))[0];
         if (typeof halfedgeOppose !== 'undefined') {
             if (halfedgeOppose.opposite == null) {
                 halfedgeOppose.setOpposite(h);
@@ -262,4 +263,6 @@ function onProgress(xhr) {
 
         loadingMessage.innerHTML = 'Chargement en cours... ' + Math.round(percentComplete) + '%';
     }
-}*/
+}
+
+ */
