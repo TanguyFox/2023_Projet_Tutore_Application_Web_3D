@@ -3,39 +3,6 @@ import * as Scene3D from "../vue/Scene3D";
 import * as Generaux from "../tool/Element3DGeneraux";
 
 
-//Detecter les faces qui s'intersectent - version 1 - A améliorer - Complexité temporelle : O(n^2) - y=C(x, 2)
-// function detecterFacesIntersectees(faces) {
-//
-//     let triangles = [];
-//     for(let face of faces){
-//         let sommets = face.getSommets();
-//         // console.log(sommets);
-//         triangles.push(new THREE.Triangle(sommets[0], sommets[1], sommets[2]));
-//     }
-//
-//     console.log(triangles);
-//
-//     for(let i = 0; i < triangles.length - 1; i++){
-//         for (let j = i + 1; j < triangles.length; j++){
-//             let pA = triangles[i].a;
-//             let pB = triangles[i].b;
-//             let pC = triangles[i].c;
-//
-//             intersectionTriangleEtLigne(triangles[j], [pA, pB])
-//             intersectionTriangleEtLigne(triangles[j], [pB, pC])
-//             intersectionTriangleEtLigne(triangles[j], [pC, pA])
-//
-//             pA = triangles[j].a;
-//             pB = triangles[j].b;
-//             pC = triangles[j].c;
-//
-//             intersectionTriangleEtLigne(triangles[i], [pA, pB])
-//             intersectionTriangleEtLigne(triangles[i], [pB, pC])
-//             intersectionTriangleEtLigne(triangles[i], [pC, pA])
-//         }
-//     }
-// }
-
 let set_String_triangles = new Set();
 let set_String_lignes = new Set();
 
@@ -45,7 +12,7 @@ function detecterFacesIntersectees(faces){
     let min = boundingBox.min;
     let max = boundingBox.max;
 
-    let divisions = calculerDivisions(faces.length);
+    let divisions = calculateDivisions(faces.length);
     let subSizeX = (max.x - min.x) / divisions;
     let subSizeY = (max.y - min.y) / divisions;
     let subSizeZ = (max.z - min.z) / divisions;
@@ -144,23 +111,78 @@ function detecterFacesIntersectees(faces){
 
 }
 
+function intersectionTriangleEtLigne_new(triangle, line){
+    let [pA, pB] = line;
+
+    if(
+        pA.equals(triangle.a) && pB.equals(triangle.b) ||
+        pA.equals(triangle.a) && pB.equals(triangle.c) ||
+        pA.equals(triangle.b) && pB.equals(triangle.a) ||
+        pA.equals(triangle.b) && pB.equals(triangle.c) ||
+        pA.equals(triangle.c) && pB.equals(triangle.a) ||
+        pA.equals(triangle.c) && pB.equals(triangle.b)
+    ){
+        return;
+    }
+
+    let eline = plucker(pA, pB);
+    let e1 = plucker(triangle.a, triangle.b);
+    let e2 = plucker(triangle.b, triangle.c);
+    let e3 = plucker(triangle.c, triangle.a);
+
+    let s1 = side_operation(eline, e1);
+    let s2 = side_operation(eline, e2);
+    let s3 = side_operation(eline, e3);
+
+    s1 = (s1 > 0 && s1 < 0.1) ? 0 : s1;
+    s1 = (s1 < 0 && s1 > -0.1) ? 0 : s1;
+    s2 = (s2 > 0 && s2 < 0.1) ? 0 : s2;
+    s2 = (s2 < 0 && s2 > -0.1) ? 0 : s2;
+    s3 = (s3 > 0 && s3 < 0.1) ? 0 : s3;
+    s3 = (s3 < 0 && s3 > -0.1) ? 0 : s3;
+
+    if(s1 > 0 && s2 > 0 && s3 > 0 || s1 < 0 && s2 < 0 && s3 < 0){
+        console.log("=============")
+        console.log("s1:" + s1);
+        console.log("s2:" + s2);
+        console.log("s3:" + s3);
+        console.log("=============")
+        generateLineAndTriangle(triangle, line);
+    }
+
+}
+
+function plucker(a, b){
+    let l0 = a.x * b.y - b.x * a.y;
+    let l1 = a.x * b.z - b.x * a.z;
+    let l2 = a.x - b.x;
+    let l3 = a.y * b.z - b.y * a.z;
+    let l4 = a.z - b.z;
+    let l5 = b.y - a.y;
+    return [l0, l1, l2, l3, l4, l5];
+}
+
+function side_operation(a, b){
+    return a[0] * b[4] + a[1] * b[5] + a[2] * b[3] + a[3] * b[2] + a[4] * b[0] + a[5] * b[1];
+}
+
 //Distinguer les cas d'intersection entre deux triangles
 function IntersectionEntreDeuxTriangles(triangle1, triangle2){
     let pA = triangle1.a;
     let pB = triangle1.b;
     let pC = triangle1.c;
 
-    intersectionTriangleEtLigne(triangle2, [pA, pB])
-    intersectionTriangleEtLigne(triangle2, [pB, pC])
-    intersectionTriangleEtLigne(triangle2, [pC, pA])
+    intersectionTriangleEtLigne_new(triangle2, [pA, pB])
+    intersectionTriangleEtLigne_new(triangle2, [pB, pC])
+    intersectionTriangleEtLigne_new(triangle2, [pC, pA])
 
     pA = triangle2.a;
     pB = triangle2.b;
     pC = triangle2.c;
 
-    intersectionTriangleEtLigne(triangle1, [pA, pB])
-    intersectionTriangleEtLigne(triangle1, [pB, pC])
-    intersectionTriangleEtLigne(triangle1, [pC, pA])
+    intersectionTriangleEtLigne_new(triangle1, [pA, pB])
+    intersectionTriangleEtLigne_new(triangle1, [pB, pC])
+    intersectionTriangleEtLigne_new(triangle1, [pC, pA])
 }
 
 
@@ -266,18 +288,17 @@ function intersectionTriangleEtLigne(triangle, line){
     }
 }
 
-function calculerDivisions(nb_faces){
-    // let min = 4;
-    // let max = 500;
+function calculateDivisions(nb_faces){
+    let min = 4;
+    let max = 100;
 
-    // let result = min + (max - min) * Math.pow(nb_faces / 200000, 0.5);
-    //
-    // result = Math.round(Math.min(Math.max(result, min), max));
-    //
-    // console.log("divisions_result: " + result);
+    let result = min + (max - min) * Math.pow(nb_faces / 200000, 0.5);
 
-    // return result;
-    return 100;
+    result = Math.round(Math.min(Math.max(result, min), max));
+
+    console.log("divisions_result: " + result);
+
+    return result;
 }
 
 export {
