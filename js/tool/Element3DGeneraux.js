@@ -5,6 +5,8 @@
 import * as THREE from "three";
 import {wireframe} from "../controleurs/ImportSTLfileEvent";
 import * as SecondScene from "../vue/SecondScene";
+import {HalfEdge} from "../structure/HalfEdge";
+import {Face} from "../structure/Face";
 
 
 //STL file
@@ -106,12 +108,6 @@ export function createTriangle(v1, v2, v3){
     //create triangle
     let triangle = new THREE.BufferGeometry();
 
-    if (!isCounterClockwise(v1.point, v2.point, v3.point)) {
-        let temp = v2;
-        v2 = v3;
-        v3 = temp;
-    }
-
     //vertices tab counterclockwise
     let vertices = new Float32Array([
         v1.point.x, v1.point.y, v1.point.z,
@@ -120,7 +116,9 @@ export function createTriangle(v1, v2, v3){
     ]);
 
     triangle.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
-    let material = new THREE.MeshBasicMaterial({color: "rgb(255,104,0)"});
+    let material = new THREE.MeshBasicMaterial({color: "rgb(255,104,0)", opacity: 0.5, transparent: true});
+
+    updateStructure(v1, v2, v3)
 
     return new THREE.Mesh(triangle, material);
 
@@ -152,13 +150,44 @@ export function createCylinder(edge) {
     return cylinderMesh;
 }
 
-function isCounterClockwise(point1, point2, point3) {
+export function isCounterClockwise(point1, point2, point3) {
     let v1 = new THREE.Vector3().subVectors(point2, point1);
     let v2 = new THREE.Vector3().subVectors(point3, point1);
 
     let crossVector = new THREE.Vector3().crossVectors(v1, v2);
 
     return crossVector.z > 0;
+}
+
+function updateStructure(v1, v2, v3) {
+    let edge1 = new HalfEdge(v1);
+    let edge2 = new HalfEdge(v2);
+    let edge3 = new HalfEdge(v3);
+
+    let halfedges = [edge1, edge2, edge3];
+    halfedges.forEach((edge, index) => {
+        edge.next = halfedges[(index + 1) % 3];
+        edge.prev = halfedges[(index + 2) % 3];
+
+        edge.face = new Face(edge);
+    })
+
+    v1.addHalfEdge(edge1);
+    v2.addHalfEdge(edge2);
+    v3.addHalfEdge(edge3);
+
+    if (!edge1.opposite) {
+        mesh.boundaryEdges.push(edge1);
+    }
+
+    if (!edge2.opposite) {
+        mesh.boundaryEdges.push(edge2);
+    }
+
+    if (!edge3.opposite) {
+        mesh.boundaryEdges.push(edge3);
+    }
+    mesh.faces.push(edge1.face);
 }
 
 
