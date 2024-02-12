@@ -47,4 +47,5 @@ listeButton.forEach((ele) =>
 export function resetProblemPanel() {
     document.getElementById("face_mo").innerHTML = "0";
     document.getElementById("nb_trous").innerHTML = "0";
+    document.getElementById("nb_hp").innerHTML = "0";
 }

@@ -1,4 +1,8 @@
-import {group, geometry_model, createTriangle, createCylinder} from "../tool/Element3DGeneraux.js";
+import {
+    group,
+    createTriangle,
+    createCylinder,
+} from "../tool/Element3DGeneraux.js";
 
 export class Mesh {
     constructor(faces, bhe) {
@@ -18,6 +22,7 @@ Mesh.prototype.detectHoles = function () {
 }
 
 Mesh.prototype.highlightEdge = function () {
+
     if (this.boundaryEdges.length === 0) {
         document.getElementById("repair_button").disabled = true;
         return;
@@ -28,43 +33,27 @@ Mesh.prototype.highlightEdge = function () {
     let nbHoles = 0;
     let problemHE = 0;
 
-    let errors = Array.from(this.boundaryEdges);
+    this.boundaryEdges.forEach(edge => {
+        let cylinder = createCylinder(edge);
+        group.add(cylinder);
+        problemHE++;
+    })
 
-    while (errors.length > 2) {
+    let holes = this.identifyHoles();
+    console.log(holes);
 
-        let startEdge = errors.shift();
-        console.log(startEdge)
-        let hole = [startEdge.headVertex(), startEdge.tailVertex()];
-        let nextEdgeIndex = errors.findIndex(edge => edge.headVertex().equals(startEdge.tailVertex()));
+    let triangles = this.triangulateHoles(holes);
+    triangles.forEach(t => {
+        let triangle = createTriangle(t[0], t[1], t[2])
+        group.add(triangle);
+    })
 
-        while (nextEdgeIndex !== -1) {
-            console.log("new triangle")
-            console.log(hole)
-            let nextEdge = errors[nextEdgeIndex];
-            hole.push(nextEdge.tailVertex());
-            errors.splice(nextEdgeIndex, 1);
-            if (hole.length === 3) {
-                let triangle = createTriangle(hole[0], hole[1], hole[2]);
-                group.add(triangle);
-                nbHoles++;
-                break;
-            }
+    console.log(triangles)
 
-            nextEdgeIndex = errors.findIndex(edge => edge.headVertex().equals(nextEdge.tailVertex()));
-        }
-    }
-    if (errors.length > 0) {
-        errors.forEach(edge => {
-            let cylinder = createCylinder(edge);
-            group.add(cylinder);
-            problemHE++;
-        });
-    }
-
-    document.getElementById("nb_trous").innerHTML = nbHoles;
+    document.getElementById("nb_trous").innerHTML = triangles.length;
     document.getElementById("nb_hp").innerHTML = problemHE;
     this.infoFichierMenuModif();
-    console.log(group)
+    // console.log(group)
 }
 Mesh.prototype.infoFichierMenuModif = function () {
     let parentNodeProblem = document.querySelector("#problem_content");
@@ -152,6 +141,38 @@ function calculerNbSection(tailleTotale) {
 
 }
 
+Mesh.prototype.identifyHoles = function () {
+    const holes = [];
+    const visited = new Set();
+    const stack = [];
+
+    this.boundaryEdges.forEach(startEdge => {
+        if (!visited.has(startEdge)) {
+            stack.push(startEdge);
+            const hole = [];
+
+            while (stack.length > 0) {
+                const currentEdge = stack.pop();
+
+                if (!visited.has(currentEdge)) {
+                    visited.add(currentEdge);
+                    hole.push(currentEdge);
+
+                    const nextEdge = this.boundaryEdges.find(e => !visited.has(e) && e.tailVertex() === currentEdge.headVertex());
+
+                    if (nextEdge) {
+                        stack.push(nextEdge);
+                    }
+                }
+            }
+
+            if(hole.length > 2) holes.push(hole)
+        }
+    });
+
+    return holes;
+}
+
 function arrondirDixaineSupérieur(nombre) {
     return Math.ceil(nombre / 10) * 10;
 }
@@ -166,4 +187,17 @@ function diviserTableau(tableau, tailleSection) {
         debut = fin;
     }
     return sections;
+}
+
+
+Mesh.prototype.triangulateHoles = function (holes) {
+    let triangles = [];
+    holes.forEach(hole => {
+        let vertices = hole.map(edge => edge.tailVertex());
+        for (let i = 1; i < vertices.length - 1; i++) {
+            let triangle = [vertices[0], vertices[i], vertices[i + 1]];
+            triangles.push(triangle);
+        }
+    })
+    return triangles
 }
