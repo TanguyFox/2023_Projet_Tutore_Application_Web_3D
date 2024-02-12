@@ -20,7 +20,7 @@ let infoCoordPoints = document.querySelector("#infoCoordPoints");
 let meshvA;
 let meshvB;
 let meshvC;
-let highlightGeometry = new THREE.SphereGeometry(0.05, 16, 16);
+let highlightGeometry = new THREE.SphereGeometry(0.1, 16, 16);
 //meshvA couleur: rouge
 let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xeb4646});
 meshvA = new THREE.Mesh(highlightGeometry, highlightMaterial);
@@ -114,6 +114,8 @@ export function setTransformedPosition (intersectObject){
  * @returns {Vector3} le sommet
  */
 export function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
+    let radius = geometry_model.boundingSphere.radius > 2 ? geometry_model.boundingSphere.radius / 500 : 0.01;
+    console.log(mesh.geometry);
     let vertex = new THREE.Vector3(transformedPosition[offsetValue][0],
         transformedPosition[offsetValue][1], transformedPosition[offsetValue][2]);
     mesh.position.copy(vertex);

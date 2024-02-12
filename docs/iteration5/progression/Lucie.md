@@ -48,4 +48,6 @@ On est pas mal, il y a l'idée. Faut améliorer le design par contre. Prochaine 
 ### Lundi 12/02 
 Je refactorise un peu mon code qui est mal fait. Je le déplace dans un module de fonctionnalité qui lui est propre. 
 Je veux rajouter une transition plus agréable pour l'utilisateur
-Voilà c'est pas trop mal 
+Voilà c'est pas trop mal. 
+J'essaye de trouver comment faire pour que les points à la sélection d'une face aient une taille adaptée à l'élément. 
+Car ils peuvent apparaitre très petit ou très grand suivant les modèles dû à leur radius fixe. 
