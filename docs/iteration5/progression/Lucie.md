@@ -43,3 +43,9 @@ Vers la fin de la séance, j'arrive à découper la liste et à ce que le dom HT
 contenant un certain nombre d'éléments. Maintenant un peu de CSS pour faire le menu déroulant et c'est bon. 
 
 On est pas mal, il y a l'idée. Faut améliorer le design par contre. Prochaine heure. 
+
+
+### Lundi 12/02 
+Je refactorise un peu mon code qui est mal fait. Je le déplace dans un module de fonctionnalité qui lui est propre. 
+Je veux rajouter une transition plus agréable pour l'utilisateur
+Voilà c'est pas trop mal 

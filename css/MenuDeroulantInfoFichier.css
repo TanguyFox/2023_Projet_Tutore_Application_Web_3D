@@ -1,31 +1,38 @@
 .dropdown {
     position: relative;
+    margin-bottom: 20px;
+    transition: 0.5s all ease;
+    height: 40px;
 }
 
 .dropbtn {
-    background-color: #3498db;
-    color: white;
+    background-color: transparent;
+    color: black;
     padding: 10px;
+    height: 40px;
     font-size: 16px;
     border: none;
     cursor: pointer;
     display: flex;
+    gap: 10px;
 }
 .dropbtn img
 {
     height: 20px;
+    transform : rotate(0deg);
+    transition: 0.3s ease all;
 }
 
 .dropdown-content {
-    display: none;
+    visibility: hidden;
     opacity:0;
-    position: initial;
+    /*position: initial;*/
     background-color: transparent;
     min-width: 160px;
     z-index: 1;
     top: 100%; /* Position le menu déroulant sous le bouton */
     left: 0;
-    transition: 0.3s ease all;
+    transition: 0.25s ease-out all;
 }
 
 .dropdown-content p {
@@ -39,7 +46,7 @@
     background-color: transparent;
 }
 
-.dropdown:focus-within .dropdown-content {
+/*.dropdown:focus-within .dropdown-content {
     opacity: 1; /* Affiche le menu déroulant lorsqu'on survole le bouton */
-    display: block;
-}
+    /*display: block;
+}*/
