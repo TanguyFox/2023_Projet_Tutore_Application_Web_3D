@@ -1,5 +1,5 @@
 import {scene, transformControls} from "../vue/Scene3D";
-import {color_mesh, geometry_model} from "../tool/Element3DGeneraux";
+import {boundingBoxObject, color_mesh, geometry_model} from "../tool/Element3DGeneraux";
 import {arrowHelper} from "../tool/Raycaster";
 import * as Generaux from "../tool/Element3DGeneraux";
 import * as Raycaster from "../tool/Raycaster";
@@ -9,6 +9,7 @@ import * as Scene3DControleur from "../controleurs/Scene3DControleur";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
 import {resetMouseDown_PointSelectionne, setMouseClick} from "./ModifCoordPoint";
 import {removeSphere} from "./AjoutPoint";
+import {createBoundingBox} from "../vue/BoundingBoxHandler";
 
 /**
  * Module pour la fonctionnalité de traitement de mode (selection de face)
@@ -114,14 +115,43 @@ export function setTransformedPosition (intersectObject){
  * @returns {Vector3} le sommet
  */
 export function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
-    let radius = geometry_model.boundingSphere.radius > 2 ? geometry_model.boundingSphere.radius / 500 : 0.01;
-    console.log(mesh.geometry);
+    mesh.geometry.computeBoundingSphere();
+    console.log(mesh);
+    mesh.scale.setScalar(calculRadiusTailleModel()) ;
     let vertex = new THREE.Vector3(transformedPosition[offsetValue][0],
         transformedPosition[offsetValue][1], transformedPosition[offsetValue][2]);
     mesh.position.copy(vertex);
     Scene3D.scene.add(mesh);
     // console.log(mesh);
     return vertex;
+}
+
+function calculRadiusTailleModel(){
+    // 1. Définissez une échelle de référence pour vos sphères
+    geometry_model.computeBoundingSphere();
+   /* createBoundingBox(Generaux.meshModel, Generaux.boundingBoxObject, Scene3D.scene)
+
+    geometry_model.computeBoundingBox();
+
+
+    */
+    var sphereScale = 0.5; // Vous pouvez ajuster ce facteur en fonction de vos besoins
+    console.log(geometry_model.boundingSphere.radius)
+// 2. Créez des sphères avec un rayon adapté à l'échelle de votre modèle
+   // var sphereRadius = sphereScale / Math.max(boundingBoxObject.scale.x, boundingBoxObject.scale.y, boundingBoxObject.scale.z);
+
+/*
+s
+ */
+
+
+    let sphereRadius = sphereScale*geometry_model.boundingSphere.radius;
+
+// 2. Calculez le rayon des sphères en fonction de la taille du modèle
+    //let sphereRadius = boundingBoxSize.length() * 0.01; // Utilisation d'un pourcentage de la taille du modèle
+    console.log("sphereRadius : " + sphereRadius);
+// 3. Créez des sphères avec le rayon calculé
+    return sphereRadius;
 }
 
 /**

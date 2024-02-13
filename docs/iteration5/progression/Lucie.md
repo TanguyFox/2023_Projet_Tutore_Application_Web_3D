@@ -51,3 +51,10 @@ Je veux rajouter une transition plus agréable pour l'utilisateur
 Voilà c'est pas trop mal. 
 J'essaye de trouver comment faire pour que les points à la sélection d'une face aient une taille adaptée à l'élément. 
 Car ils peuvent apparaitre très petit ou très grand suivant les modèles dû à leur radius fixe. 
+
+### Mardi 13/02 
+    * Matin * 
+Je continue d'essayer de gérer la taille des points. Hier j'étais dans la compréhension du fonctionnement du radius 
+Aujourd'hui faut que j'arrive à trouver l'équitation qui permette sa modification en fonction du modèle. 
+Au terme de la matinée, on peut changer la taille selon la taille du modèle mais le resultat n'est pas encore bon
+(je pense qu'il faut juste trouver le bon coef, avec peut-être une ou deux conditions )
