@@ -58,3 +58,7 @@ Je continue d'essayer de gérer la taille des points. Hier j'étais dans la comp
 Aujourd'hui faut que j'arrive à trouver l'équitation qui permette sa modification en fonction du modèle. 
 Au terme de la matinée, on peut changer la taille selon la taille du modèle mais le resultat n'est pas encore bon
 (je pense qu'il faut juste trouver le bon coef, avec peut-être une ou deux conditions )
+
+    * Après-midi * 
+Après plusieurs tests sur plusieurs grandeurs de modèle, on peut dire que les coef sont plutot bons. Problème en parti 
+résolu 

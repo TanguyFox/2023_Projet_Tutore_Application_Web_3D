@@ -135,17 +135,17 @@ function calculRadiusTailleModel(){
 
 
     */
-    var sphereScale = 0.5; // Vous pouvez ajuster ce facteur en fonction de vos besoins
+    let sphereScale = 0.5; // Vous pouvez ajuster ce facteur en fonction de vos besoins
+    let radiusModel = geometry_model.boundingSphere.radius;
     console.log(geometry_model.boundingSphere.radius)
 // 2. Créez des sphères avec un rayon adapté à l'échelle de votre modèle
    // var sphereRadius = sphereScale / Math.max(boundingBoxObject.scale.x, boundingBoxObject.scale.y, boundingBoxObject.scale.z);
 
-/*
-s
- */
 
 
-    let sphereRadius = sphereScale*geometry_model.boundingSphere.radius;
+    let sphereRadius = (radiusModel<=1 )? sphereScale*radiusModel :
+        (radiusModel>10)? 0.05*radiusModel :
+        0.3*radiusModel;
 
 // 2. Calculez le rayon des sphères en fonction de la taille du modèle
     //let sphereRadius = boundingBoxSize.length() * 0.01; // Utilisation d'un pourcentage de la taille du modèle
