@@ -108,6 +108,12 @@ export function createTriangle(v1, v2, v3){
     //create triangle
     let triangle = new THREE.BufferGeometry();
 
+    if(!isCounterClockwise(v1.point, v2.point, v3.point)){
+        let temp = v1;
+        v1 = v3;
+        v3 = temp;
+    }
+
     //vertices tab counterclockwise
     let vertices = new Float32Array([
         v1.point.x, v1.point.y, v1.point.z,

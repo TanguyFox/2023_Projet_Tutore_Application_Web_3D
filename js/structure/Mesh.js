@@ -1,8 +1,4 @@
-import {
-    group,
-    createTriangle,
-    createCylinder,
-} from "../tool/Element3DGeneraux.js";
+import {createCylinder, createTriangle, group,} from "../tool/Element3DGeneraux.js";
 
 export class Mesh {
     constructor(faces, bhe) {
@@ -39,22 +35,57 @@ Mesh.prototype.highlightEdge = function () {
         problemHE++;
     })
 
-    let holes = this.identifyHoles();
-    console.log(holes);
+    if (this.boundaryEdges.length === 3) {
+        group.add(createTriangle(this.boundaryEdges[0].vertex, this.boundaryEdges[1].vertex, this.boundaryEdges[2].vertex));
+       document.getElementById("nb_trous").textContent = "1";
+    } else {
+        let holes = this.identifyHoles();
+        console.log(holes);
 
-    let triangles = this.triangulateHoles(holes);
-    triangles.forEach(t => {
-        let triangle = createTriangle(t[0], t[1], t[2])
-        group.add(triangle);
-    })
-
-    console.log(triangles)
-
-    document.getElementById("nb_trous").innerHTML = triangles.length;
+        let triangles = this.triangulateHoles(holes);
+        if (triangles !== undefined) {
+            triangles.forEach(t => {
+                let triangle = createTriangle(t[0], t[1], t[2])
+                group.add(triangle);
+            })
+        }
+    }
     document.getElementById("nb_hp").innerHTML = problemHE;
     this.infoFichierMenuModif();
     // console.log(group)
 }
+
+Mesh.prototype.identifyHoles = function () {
+    const holes = [];
+    const visited = new Set();
+
+    let startEdge = this.boundaryEdges[0];
+    let nextVertex = startEdge.tailVertex();
+    visited.add(startEdge);
+
+    let hole = [startEdge.headVertex(), nextVertex];
+    while(nextVertex !== startEdge.headVertex()) {
+        let bound = this.getFacesFromVertex(nextVertex).find(face => face.getAdjHole() < 3).getBoundaryEdges();
+    }
+
+    return holes;
+};
+
+Mesh.prototype.triangulateHoles = function (holes) {
+    if (holes.length === 0) {
+        return;
+    }
+    let triangles = [];
+    holes.forEach(hole => {
+        for (let i = 1; i < hole.length - 1; i++) {
+            let triangle = [hole[0], hole[i], hole[i + 1]];
+            triangles.push(triangle);
+        }
+    })
+    document.getElementById("nb_trous").textContent = holes.length;
+    return triangles
+}
+
 Mesh.prototype.infoFichierMenuModif = function () {
     let parentNodeProblem = document.querySelector("#problem_content");
     console.log(this.boundaryEdges);
@@ -84,15 +115,15 @@ Mesh.prototype.infoFichierMenuModif = function () {
 
         let sections = diviserTableau(this.boundaryEdges, n);
         console.log(sections)
-let i = 0;
-        sections.forEach(section =>{
+        let i = 0;
+        sections.forEach(section => {
             let liste = document.createElement("div");
             liste.classList.add("dropdown")
             divConteneur.appendChild(liste);
             //BUTTON
             let button = document.createElement("button");
             button.classList.add("dropbtn");
-           // button.textContent = i;
+            // button.textContent = i;
             button.innerHTML = `
                 <img src="../../resources/img/iconsMenu/fleche-droite.png"> ${i}
             `;
@@ -101,7 +132,7 @@ let i = 0;
             let dropdown_content = document.createElement("ul");
             dropdown_content.classList.add("dropdown-content");
             liste.appendChild(dropdown_content);
-            section.forEach(e =>{
+            section.forEach(e => {
                 let ligne = document.createElement("li");
                 dropdown_content.appendChild(ligne);
                 let writtenLikeSTL = writeLikeSTL(e);
@@ -113,11 +144,11 @@ let i = 0;
             i++;
         })
 
-       /* this.boundaryEdges.forEach(e => {
+        /* this.boundaryEdges.forEach(e => {
 
-        })
+         })
 
-        */
+         */
     }
 }
 
@@ -136,44 +167,12 @@ function writeLikeSTL(halfedge) {
 }
 
 function calculerNbSection(tailleTotale) {
-    let chiffre = arrondirDixaineSupérieur((tailleTotale * 10) / 500);
-    return chiffre;
+    return arrondirDixaineSuperieur((tailleTotale * 10) / 500);
 
 }
 
-Mesh.prototype.identifyHoles = function () {
-    const holes = [];
-    const visited = new Set();
-    const stack = [];
 
-    this.boundaryEdges.forEach(startEdge => {
-        if (!visited.has(startEdge)) {
-            stack.push(startEdge);
-            const hole = [];
-
-            while (stack.length > 0) {
-                const currentEdge = stack.pop();
-
-                if (!visited.has(currentEdge)) {
-                    visited.add(currentEdge);
-                    hole.push(currentEdge);
-
-                    const nextEdge = this.boundaryEdges.find(e => !visited.has(e) && e.tailVertex() === currentEdge.headVertex());
-
-                    if (nextEdge) {
-                        stack.push(nextEdge);
-                    }
-                }
-            }
-
-            if(hole.length > 2) holes.push(hole)
-        }
-    });
-
-    return holes;
-}
-
-function arrondirDixaineSupérieur(nombre) {
+function arrondirDixaineSuperieur(nombre) {
     return Math.ceil(nombre / 10) * 10;
 }
 
@@ -190,14 +189,6 @@ function diviserTableau(tableau, tailleSection) {
 }
 
 
-Mesh.prototype.triangulateHoles = function (holes) {
-    let triangles = [];
-    holes.forEach(hole => {
-        let vertices = hole.map(edge => edge.tailVertex());
-        for (let i = 1; i < vertices.length - 1; i++) {
-            let triangle = [vertices[0], vertices[i], vertices[i + 1]];
-            triangles.push(triangle);
-        }
-    })
-    return triangles
+Mesh.prototype.getFacesFromVertex = function (vertex) {
+    return this.faces.filter(face => face.getSommets().includes(vertex));
 }
