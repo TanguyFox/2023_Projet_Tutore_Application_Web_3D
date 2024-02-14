@@ -4,6 +4,7 @@ import {
     createCylinder,
 } from "../tool/Element3DGeneraux.js";
 import {infoFichierMenuModif} from "../fonctionnalites/InfoFichierPb";
+import {getFrontiere1trou} from "../fonctionnalites/FrontiereTrou";
 
 export class Mesh {
     constructor(faces, bhe) {
@@ -40,7 +41,8 @@ Mesh.prototype.highlightEdge = function () {
         problemHE++;
     })
 
-    let holes = this.identifyHoles();
+    //let holes = this.identifyHoles();
+    let holes = getFrontiere1trou(this.boundaryEdges);
     console.log(holes);
 
     let triangles = this.triangulateHoles(holes);
