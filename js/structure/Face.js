@@ -25,15 +25,15 @@ Face.prototype.getAdjHole = function(){
     if (this.edge === null) {
         return [];
     }
-    let adj = [];
+    let adj = 0;
     let p = this.edge.next;
     while(p !== this.edge) {
-        if(p.opposite.face === null) {
-            adj.push(p.opposite.face);
+        if(p.opposite === null) {
+            adj++;
         }
         p = p.next;
     }
-    return adj.length;
+    return adj;
 }
 
 Face.prototype.isWellOriented = function(){
@@ -90,14 +90,15 @@ Face.prototype.has3FaceAdjacentes = function() {
 }
 
 Face.prototype.getSommets = function() {
-    let p1 = this.edge.vertex.point;
-    let v1 = new THREE.Vector3(p1.x, p1.y, p1.z);
+    return [this.edge.headVertex(), this.edge.tailVertex(), this.edge.next.tailVertex()];
+}
 
-    let p2 = this.edge.next.vertex.point;
-    let v2 = new THREE.Vector3(p2.x, p2.y, p2.z);
-
-    let p3 = this.edge.prev.vertex.point;
-    let v3 = new THREE.Vector3(p3.x, p3.y, p3.z);
-
-    return [v1, v2, v3];
+Face.prototype.getBoundaryEdges = function() {
+    let edges = [];
+    let p = this.edge;
+    do {
+        if (p.opposite === null) edges.push(p);
+        p = p.next;
+    } while(p !== this.edge);
+    return edges;
 }
