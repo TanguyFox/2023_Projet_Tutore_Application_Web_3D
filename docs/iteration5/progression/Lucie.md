@@ -43,3 +43,22 @@ Vers la fin de la séance, j'arrive à découper la liste et à ce que le dom HT
 contenant un certain nombre d'éléments. Maintenant un peu de CSS pour faire le menu déroulant et c'est bon. 
 
 On est pas mal, il y a l'idée. Faut améliorer le design par contre. Prochaine heure. 
+
+
+### Lundi 12/02 
+Je refactorise un peu mon code qui est mal fait. Je le déplace dans un module de fonctionnalité qui lui est propre. 
+Je veux rajouter une transition plus agréable pour l'utilisateur
+Voilà c'est pas trop mal. 
+J'essaye de trouver comment faire pour que les points à la sélection d'une face aient une taille adaptée à l'élément. 
+Car ils peuvent apparaitre très petit ou très grand suivant les modèles dû à leur radius fixe. 
+
+### Mardi 13/02 
+    * Matin * 
+Je continue d'essayer de gérer la taille des points. Hier j'étais dans la compréhension du fonctionnement du radius 
+Aujourd'hui faut que j'arrive à trouver l'équitation qui permette sa modification en fonction du modèle. 
+Au terme de la matinée, on peut changer la taille selon la taille du modèle mais le resultat n'est pas encore bon
+(je pense qu'il faut juste trouver le bon coef, avec peut-être une ou deux conditions )
+
+    * Après-midi * 
+Après plusieurs tests sur plusieurs grandeurs de modèle, on peut dire que les coef sont plutot bons. Problème en parti 
+résolu 
