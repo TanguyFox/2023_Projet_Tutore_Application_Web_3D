@@ -178,6 +178,8 @@ async function loadFile(file) {
             //Deuxième scène
             SecondScene.scene.add(SecondScene.group);
 
+            console.log(generaux.meshModel);
+
 }
 
 
