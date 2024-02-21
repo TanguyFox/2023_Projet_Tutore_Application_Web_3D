@@ -92,6 +92,7 @@ Mesh.prototype.triangulateHoles = function (holes) {
         }
        console.log(triangles);
     });
+    document.getElementById("nb_trous").textContent = holes.length;
     return triangles
 }
 
