@@ -4,7 +4,7 @@ import {
     createCylinder,
 } from "../tool/Element3DGeneraux.js";
 import {infoFichierMenuModif} from "../fonctionnalites/InfoFichierPb";
-import {getFrontiere1trou} from "../fonctionnalites/FrontiereTrou";
+import {getFrontieres} from "../fonctionnalites/FrontiereTrou";
 
 export class Mesh {
     constructor(faces, bhe) {
@@ -41,21 +41,24 @@ Mesh.prototype.highlightEdge = function () {
         problemHE++;
     })
 
-    if (this.boundaryEdges.length === 3) {
+    if (this.boundaryEdges.length === 0) {
         group.add(createTriangle(this.boundaryEdges[0].vertex, this.boundaryEdges[1].vertex, this.boundaryEdges[2].vertex));
        document.getElementById("nb_trous").textContent = "1";
     } else {
-        let holes = this.identifyHoles();
-        console.log(holes);
-        getFrontiere1trou(this.boundaryEdges)
+        //let holes = this.identifyHoles();
+        //console.log(holes);
+        getFrontieres(this.boundaryEdges)
 
-        let triangles = this.triangulateHoles(holes);
+        /*let triangles = this.triangulateHoles(holes);
         if (triangles !== undefined) {
             triangles.forEach(t => {
                 let triangle = createTriangle(t[0], t[1], t[2])
                 group.add(triangle);
             })
         }
+
+         */
+
     }
     document.getElementById("nb_hp").innerHTML = problemHE;
     infoFichierMenuModif(this);
