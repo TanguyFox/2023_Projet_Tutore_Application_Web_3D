@@ -11,6 +11,7 @@ export function getFrontieres(boundaryEdgesOriginal){
         console.log(boundaryEdges);
         console.log(tableauxDeTrous);
     }
+    return tableauxDeTrous;
 }
 
 function getFrontiere1trou(tableauDeTrous, boundaryEdges){
@@ -19,24 +20,24 @@ function getFrontiere1trou(tableauDeTrous, boundaryEdges){
     let tabPoint = [];
     //on récupère la première H1 qui n'a pas d'opposée
     let h1 = boundaryEdges[0];
-    let p1 = h1.vertex.point;
-    tabPoint.push(p1);
+    let v1 = h1.vertex;
+    tabPoint.push(v1);
     boundaryEdges.splice(boundaryEdges.indexOf(h1), 1);
     let halfedgeSansOpposeePrecedente = h1;
-    let pointSuivant = h1.next.vertex.point;
-    while (!pointSuivant.equals(p1)) {
+    let vertexSuivant = h1.next.vertex;
+    while (!vertexSuivant.equals(v1)) {
         let nonOpposeHalfedge = getHalfedgeSansOpposee(halfedgeSansOpposeePrecedente);
-        if(pointSuivant.equals(nonOpposeHalfedge.vertex.point)){
+        if(vertexSuivant.equals(nonOpposeHalfedge.vertex)){
             //on ajoute le pointSuivant au tableau des points de frontière de trou
-            if(tabPoint.includes(pointSuivant)){
-                let newTrous = tabPoint.splice(tabPoint.indexOf(pointSuivant));
+            if(tabPoint.includes(vertexSuivant)){
+                let newTrous = tabPoint.splice(tabPoint.indexOf(vertexSuivant));
                 console.log("WARNING : newtrou")
                 console.log(newTrous);
                 tableauDeTrous.push(newTrous);
             }
-            tabPoint.push(pointSuivant);
+            tabPoint.push(vertexSuivant);
 
-            pointSuivant = nonOpposeHalfedge.next.vertex.point;
+            vertexSuivant = nonOpposeHalfedge.next.vertex;
             //suppression de l'halfedge trouvee dans boundaryEdges pour ne pas le relever quand
             //on cherchera un prochain trou
             let index = boundaryEdges.indexOf(nonOpposeHalfedge);
@@ -50,14 +51,14 @@ function getFrontiere1trou(tableauDeTrous, boundaryEdges){
             console.log("ETAT DES LIEUX");
             console.log(halfedgeSansOpposeePrecedente);
             console.log(nonOpposeHalfedge)
-            console.log(pointSuivant)
+            console.log(vertexSuivant)
             halfedgeSansOpposeePrecedente = nonOpposeHalfedge;
         }else {
             console.log('ERROR : le point suivant et le point de halfedge trouvee sans opposee ne coincident pas')
             throw new Error();
         }
     }
-
+    tabPoint.reverse();
     tableauDeTrous.push(tabPoint);
     //console.log(boundaryEdges);
     console.log(tabPoint);
@@ -73,9 +74,8 @@ function getHalfedgeSansOpposee(halfedge){
     let halfedgeSansOpposee;
     while (!sansOpposee){
         halfedgeSuivante = halfedgeSuivante.next;
-        if(typeof halfedgeSuivante != "undefined"){
-            if(typeof halfedgeSuivante.opposite == "undefined" ||
-                halfedgeSuivante.opposite == null){
+        if(typeof halfedgeSuivante !== null){
+            if(halfedgeSuivante.opposite == null){
                 console.log("haflede sans opposee");
                 console.log(halfedgeSuivante);
                 halfedgeSansOpposee = halfedgeSuivante;
