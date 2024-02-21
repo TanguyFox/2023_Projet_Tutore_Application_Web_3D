@@ -55,10 +55,19 @@ Car ils peuvent apparaitre très petit ou très grand suivant les modèles dû �
 ### Mardi 13/02 
     * Matin * 
 Je continue d'essayer de gérer la taille des points. Hier j'étais dans la compréhension du fonctionnement du radius 
-Aujourd'hui faut que j'arrive à trouver l'équitation qui permette sa modification en fonction du modèle. 
+Aujourd'hui faut que j'arrive à trouver l'équation qui permette sa modification en fonction du modèle. 
 Au terme de la matinée, on peut changer la taille selon la taille du modèle mais le resultat n'est pas encore bon
 (je pense qu'il faut juste trouver le bon coef, avec peut-être une ou deux conditions )
 
     * Après-midi * 
 Après plusieurs tests sur plusieurs grandeurs de modèle, on peut dire que les coef sont plutot bons. Problème en parti 
 résolu 
+
+### Mercredi 20/02
+J'ai oublié de tenir le petit journal pour la fin de l'itération mais après ce mardi j'ai rejoint Tanguy sur 
+l'algorithme dont il avait besoin pour faire le tour complet d'un trou et retourner le tableau de points associés. 
+Et ce pour tous les trous du modèle. Ca m'a prit deux-trois séances je crois. J'ai apriori fini ceci, à voir 
+ce qu'il en pense et si ça l'aidera pour sa fonctionnalité de combler les trous (générer des faces pour combler). 
+Là je m'occupe de la préparation de la soutenance avec le petit powerpoint et les documents à fournir de fin d'itération. 
+Et si après j'ai le temps je pourrais retourner vers Tanguy pour trouver un algo qui comble les trous parce que 
+ça m'intéresse quand même je serais déçue de passer à côté. 
