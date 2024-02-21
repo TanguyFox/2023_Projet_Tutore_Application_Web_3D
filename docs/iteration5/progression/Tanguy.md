@@ -24,3 +24,13 @@ résultats inatendu.
 - Tester l'implémentation de la détection des trous.
 - Améliorer la méthode si besoin
 - Si possible, commencer à travailler sur la réparation automatique du maillage.
+---
+21/02/2024 :
+
+Grâce à Lucie, nous pouvons avancé sur la détection des trous. Elle a trouvé une manière plus efficace de les détecter 
+d'après un dessin de M. DUPONT. Mon travail maintenant est de découper les trous en triangles pour les afficher à l'utilisateur.
+
+###### Objectif pour la prochaine fois :
+- [ ] Découper les trous en triangles.
+- [ ] Afficher les triangles à l'utilisateur.
+- [ ] Commencer à travailler sur la réparation automatique du maillage.
