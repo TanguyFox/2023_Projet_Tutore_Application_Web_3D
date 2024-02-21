@@ -47,18 +47,16 @@ Mesh.prototype.highlightEdge = function () {
     } else {
         //let holes = this.identifyHoles();
         //console.log(holes);
-        getFrontieres(this.boundaryEdges)
-
-        /*let triangles = this.triangulateHoles(holes);
+        let holes = getFrontieres(this.boundaryEdges)
+        console.log(holes);
+        let triangles = this.triangulateHoles(holes);
+        console.log(triangles);
         if (triangles !== undefined) {
             triangles.forEach(t => {
                 let triangle = createTriangle(t[0], t[1], t[2])
                 group.add(triangle);
             })
         }
-
-         */
-
     }
     document.getElementById("nb_hp").innerHTML = problemHE;
     infoFichierMenuModif(this);
@@ -87,12 +85,13 @@ Mesh.prototype.triangulateHoles = function (holes) {
     }
     let triangles = [];
     holes.forEach(hole => {
-        for (let i = 1; i < hole.length - 1; i++) {
-            let triangle = [hole[0], hole[i], hole[i + 1]];
-            triangles.push(triangle);
+      let i = 0;
+        while (i < hole.length-2) {
+            triangles.push([hole[i], hole[i + 1], hole[i + 2]]);
+            i++;
         }
-    })
-    document.getElementById("nb_trous").textContent = holes.length;
+       console.log(triangles);
+    });
     return triangles
 }
 

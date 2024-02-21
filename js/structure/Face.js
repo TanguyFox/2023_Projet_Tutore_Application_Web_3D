@@ -93,6 +93,19 @@ Face.prototype.getSommets = function() {
     return [this.edge.headVertex(), this.edge.tailVertex(), this.edge.next.tailVertex()];
 }
 
+Face.prototype.getTroisVertices = function() {
+    let p1 = this.edge.vertex.point;
+    let v1 = new THREE.Vector3(p1.x, p1.y, p1.z);
+
+    let p2 = this.edge.next.vertex.point;
+    let v2 = new THREE.Vector3(p2.x, p2.y, p2.z);
+
+    let p3 = this.edge.prev.vertex.point;
+    let v3 = new THREE.Vector3(p3.x, p3.y, p3.z);
+
+    return [v1, v2, v3];
+}
+
 Face.prototype.getBoundaryEdges = function() {
     let edges = [];
     let p = this.edge;

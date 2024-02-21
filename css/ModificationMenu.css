@@ -197,7 +197,7 @@
     color : red;
 }
 
-#repair_button {
+.button_menu {
     margin-top: 20px;
     margin-bottom: 20px;
     width: 50%;
@@ -209,13 +209,14 @@
     font-variant: all-petite-caps;
     background-color: #e88146;
     align-self: center;
+    overflow: hidden;
 }
 
-#repair_button:hover {
+.button_menu:hover {
     background-color: #fc6102;
 }
 
-#repair_button:disabled {
+.button_menu:disabled {
     background-color: #afa5ad;
     color: #868686;
 }

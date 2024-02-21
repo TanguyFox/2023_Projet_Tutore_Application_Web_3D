@@ -34,7 +34,8 @@ je dois utiliser d'autres algorithmes plus efficaces.
 - Affichage des faces qui se croisent (70% terminé)
 
 ## Problèmes rencontrés
-Actuellement, j'ai réussi à trouver un nouvel algorithme 
+Actuellement, j'ai réussi à trouver un nouvel algorithme
+(https://members.loria.fr/SLazard/ARC-Visi3D/Pant-project/files/Line_Triangle.html)
 pour réduire la quantité de calculs, 
 mais la détection n'est pas encore très précise. 
 
