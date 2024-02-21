@@ -2,11 +2,14 @@ import * as THREE from "three";
 import * as Scene3D from "../vue/Scene3D";
 import * as Generaux from "../tool/Element3DGeneraux";
 
-let group_triangles = new THREE.Group();
-let set_String_triangles = new Set();
+let group_triangles;
+let set_String_triangles;
 
 //Detecter les faces qui s'intersectent - version 3
 function detecterFacesIntersectees(faces){
+    group_triangles = new THREE.Group();
+    set_String_triangles = new Set();
+
     const boundingBox = new THREE.Box3().setFromObject(Generaux.meshModel);
     const min = boundingBox.min;
     const max = boundingBox.max;
@@ -76,6 +79,9 @@ function detecterFacesIntersectees(faces){
     if(set_String_triangles.size > 0){
         document.getElementById("nb_inter").textContent = set_String_triangles.size + "";
         document.getElementById("inter_button").disabled = false;
+    }else{
+        document.getElementById("nb_inter").textContent = "0";
+        document.getElementById("inter_button").disabled = true;
     }
 
     for (let x = 0; x < subSpaces.length; x++) {
@@ -206,7 +212,6 @@ function calculateDivisions(nb_faces){
     let max = 100;
     let result = min + (max - min) * Math.pow(nb_faces / 200000, 0.5);
     result = Math.round(Math.min(Math.max(result, min), max));
-    console.log("divisions_result: " + result);
     return result;
 }
 
