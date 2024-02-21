@@ -46,3 +46,12 @@ document.getElementById("inter_button").addEventListener("click", function(){
         inter_button_toggle = true;
     }
 });
+
+function resetInterButton(){
+    document.getElementById("inter_button").textContent = "Afficher les faces intersectées";
+    inter_button_toggle = true;
+}
+
+export {
+    resetInterButton
+}

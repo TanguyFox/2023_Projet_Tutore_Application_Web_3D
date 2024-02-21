@@ -11,6 +11,7 @@ import {boundingBoxObject} from "../tool/Element3DGeneraux.js";
 import {removeBoundingBox} from "../vue/BoundingBoxHandler";
 import {resetProblemPanel} from "../vue/ModificationMenuVue.js";
 import {removeSphere} from "../fonctionnalites/AjoutPoint";
+import {resetInterButton} from "./VisualisationMenu";
 
 /**
  * module gérant l'évènement d'import d'un fichier STL
@@ -57,8 +58,6 @@ export async function handleFileSelect(file) {
         menuMD.style.display = "block";
         secondSceneHtml.style.display = "block";
 
-        //remove the sphere
-        removeSphere();
         document.getElementById("infoCoordPoints").innerHTML = "";
 
         loadSpin.showLoadingScreen();
@@ -122,6 +121,9 @@ function resetScene() {
     resetProblemPanel();
     //S'il y a déjà un model 3D de chargé, on l'enlève
     if (generaux.group) {
+        //reset Intersection button
+        resetInterButton();
+
         Scene3D.transformControls.detach();
         Scene3D.scene.remove(generaux.group);
         generaux.setGroup(null);
@@ -179,7 +181,6 @@ async function loadFile(file) {
             SecondScene.scene.add(SecondScene.group);
 
             console.log(generaux.meshModel);
-
 }
 
 
