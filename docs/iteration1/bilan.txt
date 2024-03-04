@@ -1,9 +1,0 @@
-En cette fin d'itération, nous avons une application qui fonctionne d'un point de vue visualisation mais malheureusement,
-le remplissage des données et trop long pour être agréable pour l'utilisateur et lui permettre la modification du modèle 3D.
-
-Aussi, l'utilisation d'un worker JS pour paralléliser le chargement du fichier STL et le remplissage de la structure de données
-amène à un bug car la structure de données et trop complexe pour le worker.
-
-Jusqu'ici, l'application est conforme aux attentes du projet et à l'étude préalable.
-
-L'amélioration du remplissage de la structure de données sera le point clé de l'itération 2.
