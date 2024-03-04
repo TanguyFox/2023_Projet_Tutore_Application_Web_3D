@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STL Viewer</title>
+
+
+  <script type="module" crossorigin src="/assets/index-jhMid07q.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-TtBQa87B.css">
+</head>
+<body>
+<nav id="nav">
+    <ul>
+        <li id="home"><a>Home</a></li>
+        <li id="documentation"><a>documentation</a></li>
+        <li id="export" style="display: none"><a>Exporter</a></li>
+        <li id="new-model" style="display: none"><a>Nouveau modèle</a></li>
+    </ul>
+</nav>
+<div id="content">
+    <button type="button" id="import">
+        <div title="Upload your STL file here!">
+            <label style="cursor: pointer">Upload</label>
+        </div>
+        <input type="file" hidden id="inputfile" accept=".stl"/>
+    </button>
+
+
+    <div id="container">
+        <div id="scene-container">
+            <!--    repère du plan-->
+            <div id="viewHelper"></div>
+            <!-- Scene Message-->
+            <div id="scene-message">l'objet 3D original</div>
+        </div>
+
+        <div id="scene-switch">
+            <img id="scene-switch-img" src="data:image/svg+xml,%3csvg%20data-icon-name='eye'%20data-style='line'%20icon_origin_id='20465'%20viewBox='0%200%2024%2024'%20xmlns='http://www.w3.org/2000/svg'%20id='eye'%20class='icon%20line'%20width='48'%20height='48'%3e%3cpath%20style='fill:%20none;%20stroke:%20rgb(0,%200,%200);%20stroke-linecap:%20round;%20stroke-linejoin:%20round;%20stroke-width:%201;'%20d='M3,7V4A1,1,0,0,1,4,3H7'%20id='primary'%3e%3c/path%3e%3cpath%20style='fill:%20none;%20stroke:%20rgb(0,%200,%200);%20stroke-linecap:%20round;%20stroke-linejoin:%20round;%20stroke-width:%201;'%20d='M21,7V4a1,1,0,0,0-1-1H17'%20data-name='primary'%20id='primary-2'%3e%3c/path%3e%3cpath%20style='fill:%20none;%20stroke:%20rgb(0,%200,%200);%20stroke-linecap:%20round;%20stroke-linejoin:%20round;%20stroke-width:%201;'%20d='M3,17v3a1,1,0,0,0,1,1H7'%20data-name='primary'%20id='primary-3'%3e%3c/path%3e%3cpath%20style='fill:%20none;%20stroke:%20rgb(0,%200,%200);%20stroke-linecap:%20round;%20stroke-linejoin:%20round;%20stroke-width:%201;'%20d='M21,17v3a1,1,0,0,1-1,1H17'%20data-name='primary'%20id='primary-4'%3e%3c/path%3e%3cpath%20style='fill:%20none;%20stroke:%20rgb(0,%200,%200);%20stroke-linecap:%20round;%20stroke-linejoin:%20round;%20stroke-width:%201;'%20d='M19,12s-3.13,4-7,4-7-4-7-4,3.13-4,7-4S19,12,19,12Zm-7-2a2,2,0,1,0,2,2A2,2,0,0,0,12,10Z'%20data-name='primary'%20id='primary-5'%3e%3c/path%3e%3c/svg%3e" alt="view">
+        </div>
+    </div>
+
+
+    <div id="toolbar">
+        <div class="toolbar-div" id="translate">
+            <img class="toolbar-img" src="data:image/svg+xml,%3c?xml%20version='1.0'%20encoding='utf-8'?%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Generator:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20fill='%23000000'%20xmlns='http://www.w3.org/2000/svg'%20preserveAspectRatio='xMidYMid'%20width='31.906'%20height='31.906'%20viewBox='0%200%2031.906%2031.906'%3e%3cpath%20d='M31.567,16.699%20L27.622,20.644%20C27.427,20.838%2027.172,20.936%2026.917,20.936%20C26.662,20.936%2026.407,20.838%2026.212,20.644%20C25.822,20.254%2025.822,19.623%2026.212,19.234%20L28.539,16.906%20L16.945,16.906%20L16.945,28.502%20L19.234,26.214%20C19.623,25.824%2020.254,25.824%2020.644,26.214%20C21.033,26.603%2021.033,27.234%2020.644,27.624%20L16.655,31.612%20C16.624,31.644%2016.583,31.657%2016.548,31.683%20C16.479,31.736%2016.413,31.793%2016.332,31.827%20C16.210,31.877%2016.080,31.904%2015.950,31.904%20C15.950,31.904%2015.950,31.904%2015.949,31.904%20C15.949,31.904%2015.949,31.904%2015.948,31.904%20C15.936,31.904%2015.927,31.898%2015.915,31.897%20C15.672,31.889%2015.431,31.798%2015.245,31.612%20L11.257,27.624%20C10.867,27.234%2010.867,26.603%2011.257,26.214%20C11.646,25.824%2012.277,25.824%2012.667,26.214%20L15.000,28.547%20L15.000,16.906%20L3.358,16.906%20L5.687,19.234%20C6.076,19.623%206.076,20.254%205.687,20.644%20C5.493,20.838%205.237,20.936%204.982,20.936%20C4.727,20.936%204.471,20.838%204.277,20.644%20L0.286,16.655%20C0.099,16.468%20-0.006,16.215%20-0.006,15.950%20C-0.006,15.817%200.021,15.687%200.072,15.566%20C0.122,15.445%200.196,15.335%200.287,15.244%20L4.277,11.257%20C4.666,10.867%205.298,10.867%205.687,11.257%20C6.076,11.646%206.076,12.277%205.687,12.667%20L3.399,14.953%20L15.000,14.953%20L15.000,3.351%20L12.665,5.687%20C12.275,6.076%2011.644,6.076%2011.255,5.687%20C10.865,5.297%2010.865,4.666%2011.255,4.277%20L15.225,0.306%20C15.394,0.115%2015.642,-0.003%2015.947,-0.004%20C16.077,-0.004%2016.207,0.022%2016.329,0.073%20C16.452,0.123%2016.562,0.197%2016.654,0.289%20L20.642,4.277%20C21.031,4.666%2021.031,5.297%2020.642,5.687%20C20.447,5.881%2020.192,5.979%2019.937,5.979%20C19.682,5.979%2019.427,5.881%2019.232,5.687%20L16.945,3.400%20L16.945,14.953%20L28.498,14.953%20L26.212,12.667%20C25.822,12.277%2025.822,11.646%2026.212,11.257%20C26.601,10.867%2027.232,10.867%2027.622,11.257%20L31.609,15.244%20C31.701,15.336%2031.775,15.447%2031.826,15.569%20C31.876,15.691%2031.902,15.821%2031.902,15.951%20C31.902,16.270%2031.773,16.528%2031.567,16.699%20Z'/%3e%3c/svg%3e" alt="translate">
+        </div>
+        <div class="toolbar-div" id="rotate">
+            <img class="toolbar-img" src="data:image/svg+xml,%3c?xml%20version='1.0'%20encoding='utf-8'?%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Generator:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width='800px'%20height='800px'%20viewBox='0%200%2024%2024'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M4.06189%2013C4.02104%2012.6724%204%2012.3387%204%2012C4%207.58172%207.58172%204%2012%204C14.5006%204%2016.7332%205.14727%2018.2002%206.94416M19.9381%2011C19.979%2011.3276%2020%2011.6613%2020%2012C20%2016.4183%2016.4183%2020%2012%2020C9.61061%2020%207.46589%2018.9525%206%2017.2916M9%2017H6V17.2916M18.2002%204V6.94416M18.2002%206.94416V6.99993L15.2002%207M6%2020V17.2916'%20stroke='%23000000'%20stroke-width='2'%20stroke-linecap='round'%20stroke-linejoin='round'/%3e%3c/svg%3e" alt="rotate">
+        </div>
+        <div class="toolbar-div" id="scale">
+            <img class="toolbar-img" src="data:image/svg+xml,%3c?xml%20version='1.0'%20encoding='utf-8'?%3e%3c!--%20Uploaded%20to:%20SVG%20Repo,%20www.svgrepo.com,%20Generator:%20SVG%20Repo%20Mixer%20Tools%20--%3e%3csvg%20width='800px'%20height='800px'%20viewBox='0%200%2024%2024'%20fill='none'%20xmlns='http://www.w3.org/2000/svg'%3e%3cpath%20d='M6%206.75C6%206.33579%206.33579%206%206.75%206H9.25C9.66421%206%2010%206.33579%2010%206.75C10%207.16421%209.66421%207.5%209.25%207.5H8.56066L10.2803%209.21967C10.5732%209.51256%2010.5732%209.98744%2010.2803%2010.2803C9.98744%2010.5732%209.51256%2010.5732%209.21967%2010.2803L7.5%208.56066V9.25115C7.5%209.66536%207.16421%2010.0012%206.75%2010.0012C6.33579%2010.0012%206%209.66536%206%209.25115V6.75Z'%20fill='%23212121'/%3e%3cpath%20d='M17.2505%2018.0011C17.4494%2018.0011%2017.6402%2017.9221%2017.7808%2017.7814C17.9215%2017.6408%2018.0005%2017.45%2018.0005%2017.2511V14.7499C18.0005%2014.3357%2017.6647%2013.9999%2017.2505%2013.9999C16.8363%2013.9999%2016.5005%2014.3357%2016.5005%2014.7499V15.4402L14.7803%2013.7197C14.4874%2013.4268%2014.0125%2013.4268%2013.7196%2013.7196C13.4267%2014.0125%2013.4266%2014.4874%2013.7195%2014.7803L15.44%2016.5011H14.7505C14.3363%2016.5011%2014.0005%2016.8369%2014.0005%2017.2511C14.0005%2017.6653%2014.3363%2018.0011%2014.7505%2018.0011H17.2505Z'%20fill='%23212121'/%3e%3cpath%20d='M17.7808%206.22028C17.9215%206.36093%2018.0005%206.5517%2018.0005%206.75061V9.25061C18.0005%209.66482%2017.6647%2010.0006%2017.2505%2010.0006C16.8363%2010.0006%2016.5005%209.66482%2016.5005%209.25061V8.56075L14.7801%2010.2804C14.4871%2010.5733%2014.0123%2010.5732%2013.7194%2010.2802C13.4266%209.98727%2013.4267%209.5124%2013.7197%209.21956L15.4393%207.50061H14.7493C14.3351%207.50061%2013.9993%207.16482%2013.9993%206.75061C13.9993%206.3364%2014.3351%206.00061%2014.7493%206.00061L17.2505%206.00061C17.4494%206.00061%2017.6402%206.07963%2017.7808%206.22028Z'%20fill='%23212121'/%3e%3cpath%20d='M6%2017.2505C6%2017.4494%206.07902%2017.6402%206.21967%2017.7808C6.36032%2017.9215%206.55109%2018.0005%206.75%2018.0005H9.25115C9.66536%2018.0005%2010.0012%2017.6647%2010.0012%2017.2505C10.0012%2016.8363%209.66536%2016.5005%209.25115%2016.5005H8.56045L10.2804%2014.7803C10.5732%2014.4874%2010.5732%2014.0125%2010.2803%2013.7196C9.98737%2013.4268%209.5125%2013.4268%209.21963%2013.7197L7.5%2015.4396V14.7505C7.5%2014.3363%207.16421%2014.0005%206.75%2014.0005C6.33579%2014.0005%206%2014.3363%206%2014.7505L6%2017.2505Z'%20fill='%23212121'/%3e%3cpath%20d='M3%205.25C3%204.00736%204.00736%203%205.25%203H18.75C19.9926%203%2021%204.00736%2021%205.25V18.75C21%2019.9926%2019.9926%2021%2018.75%2021H5.25C4.00736%2021%203%2019.9926%203%2018.75V5.25ZM5.25%204.5C4.83579%204.5%204.5%204.83579%204.5%205.25V18.75C4.5%2019.1642%204.83579%2019.5%205.25%2019.5H18.75C19.1642%2019.5%2019.5%2019.1642%2019.5%2018.75V5.25C19.5%204.83579%2019.1642%204.5%2018.75%204.5H5.25Z'%20fill='%23212121'/%3e%3c/svg%3e" alt="scale">
+        </div>
+    </div>
+
+
+
+
+    <div id="menuModification">
+        <div id="indicator">&nbsp;</div>
+        <ul id="headerMenu">
+            <li id="problem_button">
+            Problèmes
+        </li>
+            <li id="visualisation_button">
+                Visualisation
+            </li>
+            <li id="modification_button">
+                Modification
+            </li>
+        </ul>
+
+
+
+        <div id="menuModifContent">
+            <div id="filename"></div>
+            <hr/>
+            <div id="visualisation_content" class="contentModifMenu">
+
+                <label>
+                    Grid
+                    <input type="checkbox" id="grid-check" checked>
+                </label>
+                <label>
+                    Sélectionner une face
+                    <input type="checkbox" id="face-mode-check">
+                </label>
+                <label>
+                    Texture "Fil de fer"
+                    <input type="checkbox" id="maillage-texture-check" checked>
+                </label>
+                <label>
+                    Anti-aliasing
+                    <input type="checkbox" id="anti-aliasing-check">
+                </label>
+                <hr/>
+                <h3>Données du modèle 3D : </h3>
+                <ul>
+                    <li>Nombre de faces : <p id="nb_faces"></p></li>
+                    <li>Nombre de sommets : <p id="nb_vertex"></p></li>
+                </ul>
+
+            </div>
+            <div id="modification_content" class="contentModifMenu">
+                <div id="progressBarData">
+                    <label id="loading-message" class="loadingDataMessage">Chargement des données...</label>
+                    <div id="progress-bar-containerData">
+                        <div id="progress-barData"></div>
+                    </div>
+                    <label class="loadingDataMessage">Modification impossible durant cette opération</label>
+                </div>
+                <div id="infoCoordPoints"></div>
+            </div>
+            <div id="problem_content" class="contentModifMenu">
+                <p style="font-weight: bold">Structure :</p>
+                <ul id="structure_problem">
+                    <li id="face_case">Nombre de trou(s) potentiel(s) : <p id="nb_trous">0</p></li>
+                    <li id="hp_case">Nombre d'arête(s) problématique(s) : <p id="nb_hp">0</p></li>
+                    <li id="inter_case">Nombre de faces intersectées <p id="nb_inter">0</p></li>
+                </ul>
+
+                <button id="inter_button" class="button_menu" disabled>Afficher les faces intersectées</button>
+                <p  style="font-weight: bold">Nombre de faces mal orientées réparées : <span id="face_mo">0</span></p>
+                <button id="repair_button" class="button_menu" disabled>Réparer le maillage</button>
+
+            </div>
+        </div>
+    </div>
+
+    <div id="loading-screen">
+        <div id="loading-spinner"></div>
+    </div>
+    <div id="menuContextuel">
+
+    </div>
+
+    <div id="exportModal" class="modal">
+        <div class="modal-content">
+            <h1>Export du modèle 3D</h1>
+            <label for="formatSelector">Dans quel format voulez-vous l'exporter ? :
+                <select id="formatSelector">
+                    <option value="stl" selected>STL</option>
+                    <option value="obj">OBJ</option>
+<!--                    <option value="gltf">GLTF</option>-->
+                </select>
+            </label>
+            <label>Format binaire : <input type="checkbox" value="false" id="binary"></label>
+            <button id="exportButton">Exporter</button>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+</body>
+</html>
