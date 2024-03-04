@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "homepage": "https://tanguyfox.github.io/2023_Projet_Tutore_Application_Web_3D",
+  "homepage": "https://tanguyfox.github.io/2023_Projet_Tutore_Application_Web_3D/",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build" : "vite build",
