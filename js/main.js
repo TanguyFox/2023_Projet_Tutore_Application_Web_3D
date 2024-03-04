@@ -12,6 +12,8 @@ import * as MenuContextuelControleur from "./controleurs/MenuContextuelControleu
 import {deplacerPoint, mouseUpReinitialisation, setMouseClick} from "./fonctionnalites/ModifCoordPoint";
 import {appearMenuContextuel} from "./vue/MenuContextuel";
 
+import "../resources/img/iconsMenu/fleche-droite.png";
+
 
 
 let renderer = Scene3D.initScene3D();
@@ -20,6 +22,8 @@ const input = document.getElementById("inputfile");
 const exportTab = document.getElementById("export")
 const exportButton = document.getElementById("exportButton")
 const newModel = document.getElementById("new-model");
+
+
 
 
 input.addEventListener('change', async () => await handleFileSelect(input.files[0]));
