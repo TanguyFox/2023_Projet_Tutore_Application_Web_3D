@@ -48,10 +48,10 @@ function getFrontiere1trou(tableauDeTrous, boundaryEdges){
                 console.log("WARNING : nonOpposeeHalfedge non trouvee dans boundaryEdges");
             }
 
-            console.log("ETAT DES LIEUX");
+            /*console.log("ETAT DES LIEUX");
             console.log(halfedgeSansOpposeePrecedente);
             console.log(nonOpposeHalfedge)
-            console.log(vertexSuivant)
+            console.log(vertexSuivant)*/
             halfedgeSansOpposeePrecedente = nonOpposeHalfedge;
         }else {
             console.log('ERROR : le point suivant et le point de halfedge trouvee sans opposee ne coincident pas')
@@ -61,8 +61,8 @@ function getFrontiere1trou(tableauDeTrous, boundaryEdges){
     tabPoint.reverse();
     tableauDeTrous.push(tabPoint);
     //console.log(boundaryEdges);
-    console.log(tabPoint);
-    console.log(tableauDeTrous);
+    /*console.log(tabPoint);
+    console.log(tableauDeTrous);*/
 }
 
 /*
