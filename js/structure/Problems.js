@@ -1,6 +1,7 @@
 import {createCylinder, createTriangle, geometry_model, group, mesh, meshModel} from "../tool/Element3DGeneraux";
 import {getFrontieres} from "../fonctionnalites/FrontiereTrou";
 import {infoFichierMenuModif} from "../fonctionnalites/InfoFichierPb";
+import {remplirTrouTotal} from "../fonctionnalites/RemplissageTrouCirculaire";
 
 export class Problems {
     constructor(boundaryEdges) {
@@ -45,9 +46,10 @@ Problems.prototype.highlightProblems = function() {
         //let holes = this.identifyHoles();
         //console.log(holes);
         let holes = getFrontieres(this.boundaryEdges)
-        console.log(holes);
+        //console.log(holes);
+        remplirTrouTotal(holes)
         let triangles = this.triangulateHoles(holes);
-        console.log(triangles);
+        //console.log(triangles);
         if (triangles !== undefined) {
             triangles.forEach(t => {
                 let triangle = createTriangle(t[0], t[1], t[2])
