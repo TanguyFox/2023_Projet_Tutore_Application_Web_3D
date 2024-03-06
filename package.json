@@ -13,7 +13,6 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "gh-pages": "^6.1.1",
     "loadscreen": "^0.18.14",
     "three": "^0.158.0"
   },
