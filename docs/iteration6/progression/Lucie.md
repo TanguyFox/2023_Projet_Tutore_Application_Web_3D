@@ -8,3 +8,5 @@ et de quelle manière
 ### Mercredi 06/03
     * Après-midi * 
 C'est parti pour le codage. 
+Pour une seule face en trou ça se corrige bien, par contre je suis confrontée au problème des coordonnées des 
+points lus dans le sens anti-horaire. Faut que je retourne tout ce que j'ai marqué sur papier 
