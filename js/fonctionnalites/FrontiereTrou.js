@@ -8,9 +8,10 @@ export function getFrontieres(boundaryEdgesOriginal){
     let tableauxDeTrous = [];
     while (boundaryEdges.length >0){
         getFrontiere1trou(tableauxDeTrous, boundaryEdges);
-        console.log(boundaryEdges);
-        console.log(tableauxDeTrous);
+        /*console.log(boundaryEdges);
+        console.log(tableauxDeTrous);*/
     }
+    console.log(tableauxDeTrous)
     return tableauxDeTrous;
 }
 
@@ -43,7 +44,7 @@ function getFrontiere1trou(tableauDeTrous, boundaryEdges){
             let index = boundaryEdges.indexOf(nonOpposeHalfedge);
             if(index !== -1){
                 boundaryEdges.splice(index, 1);
-                console.log("suppression effectuée avec succes")
+                //console.log("suppression effectuée avec succes")
             } else {
                 console.log("WARNING : nonOpposeeHalfedge non trouvee dans boundaryEdges");
             }
@@ -76,8 +77,8 @@ function getHalfedgeSansOpposee(halfedge){
         halfedgeSuivante = halfedgeSuivante.next;
         if(typeof halfedgeSuivante !== null){
             if(halfedgeSuivante.opposite == null){
-                console.log("haflede sans opposee");
-                console.log(halfedgeSuivante);
+                //console.log("haflede sans opposee");
+                //console.log(halfedgeSuivante);
                 halfedgeSansOpposee = halfedgeSuivante;
                 sansOpposee = true;
             } else {
