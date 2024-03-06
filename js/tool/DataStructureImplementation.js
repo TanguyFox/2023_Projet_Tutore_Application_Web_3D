@@ -6,6 +6,7 @@ import {Mesh} from "../structure/Mesh.js"
 import {VertexSkipList} from "../structure/VertexSkipList.js"
 import {progressBarMaj} from "./loadBarData";
 import {detecterFacesIntersectees} from "./DetectionIntersection";
+import {setMeshProblems} from "./Element3DGeneraux";
 
 export function convertSTLToData(positions) {
 
@@ -42,9 +43,7 @@ export function convertSTLToData(positions) {
 
     }
     console.timeEnd("Data filling")
-    const badHalfedges = sommets.getHalfEdgeProblem()
-    console.log(badHalfedges)
-
+    setMeshProblems(sommets.getHalfEdgeProblem())
     /*badHalfedges.forEach(e =>{
         console.log('-------');
         console.log(e.face.indice);
@@ -62,7 +61,7 @@ export function convertSTLToData(positions) {
     detecterFacesIntersectees(faces);
     console.timeEnd("Detection des faces intersectées")
 
-    return new Mesh(faces, badHalfedges);
+    return new Mesh(faces);
 }
 
 function creerSommet(point, sommets) {

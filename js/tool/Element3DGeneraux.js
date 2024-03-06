@@ -7,6 +7,7 @@ import {wireframe} from "../controleurs/ImportSTLfileEvent";
 import * as SecondScene from "../vue/SecondScene";
 import {HalfEdge} from "../structure/HalfEdge";
 import {Face} from "../structure/Face";
+import {Problems} from "../structure/Problems";
 
 
 //STL file
@@ -31,6 +32,8 @@ let wireframeMaterial = new THREE.MeshBasicMaterial({vertexColors: true, transpa
 
 //Maillage en données
 let mesh;
+
+let meshProblems;
 
 let faceIndexSelected;
 let faceIndexAncien;
@@ -103,6 +106,9 @@ function setMesh(newMesh){
     mesh=newMesh;
 }
 
+function setMeshProblems(boundaryEdges){
+    meshProblems=new Problems(boundaryEdges);
+}
 
 export function createTriangle(v1, v2, v3){
     //create triangle
@@ -201,6 +207,7 @@ export {
     faceIndexSelected,
     faceIndexAncien,
     mesh,
+    meshProblems,
     plainMaterial,
     wireframeMaterial,
     setGeometryModel,
@@ -211,6 +218,7 @@ export {
     setFaceIndexSelected,
     setFaceIndexAncien,
     setMesh,
+    setMeshProblems,
     groupAsWireframe,
     groupAsPlain,
     removeErrors

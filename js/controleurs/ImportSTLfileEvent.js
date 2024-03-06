@@ -7,7 +7,7 @@ import * as Scene3D from "../vue/Scene3D.js";
 import * as generaux from "../tool/Element3DGeneraux.js";
 import * as SecondScene from "../vue/SecondScene.js";
 import {convertSTLToData} from "../tool/DataStructureImplementation.js";
-import {boundingBoxObject} from "../tool/Element3DGeneraux.js";
+import {boundingBoxObject, meshProblems} from "../tool/Element3DGeneraux.js";
 import {removeBoundingBox} from "../vue/BoundingBoxHandler";
 import {resetProblemPanel} from "../vue/ModificationMenuVue.js";
 import {removeSphere} from "../fonctionnalites/AjoutPoint";
@@ -67,7 +67,7 @@ export async function handleFileSelect(file) {
             const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
             generaux.setMesh(mesh);
             console.log(mesh);
-            mesh.highlightEdge();
+            meshProblems.highlightProblems();
             document.getElementById("nb_faces").textContent = mesh.faces.length;
             //document.getElementById("nb_vertex").textContent = mesh.faces.length * 3 - 1;
 

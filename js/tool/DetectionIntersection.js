@@ -32,7 +32,7 @@ function detecterFacesIntersectees(faces){
     }
 
     for(let face of faces){
-        let sommets = face.getTroisVertices();
+        let sommets = face.getSommets();
         const triangle = new THREE.Triangle(sommets[0], sommets[1], sommets[2]);
         let triangleBoundingBox = new THREE.Box3().setFromPoints([triangle.a, triangle.b, triangle.c]);
         let startXIndex = Math.floor((triangleBoundingBox.min.x - min.x) / subSizeX);
