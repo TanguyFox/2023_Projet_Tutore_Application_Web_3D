@@ -193,7 +193,7 @@ function updateStructure(v1, v2, v3) {
     if (!edge3.opposite) {
         meshProblems.boundaryEdges.push(edge3);
     }
-    meshProblems.faces.push(edge1.face);
+    meshProblems.newFaces.push(edge1.face);
 }
 
 

@@ -71,12 +71,14 @@ function remplirTrouTableauImpair(tableauDeTrous){
             }
             tabUneFace.push(pointDebutFace, tableauDeTrous[indexCourant+1], tableauDeTrous[indexCourant+2]);
             console.log(tabUneFace);
+            remplirGeometry(tabUneFace);
             tabUneFace=[];
             indexCourant+=2;
             pointDebutFace = tableauDeTrous[indexCourant];
 
         }
-        tabUneFace.push(pointDebutFace, tableauDeTrous[0], tableauDeTrous[2])
+        tabUneFace.push(pointDebutFace, tableauDeTrous[0], tableauDeTrous[2]);
+        remplirGeometry(tabUneFace);
         console.log(tabUneFace);
     }
 
@@ -86,9 +88,9 @@ function remplirTrouTableauImpair(tableauDeTrous){
 function remplirGeometry(tableauUneFace){
     let positions = Array.from(geometry_model.getAttribute("position").array);
     console.log(positions);
-    positions.push(tableauDeTrous[0].point.x, tableauDeTrous[0].point.y, tableauDeTrous[0].point.z);
-    positions.push(tableauDeTrous[1].point.x, tableauDeTrous[1].point.y, tableauDeTrous[1].point.z);
-    positions.push(tableauDeTrous[2].point.x, tableauDeTrous[2].point.y, tableauDeTrous[2].point.z);
+    positions.push(tableauUneFace[0].point.x, tableauUneFace[0].point.y, tableauUneFace[0].point.z);
+    positions.push(tableauUneFace[1].point.x, tableauUneFace[1].point.y, tableauUneFace[1].point.z);
+    positions.push(tableauUneFace[2].point.x, tableauUneFace[2].point.y, tableauUneFace[2].point.z);
     geometry_model.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
     console.log(geometry_model.getAttribute("position").array);
 }
