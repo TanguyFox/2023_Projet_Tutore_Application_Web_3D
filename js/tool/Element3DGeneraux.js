@@ -183,17 +183,17 @@ function updateStructure(v1, v2, v3) {
     v3.addHalfEdge(edge3);
 
     if (!edge1.opposite) {
-        mesh.boundaryEdges.push(edge1);
+        meshProblems.boundaryEdges.push(edge1);
     }
 
     if (!edge2.opposite) {
-        mesh.boundaryEdges.push(edge2);
+        meshProblems.boundaryEdges.push(edge2);
     }
 
     if (!edge3.opposite) {
-        mesh.boundaryEdges.push(edge3);
+        meshProblems.boundaryEdges.push(edge3);
     }
-    mesh.faces.push(edge1.face);
+    meshProblems.faces.push(edge1.face);
 }
 
 
