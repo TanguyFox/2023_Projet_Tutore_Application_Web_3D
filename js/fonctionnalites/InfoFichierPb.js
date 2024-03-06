@@ -1,6 +1,6 @@
 export function infoFichierMenuModif (mesh) {
     let parentNodeProblem = document.querySelector("#problem_content");
-    console.log(mesh.boundaryEdges);
+    //console.log(mesh.boundaryEdges);
 
     if (mesh.boundaryEdges.length > 0) {
         let divConteneur = document.createElement("div");
@@ -21,12 +21,12 @@ export function infoFichierMenuModif (mesh) {
         //etc...
         //taille cible de chaque section = 50 pour x>500
         //taille cible de chaque section = 10 pour
-        console.log("taille = " + mesh.boundaryEdges.length);
+        //console.log("taille = " + mesh.boundaryEdges.length);
         let n = calculerNbSection(mesh.boundaryEdges.length);
-        console.log("n = " + n);
+        //console.log("n = " + n);
 
         let sections = diviserTableau(mesh.boundaryEdges, n);
-        console.log(sections)
+        //console.log(sections)
         let i = 0;
         sections.forEach(section => {
             let liste = document.createElement("div");
@@ -109,10 +109,10 @@ let selectedButton;
 function eventButtonShow(button){
     let dropdown = button.parentNode;
     button.addEventListener('click', function(){
-        console.log("button")
+        /*console.log("button")
         console.log(button)
         console.log("selectedButton")
-        console.log(selectedButton)
+        console.log(selectedButton)*/
         if(typeof selectedButton !== 'undefined'){
             console.log("not undefinex, hidden")
             hiddenTab(selectedButton.parentNode, selectedButton);

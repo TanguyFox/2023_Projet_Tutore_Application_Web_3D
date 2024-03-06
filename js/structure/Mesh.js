@@ -5,6 +5,7 @@ import {
 } from "../tool/Element3DGeneraux.js";
 import {infoFichierMenuModif} from "../fonctionnalites/InfoFichierPb";
 import {getFrontieres} from "../fonctionnalites/FrontiereTrou";
+import {remplirTrouTotal} from "../fonctionnalites/RemplissageTrouCirculaire";
 
 export class Mesh {
     constructor(faces, bhe) {
@@ -48,9 +49,10 @@ Mesh.prototype.highlightEdge = function () {
         //let holes = this.identifyHoles();
         //console.log(holes);
         let holes = getFrontieres(this.boundaryEdges)
-        console.log(holes);
+        //console.log(holes);
+        remplirTrouTotal(holes);
         let triangles = this.triangulateHoles(holes);
-        console.log(triangles);
+        //console.log(triangles);
         if (triangles !== undefined) {
             triangles.forEach(t => {
                 let triangle = createTriangle(t[0], t[1], t[2])
