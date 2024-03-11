@@ -33,8 +33,14 @@ function detecterFacesIntersectees(faces){
 
     for(let face of faces){
         let sommets = face.getSommets();
-        const triangle = new THREE.Triangle(sommets[0], sommets[1], sommets[2]);
+
+        const triangle = new THREE.Triangle(
+            new THREE.Vector3(sommets[0].point.x,sommets[0].point.y,sommets[0].point.z),
+            new THREE.Vector3(sommets[1].point.x,sommets[1].point.y,sommets[1].point.z),
+            new THREE.Vector3(sommets[2].point.x,sommets[2].point.y,sommets[2].point.z));
+
         let triangleBoundingBox = new THREE.Box3().setFromPoints([triangle.a, triangle.b, triangle.c]);
+
         let startXIndex = Math.floor((triangleBoundingBox.min.x - min.x) / subSizeX);
         let endXIndex = Math.floor((triangleBoundingBox.max.x - min.x) / subSizeX);
         let startYIndex = Math.floor((triangleBoundingBox.min.y - min.y) / subSizeY);
@@ -49,6 +55,7 @@ function detecterFacesIntersectees(faces){
         startZIndex = Math.max(0, Math.min(startZIndex, divisions - 1));
         endZIndex = Math.max(0, Math.min(endZIndex, divisions - 1));
 
+
         for (let x = startXIndex; x <= endXIndex; x++) {
             for (let y = startYIndex; y <= endYIndex; y++) {
                 for (let z = startZIndex; z <= endZIndex; z++) {
@@ -57,6 +64,8 @@ function detecterFacesIntersectees(faces){
             }
         }
     }
+
+    console.log(subSpaces)
 
     for (let x = 0; x < subSpaces.length; x++) {
         for (let y = 0; y < subSpaces[x].length; y++) {
