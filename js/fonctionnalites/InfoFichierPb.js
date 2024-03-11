@@ -1,3 +1,4 @@
+import fleche from "../../resources/img/iconsMenu/fleche-droite.png";
 export function infoFichierMenuModif (mesh) {
     let parentNodeProblem = document.querySelector("#problem_content");
     //console.log(mesh.boundaryEdges);
@@ -37,7 +38,7 @@ export function infoFichierMenuModif (mesh) {
             button.classList.add("dropbtn");
             // button.textContent = i;
             button.innerHTML = `
-                <img src="../../resources/img/iconsMenu/fleche-droite.png"> ${i}
+                <img src=${fleche} alt="fleche" /> ${i}
             `;
             liste.appendChild(button)
             //dropdown-content
@@ -50,7 +51,7 @@ export function infoFichierMenuModif (mesh) {
                 let writtenLikeSTL = writeLikeSTL(e);
                 ligne.innerHTML = `
         <p>Face n° ${e.face.indice}, ligne ${(e.face.indice / 9) * 7 + 4}</p>
-        <textarea style="height: 50px">${writtenLikeSTL}</textarea>
+        <textarea readonly style="height: 50px">${writtenLikeSTL}</textarea>
         `;
             });
             eventButtonShow(button);
