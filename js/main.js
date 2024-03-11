@@ -12,8 +12,6 @@ import * as MenuContextuelControleur from "./controleurs/MenuContextuelControleu
 import {deplacerPoint, mouseUpReinitialisation, setMouseClick} from "./fonctionnalites/ModifCoordPoint";
 import {appearMenuContextuel} from "./vue/MenuContextuel";
 
-import "../resources/img/iconsMenu/fleche-droite.png";
-
 
 
 let renderer = Scene3D.initScene3D();
