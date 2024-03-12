@@ -1,5 +1,4 @@
 import {OBJExporter, STLExporter} from "three/addons";
-import * as THREE from "three";
 import {meshModel} from "../tool/Element3DGeneraux";
 
 const exportModal = document.getElementById("exportModal");
@@ -9,7 +8,9 @@ const exportModal = document.getElementById("exportModal");
 
 function displayModal() {
     exportModal.style.display = "block"
-    window.addEventListener("click", function(event) {
+    let fileName = document.getElementById("filename").innerHTML;
+    document.getElementById("exportedFileName").value = fileName.split(".")[0];
+        window.addEventListener("click", function(event) {
         if (exportModal.style.display === "block") {
             if (event.target === exportModal) {
                 exportModal.style.display = "none"
@@ -40,7 +41,7 @@ function exportInObj(scene) {
     return blob;
 }*/
 
-function exportMesh(scene) {
+function exportMesh(fileName) {
     let file;
     // let newScene = clearScene(scene)
     let newScene = meshModel;
@@ -56,16 +57,16 @@ function exportMesh(scene) {
             file = exportInGLTF(scene)
         }*/
     }
-    createDowloadLink(file, fileExtension);
+    createDowloadLink(file, fileExtension, fileName);
 }
 
-function createDowloadLink(blob, extension) {
+function createDowloadLink(blob, extension, name) {
 
     const link = document.createElement("a");
     link.style.display = "none";
     document.body.appendChild(link);
     link.href = URL.createObjectURL(blob);
-    link.download = "mesh." + extension
+    link.download = name.trim() === "" ? "mesh" + "." + extension : name + "." + extension;
     link.click()
     document.body.removeChild(link)
 }
