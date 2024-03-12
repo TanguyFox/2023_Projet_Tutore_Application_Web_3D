@@ -145,9 +145,16 @@ nav li a
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
     /* Add the following animation properties */
     animation-name: fadeIn;
     animation-duration: 1.5s; /* Adjust the duration as needed */
+}
+
+#exportButton {
+    width : max-content;
 }
 
 /* Add this CSS rule to disable animation when the modal is initially hidden */
