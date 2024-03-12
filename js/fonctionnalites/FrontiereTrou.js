@@ -27,6 +27,7 @@ function getFrontiere1trou(tableauDeTrous, boundaryEdges){
     let halfedgeSansOpposeePrecedente = h1;
     let vertexSuivant = h1.next.vertex;
     while (!vertexSuivant.equals(v1)) {
+        console.log("while (!vertexSuivant.equals(v1)) {")
         let nonOpposeHalfedge = getHalfedgeSansOpposee(halfedgeSansOpposeePrecedente);
         if(vertexSuivant.equals(nonOpposeHalfedge.vertex)){
             //on ajoute le pointSuivant au tableau des points de frontière de trou

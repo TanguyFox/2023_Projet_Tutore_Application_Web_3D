@@ -5,12 +5,14 @@ import {animate, onPointerClick, onDoubleClick} from "./controleurs/Scene3DContr
 import * as ToolBarEvent from "./controleurs/ToolBarEvent.js";
 import * as visualisationMenu from "./controleurs/VisualisationMenu.js";
 import {onPointerMove} from "./fonctionnalites/SelectionFace";
-import {mesh, geometry_model} from "./tool/Element3DGeneraux";
+import {mesh, geometry_model, meshProblems} from "./tool/Element3DGeneraux";
 import {displayModal, exportMesh} from "./fonctionnalites/ExportModel"
 import * as modificationMenu from './controleurs/ModificationMenu.js';
 import * as MenuContextuelControleur from "./controleurs/MenuContextuelControleur.js";
 import {deplacerPoint, mouseUpReinitialisation, setMouseClick} from "./fonctionnalites/ModifCoordPoint";
 import {appearMenuContextuel} from "./vue/MenuContextuel";
+import {getFrontieres} from "./fonctionnalites/FrontiereTrou";
+import {remplirTrouTotal} from "./fonctionnalites/RemplissageTrouCirculaire.js";
 
 
 
@@ -57,6 +59,12 @@ renderer.domElement.addEventListener('mouseup', mouseUpReinitialisation);
 
 //évènement du menu contextuel
 renderer.domElement.addEventListener('contextmenu', appearMenuContextuel);
+
+//évènement bouton réparation maillage
+document.querySelector("#repair_button").addEventListener('click', evt => {
+    console.log("eventRepair")
+    remplirTrouTotal(meshProblems.getFrontieretrou());
+})
 
 
 console.log(mesh);

@@ -1,6 +1,8 @@
-import {geometry_model} from "../tool/Element3DGeneraux";
+import {geometry_model, meshModel} from "../tool/Element3DGeneraux";
 import * as generaux from "../tool/Element3DGeneraux";
 import * as THREE from "three";
+import * as Scene3D from "../vue/Scene3D";
+import {majEdges} from "./ModifCoordPoint";
 
 
 /*
@@ -9,11 +11,20 @@ import * as THREE from "three";
  * @param tableauDeTrous
  */
 export function remplirTrouTotal(tableauDeTrous) {
+    console.log("dans trou total")
     console.log(tableauDeTrous);
     let tableauCourant;
     for (tableauCourant of tableauDeTrous) {
+        console.log("tableauCourant")
         remplirTrou(tableauCourant);
     }
+    geometry_model.computeBoundingSphere(); // Recalcul du sphere de la bounding box
+    geometry_model.computeBoundingBox(); // Recalcul de la bounding box
+    geometry_model.computeVertexNormals();
+    geometry_model.attributes.position.needsUpdate = true;
+    meshModel.geometry = geometry_model;
+    Scene3D.transformControls.detach();
+    majEdges();
 }
 
 /**
@@ -113,12 +124,12 @@ function remplirTrouTableauImpair(tableauDeTrous) {
 
 function remplirGeometry(tableauUneFace) {
     let positions = Array.from(geometry_model.getAttribute("position").array);
-    console.log(positions);
+    //console.log(positions);
     positions.push(tableauUneFace[0].point.x, tableauUneFace[0].point.y, tableauUneFace[0].point.z);
     positions.push(tableauUneFace[1].point.x, tableauUneFace[1].point.y, tableauUneFace[1].point.z);
     positions.push(tableauUneFace[2].point.x, tableauUneFace[2].point.y, tableauUneFace[2].point.z);
     geometry_model.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-    console.log(geometry_model.getAttribute("position").array);
+  // console.log(geometry_model.getAttribute("position").array);
 }
 
 function preparerTableau(tableauSensHoraire) {

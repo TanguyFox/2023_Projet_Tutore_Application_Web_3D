@@ -87,5 +87,5 @@ VertexSkipList.prototype.getHalfEdgeProblem = function() {
         node = node.down;
     }
 
-    return Array.from(result);
+    return Array.from(result).sort((a,b)=> a.compare(b));
 }
