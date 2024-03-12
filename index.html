@@ -127,7 +127,6 @@
                 <button id="inter_button" class="button_menu" disabled>Afficher les faces intersectées</button>
                 <p  style="font-weight: bold">Nombre de faces mal orientées réparées : <span id="face_mo">0</span></p>
                 <button id="repair_button" class="button_menu" disabled>Réparer le maillage</button>
-
             </div>
         </div>
     </div>
@@ -135,9 +134,7 @@
     <div id="loading-screen">
         <div id="loading-spinner"></div>
     </div>
-    <div id="menuContextuel">
-
-    </div>
+    <div id="menuContextuel"></div>
 
     <div id="exportModal" class="modal">
         <div class="modal-content">
@@ -145,11 +142,12 @@
             <label for="formatSelector">Dans quel format voulez-vous l'exporter ? :
                 <select id="formatSelector">
                     <option value="stl" selected>STL</option>
-                    <option value="obj">OBJ</option>
+<!--                    <option value="obj">OBJ</option>-->
 <!--                    <option value="gltf">GLTF</option>-->
                 </select>
             </label>
             <label>Format binaire : <input type="checkbox" value="false" id="binary"></label>
+            <label>Nom du fichier : <input type="text" name="exportedFileName" id="exportedFileName" style="max-width: fit-content">.stl</label>
             <button id="exportButton">Exporter</button>
         </div>
     </div>

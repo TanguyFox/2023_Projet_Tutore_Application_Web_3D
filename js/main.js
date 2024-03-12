@@ -47,7 +47,7 @@ renderer.domElement.addEventListener('dblclick', onDoubleClick, false);
 
 exportTab.addEventListener("click", displayModal)
 exportButton.addEventListener("click", function () {
-    exportMesh(Scene3D.scene);
+    exportMesh(Scene3D.scene, document.getElementById("exportedFileName").value);
 })
 
 newModel.onclick = () => {input.click()};

@@ -18,3 +18,7 @@ Utiliser la commande ```npm install``` à la racine du projet pour installer les
 
 Utiliser ensuite la commande ```npx vite``` à la racine du projet pour lancer le projet
 
+#### Tester l'application :
+
+Aller sur le lien suivant : [MeshWizard](https://tanguyfox.github.io/2023_Projet_Tutore_Application_Web_3D/)
+
