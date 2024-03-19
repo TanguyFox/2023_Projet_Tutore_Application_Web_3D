@@ -70,6 +70,9 @@ console.log("initScene3D")
 
 
     VR_Button.addEventListener('click', function () {
+    });
+
+    //
         controllers.controller1 = renderer.xr.getController(0);
         controllers.controller2 = renderer.xr.getController(1);
         scene.add(controllers.controller1);
@@ -85,20 +88,15 @@ console.log("initScene3D")
         scene.add(controllerGrip2);
 
         controllers.controller1.addEventListener('selectstart', () => {
-            console.log("VR SELECT");
-            console.log(camera);
-            moveCameraForward(2);
+            updateCameraPosition(controllers.controller1);
+
         });
 
         controllers.controller2.addEventListener('selectstart', () => {
-            console.log("VR SELECT");
-            console.log(camera);
-            moveCameraForward(2);
+            updateCameraPosition(controllers.controller2);
+
         });
-
-
-
-    });
+    //
 
     cameraGroup.add(camera);
     scene.add(cameraGroup);
@@ -170,16 +168,10 @@ function rebuildAll(antialiasStat){
     scene.add(controllers.controller2);
 
     controllers.controller1.addEventListener('selectstart', () => {
-        // console.log("VR SELECT");
-        // console.log(camera);
-        // moveCameraForward(2);
         updateCameraPosition(controllers.controller1);
     });
 
     controllers.controller2.addEventListener('selectstart', () => {
-        // console.log("VR SELECT");
-        // console.log(camera);
-        // moveCameraForward(2);
         updateCameraPosition(controllers.controller2);
     });
 
@@ -229,9 +221,9 @@ function moveCameraForward(distance) {
 function updateCameraPosition(controller) {
     let controllerDirection = new THREE.Vector3();
     controller.getWorldDirection(controllerDirection);
-    let distance = 10;
+    let distance = 5;
     let moveDirection = controllerDirection.multiplyScalar(distance);
-    camera.position.add(moveDirection);
+    cameraGroup.position.add(moveDirection);
 }
 
 
