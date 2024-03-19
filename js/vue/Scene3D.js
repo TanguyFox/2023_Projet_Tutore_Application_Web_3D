@@ -11,6 +11,7 @@ import {mesh} from "../tool/Element3DGeneraux";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
 import {appearMenuContextuel} from "./MenuContextuel";
 import {VRButton} from "three/addons/webxr/VRButton";
+import {XRControllerModelFactory} from "three/addons";
 
 
 /**
@@ -67,28 +68,41 @@ console.log("initScene3D")
     VR_Button = VRButton.createButton( renderer );
     document.getElementById("VR_mode").appendChild(VR_Button);
 
-    controllers.controller1 = renderer.xr.getController(0);
-    controllers.controller2 = renderer.xr.getController(1);
 
-    scene.add(controllers.controller1);
-    scene.add(controllers.controller2);
+    VR_Button.addEventListener('click', function () {
+        controllers.controller1 = renderer.xr.getController(0);
+        controllers.controller2 = renderer.xr.getController(1);
+        scene.add(controllers.controller1);
+        scene.add(controllers.controller2);
 
-    controllers.controller1.addEventListener('selectstart', () => {
-        console.log("VR SELECT");
-        console.log(camera);
-        moveCameraForward(2);
-    });
+        let controllerModelFactory = new XRControllerModelFactory();
+        let controllerGrip1 = renderer.xr.getControllerGrip(0);
+        controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+        scene.add(controllerGrip1);
 
-    controllers.controller2.addEventListener('selectstart', () => {
-        console.log("VR SELECT");
-        console.log(camera);
-        moveCameraForward(2);
+        let controllerGrip2 = renderer.xr.getControllerGrip(1);
+        controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+        scene.add(controllerGrip2);
+
+        controllers.controller1.addEventListener('selectstart', () => {
+            console.log("VR SELECT");
+            console.log(camera);
+            moveCameraForward(2);
+        });
+
+        controllers.controller2.addEventListener('selectstart', () => {
+            console.log("VR SELECT");
+            console.log(camera);
+            moveCameraForward(2);
+        });
+
+
+
     });
 
     cameraGroup.add(camera);
     scene.add(cameraGroup);
     // -- VR
-
 
     sceneContrainer.appendChild(renderer.domElement);
 
@@ -156,15 +170,17 @@ function rebuildAll(antialiasStat){
     scene.add(controllers.controller2);
 
     controllers.controller1.addEventListener('selectstart', () => {
-        console.log("VR SELECT");
-        console.log(camera);
-        moveCameraForward(2);
+        // console.log("VR SELECT");
+        // console.log(camera);
+        // moveCameraForward(2);
+        updateCameraPosition(controllers.controller1);
     });
 
     controllers.controller2.addEventListener('selectstart', () => {
-        console.log("VR SELECT");
-        console.log(camera);
-        moveCameraForward(2);
+        // console.log("VR SELECT");
+        // console.log(camera);
+        // moveCameraForward(2);
+        updateCameraPosition(controllers.controller2);
     });
 
     renderer.setSize(widthS, heightS);
@@ -203,11 +219,21 @@ function setWidth_Height(width, height) {
     heightS = height;
 }
 
+//old function
 function moveCameraForward(distance) {
     const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
     const newPosition = direction.multiplyScalar(distance).add(cameraGroup.position);
     cameraGroup.position.set(newPosition.x, newPosition.y, newPosition.z);
 }
+
+function updateCameraPosition(controller) {
+    let controllerDirection = new THREE.Vector3();
+    controller.getWorldDirection(controllerDirection);
+    let distance = 10;
+    let moveDirection = controllerDirection.multiplyScalar(distance);
+    camera.position.add(moveDirection);
+}
+
 
 
 
