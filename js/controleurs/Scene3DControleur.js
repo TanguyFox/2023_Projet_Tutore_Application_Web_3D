@@ -63,6 +63,25 @@ export function animate(){
     executeRenderHelper();
 }
 
+//VR
+export function animate_VR(){
+    Scene3D.renderer.setAnimationLoop( function () {
+        Scene3D.orbitcontrols.update();
+
+        if(Generaux.boundingBoxObject.boundingBox){
+            Generaux.boundingBoxObject.boundingBox.update();
+        }
+
+        if(ModificationMod){
+            render();
+        }else{
+            Scene3D.renderer.render(SecondScene.scene, Scene3D.camera);
+        }
+
+        executeRenderHelper();
+    });
+}
+
 /**
  * génère un boundingBox pour l'objet, sélectionne la face et sélection l'objet
  * @param event
