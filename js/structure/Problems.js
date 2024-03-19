@@ -7,6 +7,7 @@ export class Problems {
     constructor(boundaryEdges) {
         this.boundaryEdges = boundaryEdges;
         this.newFaces = [];
+        this.frontiereTrou = null;
     }
 }
 
@@ -16,6 +17,9 @@ Problems.prototype.addFace = function(newFace) {
 
 Problems.prototype.getBoundaryEdges = function() {
     return this.boundaryEdges;
+}
+Problems.prototype.getFrontieretrou = function(){
+    return this.frontiereTrou;
 }
 
 Problems.prototype.getNewFaces = function() {
@@ -45,10 +49,10 @@ Problems.prototype.highlightProblems = function() {
     } else {
         //let holes = this.identifyHoles();
         //console.log(holes);
-        let holes = getFrontieres(this.boundaryEdges)
+        this.frontiereTrou = getFrontieres(this.boundaryEdges)
         //console.log(holes);
-        remplirTrouTotal(holes)
-        let triangles = this.triangulateHoles(holes);
+        //remplirTrouTotal(holes)
+        let triangles = this.triangulateHoles(this.frontiereTrou);
         //console.log(triangles);
         if (triangles !== undefined) {
             triangles.forEach(t => {

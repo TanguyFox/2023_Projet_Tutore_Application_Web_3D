@@ -25,3 +25,17 @@ et je ne vois pas, en sachant que notre seule information est un tableau de trou
 J'ai fait un test sur un trou ayant un nombre de points impairs et a priori ça se rempli entièrement aussi. 
 
 Je dois approfondir mes tests 
+
+
+### Mardi 12/03
+    * Après-midi *
+J'ai lié le bouton "réparer le maillage" avec l'algo de remplissage des trous. Ca a engendré des problèmes que 
+je n'ai pas tout de suite compris. Puis ça a été réparé. 
+Ensuite j'ai pu effectué plus de tests : 
+ - a ma grande surprise, le carré qui ne se remplissait pas bien lorsque le nombre de points autour d'un trou 
+   est impair , s'est mis à bien se réparer avec le bon angle 
+ - ce n'est pas le cas d'un trou pair. 
+ - La forme de sphère se répare également plutôt bien sauf lorsque j'ai deux trous distincts ayant un sommet en 
+   commun : un trou se rempli correctement, l'autre à des faces orientées vers l'intérieur. 
+Je ferais des tests suplémentaires sur le remplissage d'autres trous d'une structure ayant deux trous et on cherchera 
+à régler le problème à la prochaine séance. 

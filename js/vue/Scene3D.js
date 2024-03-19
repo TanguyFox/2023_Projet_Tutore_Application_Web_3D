@@ -5,11 +5,12 @@ import {createBoundingBox, removeBoundingBox} from "./BoundingBoxHandler.js";
 import * as THREE from "three";
 import {initViewHelper} from "./viewhelper";
 import {onPointerMove} from "../fonctionnalites/SelectionFace";
-import {onDoubleClick, onPointerClick} from "../controleurs/Scene3DControleur";
+import {animate_VR, onDoubleClick, onPointerClick} from "../controleurs/Scene3DControleur";
 import {deplacerPoint, mouseUpReinitialisation, setMouseClick} from "../fonctionnalites/ModifCoordPoint";
 import {mesh} from "../tool/Element3DGeneraux";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
 import {appearMenuContextuel} from "./MenuContextuel";
+import {VRButton} from "three/addons/webxr/VRButton";
 
 
 /**
@@ -28,6 +29,17 @@ let orbitcontrols;
 //width / height Scene / a modifier temps en temps pour la Précision de RayCaster
 let widthS = window.innerWidth;
 let heightS = window.innerHeight;
+
+//Camera Group - VR
+let cameraGroup = new THREE.Group();
+
+let controllers = {
+    "controller1":null,
+    "controller2":null
+}
+
+
+let VR_Button;
 
 function initScene3D() {
 console.log("initScene3D")
@@ -48,7 +60,35 @@ console.log("initScene3D")
 
 //Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
     renderer = new THREE.WebGLRenderer({antialias: false});
+    renderer.xr.enabled = true;
     renderer.setSize(widthS, heightS);
+
+    // -- VR
+    VR_Button = VRButton.createButton( renderer );
+    document.getElementById("VR_mode").appendChild(VR_Button);
+
+    controllers.controller1 = renderer.xr.getController(0);
+    controllers.controller2 = renderer.xr.getController(1);
+
+    scene.add(controllers.controller1);
+    scene.add(controllers.controller2);
+
+    controllers.controller1.addEventListener('selectstart', () => {
+        console.log("VR SELECT");
+        console.log(camera);
+        moveCameraForward(2);
+    });
+
+    controllers.controller2.addEventListener('selectstart', () => {
+        console.log("VR SELECT");
+        console.log(camera);
+        moveCameraForward(2);
+    });
+
+    cameraGroup.add(camera);
+    scene.add(cameraGroup);
+    // -- VR
+
 
     sceneContrainer.appendChild(renderer.domElement);
 
@@ -100,10 +140,39 @@ function rebuildAll(antialiasStat){
     renderer.forceContextLoss();
 
     renderer = new THREE.WebGLRenderer({antialias: antialiasStat});
+    renderer.xr.enabled = true;
+
+    document.getElementById("VR_mode").removeChild(VR_Button);
+    VR_Button = VRButton.createButton( renderer );
+    document.getElementById("VR_mode").appendChild(VR_Button);
+
+    scene.remove(controllers.controller1);
+    scene.remove(controllers.controller2);
+
+    controllers.controller1 = renderer.xr.getController(0);
+    controllers.controller2 = renderer.xr.getController(1);
+
+    scene.add(controllers.controller1);
+    scene.add(controllers.controller2);
+
+    controllers.controller1.addEventListener('selectstart', () => {
+        console.log("VR SELECT");
+        console.log(camera);
+        moveCameraForward(2);
+    });
+
+    controllers.controller2.addEventListener('selectstart', () => {
+        console.log("VR SELECT");
+        console.log(camera);
+        moveCameraForward(2);
+    });
 
     renderer.setSize(widthS, heightS);
 
     sceneContrainer.appendChild(renderer.domElement);
+
+    //VR
+    animate_VR();
 
     orbitcontrols = new OrbitControls(camera, renderer.domElement);
     orbitcontrols.target = oldEtat_OrbitControls;
@@ -134,6 +203,12 @@ function setWidth_Height(width, height) {
     heightS = height;
 }
 
+function moveCameraForward(distance) {
+    const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
+    const newPosition = direction.multiplyScalar(distance).add(cameraGroup.position);
+    cameraGroup.position.set(newPosition.x, newPosition.y, newPosition.z);
+}
+
 
 
 export {
@@ -149,4 +224,5 @@ export {
     heightS,
     rebuildAll,
     setWidth_Height,
+    VRButton
 }
