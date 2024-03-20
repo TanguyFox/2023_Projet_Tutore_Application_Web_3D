@@ -33,32 +33,49 @@ function initVR(){
         controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
         cameraGroup.add(controllerGrip2);
 
-        controllers.controller1.addEventListener('selectstart', () => {
-            updateCameraPosition(controllers.controller1);
 
+        controllers.controller1.addEventListener('selectstart', () => {
+            MoveCameraForward(controllers.controller1, 1);
         });
 
         controllers.controller2.addEventListener('selectstart', () => {
-            updateCameraPosition(controllers.controller2);
+            MoveCameraForward(controllers.controller2, 1);
+        });
+
+        controllers.controller1.addEventListener('connected', function (event) {
+           this.add(buildLineTrace());
+        });
+
+        controllers.controller2.addEventListener('connected', function (event) {
+            this.add(buildLineTrace());
+        });
+
+        controllers.controller1.addEventListener('disconnected', function () {
+            this.remove(this.children[0]);
+        });
+
+        controllers.controller1.addEventListener('disconnected', function () {
+            this.remove(this.children[0]);
         });
 
     });
 }
 
-//old function
-function moveCameraForward(distance) {
-    const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
+
+function MoveCameraForward(controller, distance) {
+    const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(controller.quaternion).normalize();
     const newPosition = direction.multiplyScalar(distance).add(cameraGroup.position);
     cameraGroup.position.set(newPosition.x, newPosition.y, newPosition.z);
 }
 
-function updateCameraPosition(controller) {
-    let controllerDirection = new THREE.Vector3();
-    controller.getWorldDirection(controllerDirection);
-    let distance = 5;
-    let moveDirection = controllerDirection.multiplyScalar(distance);
-    cameraGroup.position.add(moveDirection);
+function buildLineTrace(){
+    let geometry = new THREE.BufferGeometry();
+    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( [ 0, 0, 0, 0, 0, - 1 ], 3 ) );
+    geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( [ 0.5, 0.5, 0.5, 0, 0, 0 ], 3 ) );
+    let material = new THREE.LineBasicMaterial( { vertexColors: true, blending: THREE.AdditiveBlending } );
+    return new THREE.Line( geometry, material );
 }
+
 
 export {
     initVR,
