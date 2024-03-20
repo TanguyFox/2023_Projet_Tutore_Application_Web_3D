@@ -10,9 +10,7 @@ import {deplacerPoint, mouseUpReinitialisation, setMouseClick} from "../fonction
 import {mesh} from "../tool/Element3DGeneraux";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
 import {appearMenuContextuel} from "./MenuContextuel";
-import {VRButton} from "three/addons/webxr/VRButton";
-import {XRControllerModelFactory} from "three/addons";
-
+import * as VR from "../fonctionnalites/VR.js"
 
 /**
  * Affichage de l'objet 3D
@@ -32,16 +30,6 @@ let widthS = window.innerWidth;
 let heightS = window.innerHeight;
 
 //Camera Group - VR
-let cameraGroup = new THREE.Group();
-
-let controllers = {
-    "controller1":null,
-    "controller2":null
-}
-
-
-let VR_Button;
-
 function initScene3D() {
 console.log("initScene3D")
 
@@ -64,43 +52,9 @@ console.log("initScene3D")
     renderer.xr.enabled = true;
     renderer.setSize(widthS, heightS);
 
-    // -- VR
-    VR_Button = VRButton.createButton( renderer );
-    document.getElementById("VR_mode").appendChild(VR_Button);
+    VR.initVR();
 
-
-    VR_Button.addEventListener('click', function () {
-    });
-
-    //
-        controllers.controller1 = renderer.xr.getController(0);
-        controllers.controller2 = renderer.xr.getController(1);
-        scene.add(controllers.controller1);
-        scene.add(controllers.controller2);
-
-        let controllerModelFactory = new XRControllerModelFactory();
-        let controllerGrip1 = renderer.xr.getControllerGrip(0);
-        controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-        scene.add(controllerGrip1);
-
-        let controllerGrip2 = renderer.xr.getControllerGrip(1);
-        controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-        scene.add(controllerGrip2);
-
-        controllers.controller1.addEventListener('selectstart', () => {
-            updateCameraPosition(controllers.controller1);
-
-        });
-
-        controllers.controller2.addEventListener('selectstart', () => {
-            updateCameraPosition(controllers.controller2);
-
-        });
-    //
-
-    cameraGroup.add(camera);
-    scene.add(cameraGroup);
-    // -- VR
+    scene.add(camera);
 
     sceneContrainer.appendChild(renderer.domElement);
 
@@ -154,26 +108,8 @@ function rebuildAll(antialiasStat){
     renderer = new THREE.WebGLRenderer({antialias: antialiasStat});
     renderer.xr.enabled = true;
 
-    document.getElementById("VR_mode").removeChild(VR_Button);
-    VR_Button = VRButton.createButton( renderer );
-    document.getElementById("VR_mode").appendChild(VR_Button);
-
-    scene.remove(controllers.controller1);
-    scene.remove(controllers.controller2);
-
-    controllers.controller1 = renderer.xr.getController(0);
-    controllers.controller2 = renderer.xr.getController(1);
-
-    scene.add(controllers.controller1);
-    scene.add(controllers.controller2);
-
-    controllers.controller1.addEventListener('selectstart', () => {
-        updateCameraPosition(controllers.controller1);
-    });
-
-    controllers.controller2.addEventListener('selectstart', () => {
-        updateCameraPosition(controllers.controller2);
-    });
+    document.getElementById("VR_mode").firstChild.remove();
+    VR.initVR();
 
     renderer.setSize(widthS, heightS);
 
@@ -211,23 +147,6 @@ function setWidth_Height(width, height) {
     heightS = height;
 }
 
-//old function
-function moveCameraForward(distance) {
-    const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(camera.quaternion).normalize();
-    const newPosition = direction.multiplyScalar(distance).add(cameraGroup.position);
-    cameraGroup.position.set(newPosition.x, newPosition.y, newPosition.z);
-}
-
-function updateCameraPosition(controller) {
-    let controllerDirection = new THREE.Vector3();
-    controller.getWorldDirection(controllerDirection);
-    let distance = 5;
-    let moveDirection = controllerDirection.multiplyScalar(distance);
-    cameraGroup.position.add(moveDirection);
-}
-
-
-
 
 export {
     initScene3D,
@@ -242,5 +161,4 @@ export {
     heightS,
     rebuildAll,
     setWidth_Height,
-    VRButton
 }
