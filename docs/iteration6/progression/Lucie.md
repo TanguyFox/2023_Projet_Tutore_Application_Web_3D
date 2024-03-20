@@ -37,5 +37,25 @@ Ensuite j'ai pu effectué plus de tests :
  - ce n'est pas le cas d'un trou pair. 
  - La forme de sphère se répare également plutôt bien sauf lorsque j'ai deux trous distincts ayant un sommet en 
    commun : un trou se rempli correctement, l'autre à des faces orientées vers l'intérieur. 
-Je ferais des tests suplémentaires sur le remplissage d'autres trous d'une structure ayant deux trous et on cherchera 
+Je ferais des tests supplémentaires sur le remplissage d'autres trous d'une structure ayant deux trous et on cherchera 
 à régler le problème à la prochaine séance. 
+
+
+
+### Mardi 19/03 
+Sans rien n'avoir touché, les deux trous dans la sphère se remplissent correctement. J'approfondis mes tests. 
+Comme mon programme a l'air de bien fermer les trous mais de simplement pas toujours orienté les faces du bon côté, 
+je peux essayer de retourner les faces mal orentées du modèle final mais pour le moment ça ne marche pas. 
+Ce n'est pas une solution très optimisée mais pour le temps qu'il nous reste ce pourrait être satisfaisant. 
+
+### Mercredi 20/03 
+J'essaye de retourner les faces durant cette séance de 2h (on décale 2h du vendredi ensemble ce mercredi)
+Bon j'y arrive pas. J'ai beau utiliser la méthode que Xin a utilisé pour réparer les faces mal orientées à l'import 
+du fichier, elle ne répart pas les miennes. De plus, lorsqu'on exporte le modèle et qu'on importe le fichier, 
+l'endroit où les faces devaient être mal orientées se transforme en trou. 
+
+Je regarde pour voir s'il y a un moyen de savoir dans quel sens enregistrer les points d'une nouvelle face selon la 
+normale. Dans mes tests j'ai réussi à inverse les trous bien faits et les trous mal orientés. Je me dis que je tiens 
+quelque chose mais je n'arrive pas à combiner les deux. 
+
+ça marche pas... 
