@@ -30,9 +30,6 @@ let widthS = window.innerWidth;
 let heightS = window.innerHeight;
 
 //Camera Group - VR
-let cameraGroup = new THREE.Group();
-
-
 function initScene3D() {
 console.log("initScene3D")
 
@@ -57,9 +54,7 @@ console.log("initScene3D")
 
     VR.initVR();
 
-    // cameraGroup pour VR
-    cameraGroup.add(camera);
-    scene.add(cameraGroup);
+    scene.add(camera);
 
     sceneContrainer.appendChild(renderer.domElement);
 
@@ -113,27 +108,6 @@ function rebuildAll(antialiasStat){
     renderer = new THREE.WebGLRenderer({antialias: antialiasStat});
     renderer.xr.enabled = true;
 
-    // document.getElementById("VR_mode").removeChild(VR_Button);
-    // VR_Button = VRButton.createButton( renderer );
-    // document.getElementById("VR_mode").appendChild(VR_Button);
-    //
-    // scene.remove(controllers.controller1);
-    // scene.remove(controllers.controller2);
-    //
-    // controllers.controller1 = renderer.xr.getController(0);
-    // controllers.controller2 = renderer.xr.getController(1);
-    //
-    // scene.add(controllers.controller1);
-    // scene.add(controllers.controller2);
-    //
-    // controllers.controller1.addEventListener('selectstart', () => {
-    //     updateCameraPosition(controllers.controller1);
-    // });
-    //
-    // controllers.controller2.addEventListener('selectstart', () => {
-    //     updateCameraPosition(controllers.controller2);
-    // });
-
     renderer.setSize(widthS, heightS);
 
     sceneContrainer.appendChild(renderer.domElement);
@@ -184,5 +158,4 @@ export {
     heightS,
     rebuildAll,
     setWidth_Height,
-    cameraGroup
 }

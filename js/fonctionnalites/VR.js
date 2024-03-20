@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {camera, cameraGroup, renderer, scene} from "../vue/Scene3D";
+import {renderer, scene} from "../vue/Scene3D";
 import {XRControllerModelFactory} from "three/addons";
 import {VRButton} from "three/addons/webxr/VRButton.js";
 
@@ -27,19 +27,20 @@ function initVR(){
         let controllerModelFactory = new XRControllerModelFactory();
         let controllerGrip1 = renderer.xr.getControllerGrip(0);
         controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-        cameraGroup.add(controllerGrip1);
+        scene.add(controllerGrip1);
 
         let controllerGrip2 = renderer.xr.getControllerGrip(1);
         controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-        cameraGroup.add(controllerGrip2);
+        scene.add(controllerGrip2);
 
 
         controllers.controller1.addEventListener('selectstart', () => {
-            MoveCameraForward(controllers.controller1, 1);
+            moveAlongRay(controllers.controller1, 1)
         });
 
         controllers.controller2.addEventListener('selectstart', () => {
-            MoveCameraForward(controllers.controller2, 1);
+            moveAlongRay(controllers.controller2, 1)
+
         });
 
         controllers.controller1.addEventListener('connected', function (event) {
@@ -61,12 +62,17 @@ function initVR(){
     });
 }
 
-
-function MoveCameraForward(controller, distance) {
+function moveAlongRay(controller, distance) {
     const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(controller.quaternion).normalize();
-    const newPosition = direction.multiplyScalar(distance).add(cameraGroup.position);
-    cameraGroup.position.set(newPosition.x, newPosition.y, newPosition.z);
+    const offsetPosition = direction.multiplyScalar(distance);
+    const offsetPositionXR = { x: -offsetPosition.x, y: -offsetPosition.y, z: -offsetPosition.z, w: 1 };
+    const offsetRotation = new THREE.Quaternion();
+    //ignore error - ça fonctionne dans le navigateur
+    const transform = new XRRigidTransform(offsetPositionXR, offsetRotation);
+    const teleportSpaceOffset = renderer.xr.getReferenceSpace().getOffsetReferenceSpace(transform);
+    renderer.xr.setReferenceSpace(teleportSpaceOffset);
 }
+
 
 function buildLineTrace(){
     let geometry = new THREE.BufferGeometry();
