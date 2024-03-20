@@ -13,6 +13,7 @@ let controllers = {
 let VR_Button;
 
 function initVR(){
+
     VR_Button = VRButton.createButton( renderer );
     document.getElementById("VR_mode").appendChild(VR_Button);
 

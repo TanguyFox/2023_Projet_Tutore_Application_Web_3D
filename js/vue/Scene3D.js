@@ -108,6 +108,9 @@ function rebuildAll(antialiasStat){
     renderer = new THREE.WebGLRenderer({antialias: antialiasStat});
     renderer.xr.enabled = true;
 
+    document.getElementById("VR_mode").firstChild.remove();
+    VR.initVR();
+
     renderer.setSize(widthS, heightS);
 
     sceneContrainer.appendChild(renderer.domElement);
