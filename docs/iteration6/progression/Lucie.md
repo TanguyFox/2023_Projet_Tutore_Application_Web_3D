@@ -59,3 +59,10 @@ normale. Dans mes tests j'ai réussi à inverse les trous bien faits et les trou
 quelque chose mais je n'arrive pas à combiner les deux. 
 
 ça marche pas... 
+
+
+### Vendredi 22/03
+Toujours sur le même problème. Je fais des recherches 
+J'ai essayé plusieurs méthodes pour réussir à calculer la normale de la face que je vais créer en la comparant 
+à la normale du modèle mais ça marche décidément pas. Donc je sollicite l'aide de monsieur Dupont 
+la semaine prochaine si possible. 

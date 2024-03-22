@@ -70,12 +70,12 @@ function remplirTrouTableauPair(tableauDeTrous) {
             tabUneFace.push(pointDebutFace, tableauDeTrous[indexCourant + 1], tableauDeTrous[indexCourant + 2]);
             indexCourant += 2;
         }
-        console.log(tabUneFace)
+       // console.log(tabUneFace)
         remplirGeometry(tabUneFace);
         pointDebutFace = tableauDeTrous[indexCourant];
-        console.log("indexCourant = " + indexCourant);
+       // console.log("indexCourant = " + indexCourant);
         tabUneFace = [];
-        console.log(tabUneFace);
+       // console.log(tabUneFace);
 
 
     } while (tableauDeTrous.indexOf(pointDebutFace) !== 0)
@@ -92,12 +92,12 @@ function remplirTrouTableauPair(tableauDeTrous) {
 function remplirTrouTableauImpair(tableauDeTrous) {
     console.log("dans remplissage tableau impair")
     if (tableauDeTrous.length === 3) {
-        console.log(`facet\n  outer loop\n
+        /*console.log(`facet\n  outer loop\n
            vertex ${tableauDeTrous[0].point.x} ${tableauDeTrous[0].point.y} ${tableauDeTrous[0].point.z}\n
            vertex ${tableauDeTrous[1].point.x} ${tableauDeTrous[1].point.y} ${tableauDeTrous[1].point.z}\n
            vertex ${tableauDeTrous[2].point.x} ${tableauDeTrous[2].point.y} ${tableauDeTrous[2].point.z}\n
           endloop\n
-        endfacet`);
+        endfacet`);*/
         remplirGeometry(tableauDeTrous);
     } else {
         let indexCourant = 0;
@@ -126,24 +126,15 @@ function remplirTrouTableauImpair(tableauDeTrous) {
 }
 
 function remplirGeometry(tableauUneFace) {
-    let sens = detectSensParcours(tableauUneFace);
-    if (sens){
-        let positions = Array.from(geometry_model.getAttribute("position").array);
-        //console.log(positions);
-        positions.push(tableauUneFace[0].point.x, tableauUneFace[0].point.y, tableauUneFace[0].point.z);
-        positions.push(tableauUneFace[1].point.x, tableauUneFace[1].point.y, tableauUneFace[1].point.z);
-        positions.push(tableauUneFace[2].point.x, tableauUneFace[2].point.y, tableauUneFace[2].point.z);
-        geometry_model.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-    } else {
-        let positions = Array.from(geometry_model.getAttribute("position").array);
-        //console.log(positions);
-        positions.push(tableauUneFace[2].point.x, tableauUneFace[2].point.y, tableauUneFace[2].point.z);
-        positions.push(tableauUneFace[1].point.x, tableauUneFace[1].point.y, tableauUneFace[1].point.z);
-        positions.push(tableauUneFace[0].point.x, tableauUneFace[0].point.y, tableauUneFace[0].point.z);
-        geometry_model.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
-    }
+    tableauUneFace = detectSensParcours(tableauUneFace);
+    let positions = Array.from(geometry_model.getAttribute("position").array);
+    //console.log(positions);
+    positions.push(tableauUneFace[0].point.x, tableauUneFace[0].point.y, tableauUneFace[0].point.z);
+    positions.push(tableauUneFace[1].point.x, tableauUneFace[1].point.y, tableauUneFace[1].point.z);
+    positions.push(tableauUneFace[2].point.x, tableauUneFace[2].point.y, tableauUneFace[2].point.z);
 
-  // console.log(geometry_model.getAttribute("position").array);
+    geometry_model.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+    // console.log(geometry_model.getAttribute("position").array);
 
 }
 
@@ -153,6 +144,7 @@ function preparerTableau(tableauSensHoraire) {
     tableauSensHoraire.reverse();
     return [firstSommet].concat(tableauSensHoraire);
 }
+
 function repairFacesNormals() {
     const normal = new THREE.Vector3();
     geometry_model.computeVertexNormals();
@@ -180,67 +172,33 @@ function repairFacesNormals() {
     }
 }
 
-function detectSensParcours(points){
-    const center = points.reduce((acc, point) => {
-        acc.x += point.x;
-        acc.y += point.y;
-        acc.z += point.z;
-        return acc;
-    }, { x: 0, y: 0, z: 0 });
-
-    center.x /= points.length;
-    center.y /= points.length;
-    center.z /= points.length;
-
-// Trouver le point le plus éloigné du centre de gravité pour définir un vecteur de référence initial
-    const referencePoint = points.reduce((maxPoint, currentPoint) => {
-        const maxDistance = Math.sqrt(
-            Math.pow(maxPoint.x - center.x, 2) +
-            Math.pow(maxPoint.y - center.y, 2) +
-            Math.pow(maxPoint.z - center.z, 2)
-        );
-
-        const currentDistance = Math.sqrt(
-            Math.pow(currentPoint.x - center.x, 2) +
-            Math.pow(currentPoint.y - center.y, 2) +
-            Math.pow(currentPoint.z - center.z, 2)
-        );
-
-        return currentDistance > maxDistance ? currentPoint : maxPoint;
-    }, points[0]);
-
-// Définir un vecteur de référence initial à partir du centre de gravité vers le point de référence
-    const initialVector = new THREE.Vector3(
-        referencePoint.x - center.x,
-        referencePoint.y - center.y,
-        referencePoint.z - center.z
-    );
-
-// Calculer le produit vectoriel entre le vecteur de référence initial et le vecteur formé par chaque paire de points adjacents
-    // Récupérer les normales des sommets
-    const normalAttribute = geometry_model.getAttribute('normal');
-
-// Parcourir les normales des faces pour détecter l'orientation
-    for (let i = 0; i < normalAttribute.count; i++) {
-        const normal = new THREE.Vector3(
-            normalAttribute.getX(i),
-            normalAttribute.getY(i),
-            normalAttribute.getZ(i)
-        );
-
-        // Vérifier l'orientation de la normale par rapport à un vecteur de référence
-        // Par exemple, si le vecteur de référence est l'axe Z, vérifiez si la composante Z de la normale est positive ou négative
-        if (normal.z < 0) {
-            console.log("Face mal orientée :", i);
-        }
+function detectSensParcours(points) {
+    geometry_model.computeVertexNormals();
+    console.log("Detect sens parcours");
+    console.log(points);
+    let v1 = points[0];
+    let v2 = points[1];
+    let v3 = points[2];
+    console.log(v1, v2, v3);
+    let edge1 = new THREE.Vector3().subVectors(v2, v1);
+    let edge2 = new THREE.Vector3().subVectors(v3, v1);
+    if (edge1.cross(edge2).length() === 0) {
+        console.log('Les vecteurs sont colinéaires');
     }
-    let isClockwise = true;
-    if (isClockwise) {
-        console.log("Parcourir les points de gauche à droite");
-        return true;
+
+   // let normal = geometry_model.getAttribute('normal');
+    /*let valeurNormal = normal.x * v1.x + normal.y * v1.y + normal.z * v1.z;
+    console.log("valeur normale : ", valeurNormal);*/
+    let normal = new THREE.Vector3().crossVectors(edge1, edge2).normalize();
+    console.log(normal);
+    console.log(normal.dot(v1))
+    if(normal.dot(v1) < 0){
+        //la normale pointe vers l'intérieur, on retourn le tableau
+        console.log("points vers l'intérieur")
+        return points.reverse();
     } else {
-        console.log("Parcourir les points de droite à gauche");
-        return false;
+        console.log("points vers l'extérieur")
+        return points;
     }
 }
 
