@@ -17,7 +17,7 @@ export function remplirTrouTotal(tableauDeTrous) {
     let tableauCourant;
     for (tableauCourant of tableauDeTrous) {
         console.log("tableauCourant")
-        remplirTrou(tableauCourant);
+        remplirTrouRepartisseur(tableauCourant);
     }
 
     geometry_model.computeBoundingSphere(); // Recalcul du sphere de la bounding box
@@ -34,31 +34,58 @@ export function remplirTrouTotal(tableauDeTrous) {
  * fonction qui envoie le tableau dans la fonction adéquat par rapport à sa taille.
  * @param tableauDeVertex
  */
-function remplirTrou(tableauDeVertex) {
+function remplirTrouRepartisseur(tableauDeVertex) {
     //let tableau = preparerTableau(tableauDeVertex);
     let tableau = tableauDeVertex;
     console.log(tableau);
     if (tableau.length !== 0) {
         if (tableau.length % 2 === 0) {
             //tableau pair
-            remplirTrouTableauPair(tableau);
+            //remplirTrouTableauPair(tableau);
+            remplirTrouAll(tableau, remplirTrouTableauPair2, verifTabPair);
         } else {
             //tableau impair
-            remplirTrouTableauImpair(tableau);
+            //remplirTrouTableauImpair(tableau);
+            remplirTrouAll(tableau, remplirTrouTableauImpair2, verifTabImpair);
         }
     }
 
+}
+
+function remplirTrouAll(tableauDeTrous, fonctionDo, fonctionVerification){
+    if(tableauDeTrous.length===3){
+        remplirGeometry(tableauDeTrous)
+    } else {
+        let indexCourant = 0;
+        let pointDebutFace = tableauDeTrous[indexCourant];
+        let tableauProchainRemplissage = [];
+        let tabUneFace = [];
+        do{
+            tableauProchainRemplissage.push(pointDebutFace)
+            indexCourant = fonctionDo(tableauDeTrous, tabUneFace, pointDebutFace, indexCourant);
+            remplirGeometry(tabUneFace);
+            pointDebutFace = tableauDeTrous[indexCourant];
+            tabUneFace = [];
+        } while (fonctionVerification(tableauDeTrous, pointDebutFace))
+        if(fonctionDo.name === "remplirTrouTableauImpair2"){
+            tabUneFace.push(pointDebutFace, tableauDeTrous[0], tableauDeTrous[2]);
+            remplirGeometry(tabUneFace);
+        }
+        if(tableauProchainRemplissage.length >=  3){
+            remplirTrouRepartisseur(tableauProchainRemplissage);
+        }
+    }
 }
 
 /**
  * méthode qui rempli un tableau de trous ayant une longueur paire. Renvoie le tableau de trou restant.
  * @param tableauDeTrous
  */
-function remplirTrouTableauPair(tableauDeTrous) {
+/*function remplirTrouTableauPair(tableauDeTrous) {
     console.log("dans remplissage tableau pair")
     let indexCourant = 0;
+    let pointDebutFace = tableauDeTrous[indexCourant];
     let tableauProchainRemplissage = [];
-    let pointDebutFace = tableauDeTrous[0];
     let tabUneFace = [];
     do {
         tableauProchainRemplissage.push(pointDebutFace);
@@ -80,32 +107,41 @@ function remplirTrouTableauPair(tableauDeTrous) {
 
     } while (tableauDeTrous.indexOf(pointDebutFace) !== 0)
     if (tableauProchainRemplissage.length >= 3) {
-        remplirTrou(tableauProchainRemplissage);
+        remplirTrouRepartisseur(tableauProchainRemplissage);
     }
+}*/
+function remplirTrouTableauPair2(tableauDeTrous, tabUneFace, pointDebutFace, indexCourant){
+    if (typeof tableauDeTrous[indexCourant + 2] == 'undefined') {
+        tabUneFace.push(pointDebutFace, tableauDeTrous[indexCourant + 1], tableauDeTrous[0]);
+        indexCourant = 0;
+
+    } else {
+        tabUneFace.push(pointDebutFace, tableauDeTrous[indexCourant + 1], tableauDeTrous[indexCourant + 2]);
+        indexCourant += 2;
+    }
+    return indexCourant;
 }
+function verifTabPair(tableauDeTrous, pointDebutFace){
+    return tableauDeTrous.indexOf(pointDebutFace) !== 0;
+}
+
+
 
 /**
  * méthode qui repli un tableau de trous ayant une longueur impaire. Renvoie le tableau de trou restant.
  * @param tableauDeTrous
  * @returns {*}
  */
-function remplirTrouTableauImpair(tableauDeTrous) {
+/*function remplirTrouTableauImpair(tableauDeTrous) {
     console.log("dans remplissage tableau impair")
     if (tableauDeTrous.length === 3) {
-        /*console.log(`facet\n  outer loop\n
-           vertex ${tableauDeTrous[0].point.x} ${tableauDeTrous[0].point.y} ${tableauDeTrous[0].point.z}\n
-           vertex ${tableauDeTrous[1].point.x} ${tableauDeTrous[1].point.y} ${tableauDeTrous[1].point.z}\n
-           vertex ${tableauDeTrous[2].point.x} ${tableauDeTrous[2].point.y} ${tableauDeTrous[2].point.z}\n
-          endloop\n
-        endfacet`);*/
         remplirGeometry(tableauDeTrous);
     } else {
         let indexCourant = 0;
         let pointDebutFace = tableauDeTrous[indexCourant];
-        let pointTerminusDebutFace = tableauDeTrous[tableauDeTrous.length - 1].point;
         let tableauProchainRemplissage = [];
         let tabUneFace = [];
-        while (tableauDeTrous.indexOf(pointDebutFace) !== tableauDeTrous.length - 1) {
+        do{
             //j'ajoute dans le tableau le point debut face qui constituera le prochain tableau de trous
             tableauProchainRemplissage.push(pointDebutFace);
             tabUneFace.push(pointDebutFace, tableauDeTrous[indexCourant + 1], tableauDeTrous[indexCourant + 2]);
@@ -114,19 +150,28 @@ function remplirTrouTableauImpair(tableauDeTrous) {
             tabUneFace = [];
             indexCourant += 2;
             pointDebutFace = tableauDeTrous[indexCourant];
-
-        }
+        } while (tableauDeTrous.indexOf(pointDebutFace) !== tableauDeTrous.length - 1)
         tabUneFace.push(pointDebutFace, tableauDeTrous[0], tableauDeTrous[2]);
         remplirGeometry(tabUneFace);
         console.log(tabUneFace);
         if (tableauProchainRemplissage.length !== 0) {
-            remplirTrou(tableauProchainRemplissage);
+            remplirTrouRepartisseur(tableauProchainRemplissage);
         }
     }
+}*/
+function remplirTrouTableauImpair2(tableauDeTrous, tabUneFace,pointDebutFace,indexCourant) {
+    tabUneFace.push(pointDebutFace, tableauDeTrous[indexCourant + 1], tableauDeTrous[indexCourant + 2]);
+    indexCourant += 2;
+    return indexCourant;
+}
+function verifTabImpair(tableauDeTrous, pointDebutFace){
+    return tableauDeTrous.indexOf(pointDebutFace) !== tableauDeTrous.length - 1;
 }
 
+
+
 function remplirGeometry(tableauUneFace) {
-    tableauUneFace = detectSensParcours(tableauUneFace);
+    //tableauUneFace = detectSensParcours(tableauUneFace);
     let positions = Array.from(geometry_model.getAttribute("position").array);
     //console.log(positions);
     positions.push(tableauUneFace[0].point.x, tableauUneFace[0].point.y, tableauUneFace[0].point.z);

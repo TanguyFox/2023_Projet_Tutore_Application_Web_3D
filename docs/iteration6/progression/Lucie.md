@@ -66,3 +66,8 @@ Toujours sur le même problème. Je fais des recherches
 J'ai essayé plusieurs méthodes pour réussir à calculer la normale de la face que je vais créer en la comparant 
 à la normale du modèle mais ça marche décidément pas. Donc je sollicite l'aide de monsieur Dupont 
 la semaine prochaine si possible. 
+
+
+### Lundi 25/03 
+On voit monsieur Dupont à 11h30 donc d'ici là je vais faire un peu de refactorisation de code pour qu'il soit un peu 
+plus buvable. 
