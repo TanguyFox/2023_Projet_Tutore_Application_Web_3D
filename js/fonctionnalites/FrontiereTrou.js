@@ -33,12 +33,10 @@ function getFrontiere1trou(tableauDeTrous, boundaryEdges){
             //on ajoute le pointSuivant au tableau des points de frontière de trou
             if(tabPoint.includes(vertexSuivant)){
                 let newTrous = tabPoint.splice(tabPoint.indexOf(vertexSuivant));
-                console.log("WARNING : newtrou")
-                console.log(newTrous);
+                console.log("WARNING : newtrou", newTrous);
                 tableauDeTrous.push(newTrous);
             }
             tabPoint.push(vertexSuivant);
-
             vertexSuivant = nonOpposeHalfedge.next.vertex;
             //suppression de l'halfedge trouvee dans boundaryEdges pour ne pas le relever quand
             //on cherchera un prochain trou
@@ -49,11 +47,6 @@ function getFrontiere1trou(tableauDeTrous, boundaryEdges){
             } else {
                 console.log("WARNING : nonOpposeeHalfedge non trouvee dans boundaryEdges");
             }
-
-            /*console.log("ETAT DES LIEUX");
-            console.log(halfedgeSansOpposeePrecedente);
-            console.log(nonOpposeHalfedge)
-            console.log(vertexSuivant)*/
             halfedgeSansOpposeePrecedente = nonOpposeHalfedge;
         }else {
             console.log('ERROR : le point suivant et le point de halfedge trouvee sans opposee ne coincident pas')
@@ -62,9 +55,6 @@ function getFrontiere1trou(tableauDeTrous, boundaryEdges){
     }
     tabPoint.reverse();
     tableauDeTrous.push(tabPoint);
-    //console.log(boundaryEdges);
-    /*console.log(tabPoint);
-    console.log(tableauDeTrous);*/
 }
 
 /*
@@ -78,8 +68,6 @@ function getHalfedgeSansOpposee(halfedge){
         halfedgeSuivante = halfedgeSuivante.next;
         if(typeof halfedgeSuivante !== null){
             if(halfedgeSuivante.opposite == null){
-                //console.log("haflede sans opposee");
-                //console.log(halfedgeSuivante);
                 halfedgeSansOpposee = halfedgeSuivante;
                 sansOpposee = true;
             } else {

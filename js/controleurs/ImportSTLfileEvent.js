@@ -33,78 +33,75 @@ let wireframe;
 
 //Fonction de chargement du fichier STL
 export async function handleFileSelect(file) {
-
-    //const file = event.target.files[0];
-
-    let input = document.getElementById("inputfile");
-    input.value = '';
-
-    //reset camera
-    Scene3D.camera.position.set(5, 5, 10);
-    Scene3D.orbitcontrols.target.set(0, 0, 0);
-
+    initHTML();
     if (file) {
         let filename = document.getElementById("filename")
         filename.innerHTML = file.name;
         filename.title = file.name;
         //reset the scene
         resetScene();
-
-        document.getElementById("export").style.display = "block"
-        document.getElementById("new-model").style.display = "block"
-        importButton.style.display = "none";
-        Scene3D.sceneContrainer.style.display = "block";
-        toolbar.style.display = "flex";
-        menuMD.style.display = "block";
-        secondSceneHtml.style.display = "block";
-
-        document.getElementById("infoCoordPoints").innerHTML = "";
-
         loadSpin.showLoadingScreen();
-
-        try {
-            await loadFile(file);
-            const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
-            generaux.setMesh(mesh);
-            console.log(mesh);
-            meshProblems.highlightProblems();
-            document.getElementById("nb_faces").textContent = mesh.faces.length;
-            //document.getElementById("nb_vertex").textContent = mesh.faces.length * 3 - 1;
-
-        } catch (e) {
-            console.log(e);
-        }
-
-        //panel.style.display = "block";
-
+        await initStructure();
         //resize the scene
         window.dispatchEvent(new Event('resize'));
     }
 }
 
+async function initStructure() {
+    try {
+        await loadFile(file);
+        const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
+        generaux.setMesh(mesh);
+        console.log(mesh);
+        meshProblems.highlightProblems();
+        document.getElementById("nb_faces").textContent = mesh.faces.length;
+        //document.getElementById("nb_vertex").textContent = mesh.faces.length * 3 - 1;
+    } catch (e) {
+        console.log(e);
+    }
+}
+
+function initHTML() {
+    //const file = event.target.files[0];
+    let input = document.getElementById("inputfile");
+    input.value = '';
+    //reset camera
+    Scene3D.camera.position.set(5, 5, 10);
+    Scene3D.orbitcontrols.target.set(0, 0, 0);
+    document.getElementById("export").style.display = "block"
+    document.getElementById("new-model").style.display = "block"
+    importButton.style.display = "none";
+    Scene3D.sceneContrainer.style.display = "block";
+    toolbar.style.display = "flex";
+    menuMD.style.display = "block";
+    secondSceneHtml.style.display = "block";
+
+    document.getElementById("infoCoordPoints").innerHTML = "";
+}
+
 function repairFacesNormals() {
     const originalNormals = []
-    for (let i = 0; i < generaux.geometry_model.attributes.normal.array.length; i += 9){
+    for (let i = 0; i < generaux.geometry_model.attributes.normal.array.length; i += 9) {
         originalNormals.push(
             generaux.geometry_model.attributes.normal.array[i],
-            generaux.geometry_model.attributes.normal.array[i+1],
-            generaux.geometry_model.attributes.normal.array[i+2]
+            generaux.geometry_model.attributes.normal.array[i + 1],
+            generaux.geometry_model.attributes.normal.array[i + 2]
         );
     }
-
     // console.log(originalNormals);
-
     generaux.geometry_model.computeVertexNormals();
-
+    countRepairedNormalsFaces(originalNormals);
+}
+function countRepairedNormalsFaces(originalNormals){
     let nbChanged = 0;
     let j = 0;
     let tolerance = 1e-2;
-    for(let i = 0; i < generaux.geometry_model.attributes.normal.array.length; i += 9){
-        if(
+    for (let i = 0; i < generaux.geometry_model.attributes.normal.array.length; i += 9) {
+        if (
             Math.abs(originalNormals[j] - generaux.geometry_model.attributes.normal.array[i]) > tolerance ||
             Math.abs(originalNormals[j + 1] - generaux.geometry_model.attributes.normal.array[i + 1]) > tolerance ||
             Math.abs(originalNormals[j + 2] - generaux.geometry_model.attributes.normal.array[i + 2]) > tolerance
-        ){
+        ) {
             nbChanged++;
             // console.log("normal changed");
             // console.log(originalNormals[j], generaux.geometry_model.attributes.normal.array[i]);
@@ -114,7 +111,7 @@ function repairFacesNormals() {
         j += 3;
     }
 
-    document.getElementById("face_mo").textContent = ""+nbChanged;
+    document.getElementById("face_mo").textContent = "" + nbChanged;
 }
 
 function resetScene() {
@@ -129,12 +126,12 @@ function resetScene() {
         generaux.setGroup(null);
 
         let modeFaceHtml = document.getElementById('face-mode-check');
-        if(modeFaceHtml.checked){
+        if (modeFaceHtml.checked) {
             modeFaceHtml.checked = false;
             modeFaceHtml.dispatchEvent(new Event('change'));
         }
 
-        if(boundingBoxObject.boundingBox){
+        if (boundingBoxObject.boundingBox) {
             removeBoundingBox(boundingBoxObject);
         }
 
@@ -150,37 +147,37 @@ async function loadFile(file) {
     let geometry = await stlloader.loadAsync(URL.createObjectURL(file));
     loadSpin.hideLoadingScreen();
 
-            loadBar.showProgressBar();
-            generaux.setGeometryModel(geometry);
+    loadBar.showProgressBar();
+    generaux.setGeometryModel(geometry);
 
-            // configure the color
-            generaux.geometry_model.setAttribute('color', new THREE.BufferAttribute(new Float32Array(generaux.geometry_model.attributes.position.count * 3), 3));
+    // configure the color
+    generaux.geometry_model.setAttribute('color', new THREE.BufferAttribute(new Float32Array(generaux.geometry_model.attributes.position.count * 3), 3));
 
-            //couleur de mesh
-            generaux.setColorMesh(new THREE.Color(0xFFFFFF));
-            for (let i = 0; i < generaux.geometry_model.attributes.color.count; i++) {
-                generaux.geometry_model.attributes.color.setXYZ(i,
-                    generaux.color_mesh.r, generaux.color_mesh.g, generaux.color_mesh.b);
-            }
+    //couleur de mesh
+    generaux.setColorMesh(new THREE.Color(0xFFFFFF));
+    for (let i = 0; i < generaux.geometry_model.attributes.color.count; i++) {
+        generaux.geometry_model.attributes.color.setXYZ(i,
+            generaux.color_mesh.r, generaux.color_mesh.g, generaux.color_mesh.b);
+    }
 
-            generaux.geometry_model.center();
+    generaux.geometry_model.center();
 
-            // console.log(generaux.geometry_model.attributes.normal.array);
+    // console.log(generaux.geometry_model.attributes.normal.array);
 
-            repairFacesNormals();
+    repairFacesNormals();
 
-            wireframe = new THREE.WireframeGeometry(geometry);
+    wireframe = new THREE.WireframeGeometry(geometry);
 
-            console.log(generaux.meshModel);
+    console.log(generaux.meshModel);
 
-            generaux.groupAsWireframe();
+    generaux.groupAsWireframe();
 
-            Scene3D.scene.add(generaux.group);
+    Scene3D.scene.add(generaux.group);
 
-            //Deuxième scène
-            SecondScene.scene.add(SecondScene.group);
+    //Deuxième scène
+    SecondScene.scene.add(SecondScene.group);
 
-            console.log(generaux.meshModel);
+    console.log(generaux.meshModel);
 }
 
 
