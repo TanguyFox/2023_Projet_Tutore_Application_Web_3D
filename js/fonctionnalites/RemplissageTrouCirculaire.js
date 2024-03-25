@@ -1,9 +1,10 @@
-import {geometry_model, meshModel} from "../tool/Element3DGeneraux";
+import {geometry_model, meshModel, mesh} from "../tool/Element3DGeneraux";
 import * as generaux from "../tool/Element3DGeneraux";
 import * as THREE from "three";
 import * as Scene3D from "../vue/Scene3D";
 import {majEdges} from "./ModifCoordPoint";
 import {camera} from "../vue/Scene3D";
+import {Vertex} from "../structure/Vertex";
 
 
 /*
@@ -36,7 +37,7 @@ export function remplirTrouTotal(tableauDeTrous) {
  */
 function remplirTrouRepartisseur(tableauDeVertex) {
     //let tableau = preparerTableau(tableauDeVertex);
-    let tableau = tableauDeVertex;
+    let tableau = sensTableau(tableauDeVertex);
     console.log(tableau);
     if (tableau.length !== 0) {
         if (tableau.length % 2 === 0) {
@@ -48,6 +49,54 @@ function remplirTrouRepartisseur(tableauDeVertex) {
             //remplirTrouTableauImpair(tableau);
             remplirTrouAll(tableau, remplirTrouTableauImpair2, verifTabImpair);
         }
+    }
+
+}
+
+function sensTableau(tableauTrou){
+    let point = tableauTrou[0];
+    console.log(point.point);
+    let halfedge = mesh.getHalfedgeOfVertexWithoutOpposite(point);
+    let i = 1;
+    while (typeof halfedge === "undefined" && i < tableauTrou.length){
+        point = tableauTrou[i];
+        halfedge = mesh.getHalfedgeOfVertexWithoutOpposite(point);
+        i++;
+    }
+    console.log(halfedge);
+    if(typeof halfedge === "undefined"){
+        console.log("ERROR : aucune halfedge correspondante à la frontière de ce trou", tableauTrou);
+    } else {
+        let ptsDep = halfedge.next.vertex.point;
+        if(tableauTrou.includes(ptsDep)){
+            let indexPtsDep = tableauTrou.indexOf(ptsDep);
+            if(indexPtsDep===1){
+                return tableauTrou;
+            }
+            if (indexPtsDep===tableauTrou.length-1){
+                return preparerTableau(tableauTrou);
+            } else {
+                throw new Error ("impossible de determiner le sens de parcours");
+            }
+        } else {
+            ptsDep = halfedge.prev.vertex.point
+            if(!tableauTrou.includes(ptsDep)){
+                throw new Error("ne contient pas le point de depart de la lecture de tableau de trous");
+            } else {
+                let indexPtsDep = tableauTrou.indexOf(ptsDep);
+                if(indexPtsDep===1){
+                    return tableauTrou;
+                }
+                if (indexPtsDep===tableauTrou.length-1){
+                    return preparerTableau(tableauTrou);
+                } else {
+                    throw new Error ("impossible de determiner le sens de parcours");
+                }
+            }
+        }
+
+
+
     }
 
 }
