@@ -41,13 +41,13 @@ export async function handleFileSelect(file) {
         //reset the scene
         resetScene();
         loadSpin.showLoadingScreen();
-        await initStructure();
+        await initStructure(file);
         //resize the scene
         window.dispatchEvent(new Event('resize'));
     }
 }
 
-async function initStructure() {
+async function initStructure(file) {
     try {
         await loadFile(file);
         const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)

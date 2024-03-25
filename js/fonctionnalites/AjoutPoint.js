@@ -189,25 +189,9 @@ export function removeSphere() {
 
 
 function remplirStructureDeDonnees(newPoint, threePoint) {
-    let faces = mesh.faces;
-    let faceConcernee;
-    console.log(faces);
-    let face;
-    for (let i = 0 ; i<faces.length; i++) {
-        face = faces[i];
-        let p1_research = face.edge.vertex.point;
-        let p2_research = face.edge.next.vertex.point;
-        let p3_research = face.edge.prev.vertex.point;
-        if (includePoint(threePoint, p1_research) &&
-            includePoint(threePoint, p2_research) &&
-            includePoint(threePoint, p3_research)
-        ) {
-            faceConcernee = face;
-            mesh.faces.splice(i, 1);
-            console.log(faceConcernee);
-            break;
-        }
-    }
+    let faceConcernee = findFaceConcernee();
+    //console.log(faces);
+
     //nouveau sommet correspondant au nouveau point
     let newVertex = new Vertex(newPoint);
     //les halfedges et vertex de l'ancien triangle
@@ -261,6 +245,27 @@ function remplirStructureDeDonnees(newPoint, threePoint) {
     newVertex.addHalfEdge(h8)
 
 
+}
+
+function findFaceConcernee(){
+    let face;
+    let faces = mesh.faces;
+    let faceConcernee;
+    for (let i = 0 ; i<faces.length; i++) {
+        face = faces[i];
+        let p1_research = face.edge.vertex.point;
+        let p2_research = face.edge.next.vertex.point;
+        let p3_research = face.edge.prev.vertex.point;
+        if (includePoint(threePoint, p1_research) &&
+            includePoint(threePoint, p2_research) &&
+            includePoint(threePoint, p3_research)
+        ) {
+            faceConcernee = face;
+            mesh.faces.splice(i, 1);
+            console.log(faceConcernee);
+            return faceConcernee;
+        }
+    }
 }
 function setLiensOldHalfedge (halfedge, next, prev, face){
     halfedge.setFace(face);
