@@ -41,24 +41,24 @@ export async function handleFileSelect(file) {
         //reset the scene
         resetScene();
         loadSpin.showLoadingScreen();
-        await initStructure(file);
+        try {
+            await loadFile(file);
+           initStructure(file);
+        } catch (e) {
+            console.log(e);
+        }
         //resize the scene
         window.dispatchEvent(new Event('resize'));
     }
 }
 
 async function initStructure(file) {
-    try {
-        await loadFile(file);
-        const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
-        generaux.setMesh(mesh);
-        console.log(mesh);
-        meshProblems.highlightProblems();
-        document.getElementById("nb_faces").textContent = mesh.faces.length;
-        //document.getElementById("nb_vertex").textContent = mesh.faces.length * 3 - 1;
-    } catch (e) {
-        console.log(e);
-    }
+    const mesh = convertSTLToData(generaux.geometry_model.getAttribute("position").array)
+    generaux.setMesh(mesh);
+    console.log(mesh);
+    meshProblems.highlightProblems();
+    document.getElementById("nb_faces").textContent = mesh.faces.length;
+    //document.getElementById("nb_vertex").textContent = mesh.faces.length * 3 - 1;
 }
 
 function initHTML() {

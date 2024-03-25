@@ -189,7 +189,7 @@ export function removeSphere() {
 
 
 function remplirStructureDeDonnees(newPoint, threePoint) {
-    let faceConcernee = findFaceConcernee();
+    let faceConcernee = findFaceConcernee(threePoint);
     //console.log(faces);
 
     //nouveau sommet correspondant au nouveau point
@@ -247,7 +247,7 @@ function remplirStructureDeDonnees(newPoint, threePoint) {
 
 }
 
-function findFaceConcernee(){
+function findFaceConcernee(threePoint){
     let face;
     let faces = mesh.faces;
     let faceConcernee;
