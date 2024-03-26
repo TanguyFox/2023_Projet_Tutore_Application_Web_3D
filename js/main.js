@@ -1,7 +1,7 @@
 
 import * as Scene3D from "./vue/Scene3D.js";
 import {handleFileSelect} from "./controleurs/ImportSTLfileEvent";
-import {animate, onPointerClick, onDoubleClick, animate_VR} from "./controleurs/Scene3DControleur";
+import {onPointerClick, onDoubleClick} from "./controleurs/Scene3DControleur";
 import * as ToolBarEvent from "./controleurs/ToolBarEvent.js";
 import * as visualisationMenu from "./controleurs/VisualisationMenu.js";
 import {onPointerMove} from "./fonctionnalites/SelectionFace";
@@ -14,6 +14,7 @@ import {appearMenuContextuel} from "./vue/MenuContextuel";
 import {getFrontieres} from "./fonctionnalites/FrontiereTrou";
 import {remplirTrouTotal} from "./fonctionnalites/RemplissageTrouCirculaire.js";
 import { VRButton } from "three/addons/webxr/VRButton.js";
+import {animate_VR} from "./fonctionnalites/VR";
 
 
 

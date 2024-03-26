@@ -5,12 +5,13 @@ import {createBoundingBox, removeBoundingBox} from "./BoundingBoxHandler.js";
 import * as THREE from "three";
 import {initViewHelper} from "./viewhelper";
 import {onPointerMove} from "../fonctionnalites/SelectionFace";
-import {animate_VR, onDoubleClick, onPointerClick} from "../controleurs/Scene3DControleur";
+import {onDoubleClick, onPointerClick} from "../controleurs/Scene3DControleur";
 import {deplacerPoint, mouseUpReinitialisation, setMouseClick} from "../fonctionnalites/ModifCoordPoint";
 import {mesh} from "../tool/Element3DGeneraux";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
 import {appearMenuContextuel} from "./MenuContextuel";
 import * as VR from "../fonctionnalites/VR.js"
+import {animate_VR} from "../fonctionnalites/VR.js";
 
 /**
  * Affichage de l'objet 3D
@@ -30,6 +31,8 @@ let widthS = window.innerWidth;
 let heightS = window.innerHeight;
 
 //Camera Group - VR
+let cameraGroup = new THREE.Group();
+
 function initScene3D() {
 console.log("initScene3D")
 
@@ -54,7 +57,8 @@ console.log("initScene3D")
 
     VR.initVR();
 
-    scene.add(camera);
+    cameraGroup.add(camera);
+    scene.add(cameraGroup);
 
     sceneContrainer.appendChild(renderer.domElement);
 
@@ -161,4 +165,5 @@ export {
     heightS,
     rebuildAll,
     setWidth_Height,
+    cameraGroup,
 }
