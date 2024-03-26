@@ -13,7 +13,7 @@ import {executeRenderHelper} from "../vue/viewhelper";
 let controller1, controller2;
 let controllerGrip1, controllerGrip2;
 
-let INTERSECTION, VR_Button, floor, marker, raycaster;
+let INTERSECTION, VR_Button, floor, marker, raycaster, baseReferenceSpace;
 const tempMatrix = new THREE.Matrix4();
 
 function initVR(){
@@ -21,6 +21,7 @@ function initVR(){
     VR_Button = VRButton.createButton( renderer );
     document.getElementById("VR_mode").appendChild(VR_Button);
 
+    renderer.xr.addEventListener('sessionstart', () => baseReferenceSpace = renderer.xr.getReferenceSpace());
 
     VR_Button.addEventListener('click', function () {
 
@@ -58,29 +59,18 @@ function initVR(){
 
 
         controller1 = renderer.xr.getController(0);
-        controller2 = renderer.xr.getController(1);
-
-        let controllerModelFactory = new XRControllerModelFactory();
-        controllerGrip1 = renderer.xr.getControllerGrip(0);
-        controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-        scene.add(controllerGrip1);
-
-        controllerGrip2 = renderer.xr.getControllerGrip(1);
-        controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-        scene.add(controllerGrip2);
-
-
         controller1.addEventListener('selectstart', onSelectStart);
         controller1.addEventListener('selectend', onSelectEnd);
         controller1.addEventListener('connected', function (event) {
-            this.add(buildLineTrace(event.data));
+            this.add(buildController(event.data));
         });
         controller1.addEventListener('disconnected', function () {
             this.remove( this.children[ 0 ] );
         } );
+        scene.add(controller1);
 
 
-
+        controller2 = renderer.xr.getController(1);
         controller2.addEventListener('selectstart', () => {
             moveAlongRay(controller2, 3);
         });
@@ -90,10 +80,17 @@ function initVR(){
         controller2.addEventListener('disconnected', function () {
             this.remove(this.children[0]);
         });
-
-        scene.add(controller1);
         scene.add(controller2);
 
+
+        let controllerModelFactory = new XRControllerModelFactory();
+        controllerGrip1 = renderer.xr.getControllerGrip(0);
+        controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+        scene.add(controllerGrip1);
+
+        controllerGrip2 = renderer.xr.getControllerGrip(1);
+        controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+        scene.add(controllerGrip2);
     });
 }
 
@@ -117,6 +114,23 @@ function buildLineTrace(data){
     return new THREE.Line( geometry, material );
 }
 
+function buildController( data ) {
+    let geometry, material;
+    switch ( data.targetRayMode ) {
+        case 'tracked-pointer':
+            geometry = new THREE.BufferGeometry();
+            geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( [ 0, 0, 0, 0, 0, - 1 ], 3 ) );
+            geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( [ 0.5, 0.5, 0.5, 0, 0, 0 ], 3 ) );
+            material = new THREE.LineBasicMaterial( { vertexColors: true, blending: THREE.AdditiveBlending } );
+            return new THREE.Line( geometry, material );
+        case 'gaze':
+            geometry = new THREE.RingGeometry( 0.02, 0.04, 32 ).translate( 0, 0, - 1 );
+            material = new THREE.MeshBasicMaterial( { opacity: 0.5, transparent: true } );
+            return new THREE.Mesh( geometry, material );
+    }
+}
+
+
 
 //Error ! 
 function onSelectEnd() {
@@ -125,7 +139,7 @@ function onSelectEnd() {
         const offsetPosition = { x: - INTERSECTION.x, y: - INTERSECTION.y, z: - INTERSECTION.z, w: 1 };
         const offsetRotation = new THREE.Quaternion();
         const transform = new XRRigidTransform( offsetPosition, offsetRotation );
-        const teleportSpaceOffset = renderer.xr.getReferenceSpace().getOffsetReferenceSpace( transform );
+        const teleportSpaceOffset = baseReferenceSpace.getOffsetReferenceSpace( transform );
         renderer.xr.setReferenceSpace( teleportSpaceOffset );
     }
 }
