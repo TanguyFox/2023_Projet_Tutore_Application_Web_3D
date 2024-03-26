@@ -1,7 +1,13 @@
 import * as THREE from "three";
-import {renderer, scene} from "../vue/Scene3D";
+import {camera, cameraGroup, gridHelper, renderer, scene} from "../vue/Scene3D";
 import {XRControllerModelFactory} from "three/addons";
 import {VRButton} from "three/addons/webxr/VRButton.js";
+import {lineModel, meshModel} from "../tool/Element3DGeneraux";
+import * as Scene3D from "../vue/Scene3D";
+import * as Generaux from "../tool/Element3DGeneraux";
+import {ModificationMod} from "../controleurs/Scene3DControleur";
+import * as SecondScene from "../vue/Scene3D";
+import {executeRenderHelper} from "../vue/viewhelper";
 
 
 let controllers = {
@@ -9,16 +15,56 @@ let controllers = {
     "controller2":null
 }
 
-
-let VR_Button;
+let INTERSECTION, VR_Button, floor, marker, raycaster, baseReferenceSpace;
+const tempMatrix = new THREE.Matrix4();
 
 function initVR(){
 
     VR_Button = VRButton.createButton( renderer );
     document.getElementById("VR_mode").appendChild(VR_Button);
 
+    // renderer.xr.addEventListener('sessionstart', function () {
+    //     renderer.xr.getCamera().position.copy( camera.position );
+    //     renderer.xr.getCamera().lookAt( camera.target );
+    // });
+
+
+
 
     VR_Button.addEventListener('click', function () {
+
+        raycaster = new THREE.Raycaster();
+
+        baseReferenceSpace = renderer.xr.getReferenceSpace();
+
+        scene.remove(gridHelper);
+
+        marker = new THREE.Mesh(
+            new THREE.CircleGeometry( 0.25, 32 ).rotateX( - Math.PI / 2 ),
+            new THREE.MeshBasicMaterial( { color: 0xbcbcbc } )
+        );
+
+
+        let meshBoundingBox = new THREE.Box3().setFromObject(meshModel);
+        meshModel.position.y += -meshBoundingBox.min.y;
+        lineModel.position.y += -meshBoundingBox.min.y;
+
+        meshModel.position.z += -meshBoundingBox.min.z - 2;
+        lineModel.position.z += -meshBoundingBox.min.z - 2;
+
+        floor = new THREE.Mesh(
+            new THREE.PlaneGeometry( meshBoundingBox.max.x - meshBoundingBox.min.x + 10,
+                meshBoundingBox.max.z - meshBoundingBox.min.z + 10,
+                2,
+                2).rotateX(-Math.PI/2),
+            new THREE.MeshBasicMaterial( {color: 0xbcbcbc, transparent: true, opacity: 0.25} )
+        )
+
+        floor.position.x = meshModel.position.x;
+        floor.position.z = meshModel.position.z;
+        floor.position.y = 0;
+        scene.add(floor);
+
 
         controllers.controller1 = renderer.xr.getController(0);
         controllers.controller2 = renderer.xr.getController(1);
@@ -35,28 +81,24 @@ function initVR(){
         scene.add(controllerGrip2);
 
 
-        controllers.controller1.addEventListener('selectstart', () => {
-            moveAlongRay(controllers.controller1, 1)
+        controllers.controller1.addEventListener('selectstart', onSelectStart);
+        controllers.controller1.addEventListener('selectend', onSelectEnd);
+        controllers.controller1.addEventListener('connected', function (event) {
+            this.add(buildLineTrace());
         });
+        controllers.controller1.addEventListener('disconnected', function () {
+            this.remove( this.children[ 0 ] );
+        } );
+
+
 
         controllers.controller2.addEventListener('selectstart', () => {
-            moveAlongRay(controllers.controller2, 1)
-
+            moveAlongRay(controllers.controller2, 3);
         });
-
-        controllers.controller1.addEventListener('connected', function (event) {
-           this.add(buildLineTrace());
-        });
-
         controllers.controller2.addEventListener('connected', function (event) {
             this.add(buildLineTrace());
         });
-
-        controllers.controller1.addEventListener('disconnected', function () {
-            this.remove(this.children[0]);
-        });
-
-        controllers.controller1.addEventListener('disconnected', function () {
+        controllers.controller2.addEventListener('disconnected', function () {
             this.remove(this.children[0]);
         });
 
@@ -84,6 +126,68 @@ function buildLineTrace(){
 }
 
 
+//Error ! 
+function onSelectEnd() {
+    this.userData.isSelecting = false;
+    if ( INTERSECTION ) {
+        const offsetPosition = { x: - INTERSECTION.x, y: - INTERSECTION.y, z: - INTERSECTION.z, w: 1 };
+        const offsetRotation = new THREE.Quaternion();
+        const transform = new XRRigidTransform( offsetPosition, offsetRotation );
+        const teleportSpaceOffset = renderer.xr.getReferenceSpace().getOffsetReferenceSpace( transform );
+        renderer.xr.setReferenceSpace( teleportSpaceOffset );
+    }
+}
+
+function onSelectStart() {
+    this.userData.isSelecting = true;
+}
+
+function vrRenderSelect(){
+    if ( controllers.controller1.userData.isSelecting === true ) {
+
+        tempMatrix.identity().extractRotation(controllers.controller1.matrixWorld);
+
+        raycaster.ray.origin.setFromMatrixPosition(controllers.controller1.matrixWorld);
+        raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+
+        const intersects = raycaster.intersectObjects([floor]);
+
+        if (intersects.length > 0) {
+            INTERSECTION = intersects[0].point;
+        }
+
+        if (INTERSECTION) marker.position.copy(INTERSECTION);
+
+        marker.visible = INTERSECTION !== undefined;
+    }
+}
+
+//VR
+function animate_VR(){
+    renderer.setAnimationLoop( function () {
+        Scene3D.orbitcontrols.update();
+
+        if(Generaux.boundingBoxObject.boundingBox){
+            Generaux.boundingBoxObject.boundingBox.update();
+        }
+
+        if(ModificationMod){
+            Scene3D.renderer.render(Scene3D.scene, Scene3D.camera);
+        }else{
+            Scene3D.renderer.render(SecondScene.scene, Scene3D.camera);
+        }
+
+        if(renderer.xr.isPresenting){
+            vrRenderSelect();
+        }
+
+        executeRenderHelper();
+    });
+}
+
+
 export {
     initVR,
+    vrRenderSelect,
+    animate_VR
 }
