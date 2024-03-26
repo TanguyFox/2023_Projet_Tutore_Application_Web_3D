@@ -5,6 +5,8 @@ import * as Scene3D from "../vue/Scene3D";
 import {majEdges} from "./ModifCoordPoint";
 import {camera} from "../vue/Scene3D";
 import {Vertex} from "../structure/Vertex";
+import {HalfEdge} from "../structure/HalfEdge";
+import {Face} from "../structure/Face";
 
 
 /*
@@ -58,37 +60,37 @@ function sensTableau(tableauTrou){
     console.log(point.point);
     let halfedge = mesh.getHalfedgeOfVertexWithoutOpposite(point);
     let i = 1;
-    while (typeof halfedge === "undefined" && i < tableauTrou.length){
+   /* while (typeof halfedge === "undefined" && i < tableauTrou.length){
         point = tableauTrou[i];
         halfedge = mesh.getHalfedgeOfVertexWithoutOpposite(point);
         i++;
-    }
-    console.log(halfedge);
+    }*/
+    console.log(tableauTrou ,halfedge);
     if(typeof halfedge === "undefined"){
         console.log("ERROR : aucune halfedge correspondante à la frontière de ce trou", tableauTrou);
     } else {
-        let ptsDep = halfedge.next.vertex.point;
+        let ptsDep = halfedge.next.vertex;
         if(tableauTrou.includes(ptsDep)){
             let indexPtsDep = tableauTrou.indexOf(ptsDep);
             if(indexPtsDep===1){
-                return tableauTrou;
+                return preparerTableau(tableauTrou);
             }
             if (indexPtsDep===tableauTrou.length-1){
-                return preparerTableau(tableauTrou);
+                return tableauTrou;
             } else {
                 throw new Error ("impossible de determiner le sens de parcours");
             }
         } else {
-            ptsDep = halfedge.prev.vertex.point
+            ptsDep = halfedge.prev.vertex
             if(!tableauTrou.includes(ptsDep)){
                 throw new Error("ne contient pas le point de depart de la lecture de tableau de trous");
             } else {
                 let indexPtsDep = tableauTrou.indexOf(ptsDep);
                 if(indexPtsDep===1){
-                    return tableauTrou;
+                    return preparerTableau(tableauTrou) ;
                 }
                 if (indexPtsDep===tableauTrou.length-1){
-                    return preparerTableau(tableauTrou);
+                    return tableauTrou;
                 } else {
                     throw new Error ("impossible de determiner le sens de parcours");
                 }
@@ -126,6 +128,54 @@ function remplirTrouAll(tableauDeTrous, fonctionDo, fonctionVerification){
     }
 }
 
+function completerStructure(tabUneFace){
+    let v1 = tabUneFace[0];
+    let v2 = tabUneFace[1];
+    let v3 = tabUneFace[2];
+    let h;
+    let i = 0;
+    do {
+        h  = mesh.getHalfedgeOfVertexWithoutOpposite(tabUneFace[i]);
+        i++;
+    } while (typeof h === 'undefined' && i<tabUneFace.length);
+    if(typeof h === 'undefined'){
+        throw new Error("la face nouvellement créé n'a pas d'opposé")
+    }
+    let pointDep = h.next.vertex;
+    let pointSuivant = h.vertex;
+    let dernierPoint = trouverTroisiemePoint(tabUneFace, pointDep, pointSuivant);
+    let opposeeDirect = new HalfEdge(pointDep);
+    opposeeDirect.opposite = h;
+    let h2 = new HalfEdge(pointSuivant);
+    let h3 = new HalfEdge(dernierPoint);
+    let newFace = new Face(opposeeDirect);
+    mesh.faces.add(newFace);
+    setnextAndPrev(opposeeDirect, h2, h3);
+    setnextAndPrev(h2, h3, opposeeDirect);
+    setnextAndPrev(h3, opposeeDirect, h2);
+    //TODO
+}
+function setnextAndPrev(h1, h2, h3){
+    h1.next = h2;
+    h1.prev = h3;
+}
+
+
+function trouverTroisiemePoint(tableauPoints, point1, point2) {
+    // Boucler à travers les points dans le tableau
+    for (let i = 0; i < tableauPoints.length; i++) {
+        // Vérifier si le point courant est différent des deux points donnés
+        if (tableauPoints[i].x !== point1.x || tableauPoints[i].y !== point1.y || tableauPoints[i].z !== point1.z) {
+            if (tableauPoints[i].x !== point2.x || tableauPoints[i].y !== point2.y || tableauPoints[i].z !== point2.z) {
+                // Si le point courant est différent des deux points donnés, retourner ce point
+                return tableauPoints[i];
+            }
+        }
+    }
+
+    // Retourner null si aucun point n'a été trouvé
+    return null;
+}
 /**
  * méthode qui rempli un tableau de trous ayant une longueur paire. Renvoie le tableau de trou restant.
  * @param tableauDeTrous

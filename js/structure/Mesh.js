@@ -19,11 +19,15 @@ Mesh.prototype.getHalfedgeOfVertexWithoutOpposite = function(sommet){
     let halfedgeCourante;
     while (typeof halfedge === "undefined" && i < this.faces.length){
         halfedgeCourante = this.faces[i].edge;
-        console.log(halfedgeCourante.vertex.point, sommet.point)
+        //console.log(halfedgeCourante.vertex.point, sommet.point)
         if(halfedgeCourante.vertex.point.equals(sommet.point) &&
             (halfedgeCourante.opposite === null || typeof halfedgeCourante.opposite === "undefined")){
             halfedge = halfedgeCourante;
-        }
+        } else if (halfedgeCourante.next.vertex.point.equals(sommet.point) &&
+            (halfedgeCourante.opposite === null || typeof halfedgeCourante.opposite === "undefined")){
+            halfedge = halfedgeCourante.next;
+        } else if (halfedgeCourante.prev.vertex.point.equals(sommet.point) &&
+            (halfedgeCourante.opposite === null || typeof halfedgeCourante.opposite === "undefined"))
         i++;
     }
     if(typeof halfedge === "undefined")
