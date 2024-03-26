@@ -8,7 +8,9 @@ import * as Generaux from "../tool/Element3DGeneraux";
 import {ModificationMod} from "../controleurs/Scene3DControleur";
 import * as SecondScene from "../vue/Scene3D";
 import {executeRenderHelper} from "../vue/viewhelper";
-
+import * as Element3DGeneraux from "../tool/Element3DGeneraux";
+import { TreesGeometry, SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
+import wood_texture from "../../resources/texture/wood_texture.png";
 
 let controller1, controller2;
 let controllerGrip1, controllerGrip2;
@@ -21,77 +23,98 @@ function initVR(){
     VR_Button = VRButton.createButton( renderer );
     document.getElementById("VR_mode").appendChild(VR_Button);
 
-    renderer.xr.addEventListener('sessionstart', () => baseReferenceSpace = renderer.xr.getReferenceSpace());
+    renderer.xr.addEventListener('sessionstart', initialisation);
+}
 
-    VR_Button.addEventListener('click', function () {
+function initialisation(){
 
-        raycaster = new THREE.Raycaster();
+    baseReferenceSpace = renderer.xr.getReferenceSpace();
+    raycaster = new THREE.Raycaster();
 
-        scene.remove(gridHelper);
+    scene.remove(gridHelper);
 
+    const skylight = new THREE.HemisphereLight( 0xfff0f0, 0x60606, 3 );
+    skylight.position.set( 1, 1, 1 );
+    scene.add( skylight );
 
-        marker = new THREE.Mesh(
-            new THREE.CircleGeometry( 0.25, 32 ).rotateX( - Math.PI / 2 ),
-            new THREE.MeshBasicMaterial( { color: 0xbcbcbc } )
-        );
-        scene.add(marker);
+    //Nuage
+    const cloudGeometry = new SkyGeometry();
+    const cloudMaterial = new THREE.MeshBasicMaterial( { color:0xffffff });
+    const cloudMesh = new THREE.Mesh( cloudGeometry, cloudMaterial );
+    scene.add( cloudMesh );
 
+    //couleur du ciel
+    scene.background = new THREE.Color( 0xf0f0ff );
 
-        let meshBoundingBox = new THREE.Box3().setFromObject(meshModel);
-        meshModel.position.y += -meshBoundingBox.min.y;
-        lineModel.position.y += -meshBoundingBox.min.y;
-
-        meshModel.position.z += -meshBoundingBox.min.z - 2;
-        lineModel.position.z += -meshBoundingBox.min.z - 2;
-
-        floor = new THREE.Mesh(
-            new THREE.PlaneGeometry( meshBoundingBox.max.x - meshBoundingBox.min.x + 10,
-                meshBoundingBox.max.z - meshBoundingBox.min.z + 10,
-                2,
-                2).rotateX(-Math.PI/2),
-            new THREE.MeshBasicMaterial( {color: 0xbcbcbc, transparent: true, opacity: 0.25} )
-        )
-
-        floor.position.x = meshModel.position.x;
-        floor.position.z = meshModel.position.z;
-        floor.position.y = 0;
-        scene.add(floor);
+    marker = new THREE.Mesh(
+        new THREE.CircleGeometry( 0.25, 32 ).rotateX( - Math.PI / 2 ),
+        new THREE.MeshBasicMaterial( { color: 0xbcbcbc } )
+    );
+    scene.add(marker);
 
 
-        controller1 = renderer.xr.getController(0);
-        controller1.addEventListener('selectstart', onSelectStart);
-        controller1.addEventListener('selectend', onSelectEnd);
-        controller1.addEventListener('connected', function (event) {
-            this.add(buildController(event.data));
-        });
-        controller1.addEventListener('disconnected', function () {
-            this.remove( this.children[ 0 ] );
-        } );
-        scene.add(controller1);
+    let meshBoundingBox = new THREE.Box3().setFromObject(Element3DGeneraux.group);
+    Element3DGeneraux.group.position.y += -meshBoundingBox.min.y;
+    Element3DGeneraux.group.position.z += -meshBoundingBox.min.z - 2;
 
 
-        controller2 = renderer.xr.getController(1);
-        controller2.addEventListener('selectstart', () => {
-            moveAlongRay(controller2, 3);
-        });
-        controller2.addEventListener('connected', function (event) {
-            this.add(buildLineTrace(event.data));
-        });
-        controller2.addEventListener('disconnected', function () {
-            this.remove(this.children[0]);
-        });
-        scene.add(controller2);
+    const textureLoader = new THREE.TextureLoader();
 
-
-        let controllerModelFactory = new XRControllerModelFactory();
-        controllerGrip1 = renderer.xr.getControllerGrip(0);
-        controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
-        scene.add(controllerGrip1);
-
-        controllerGrip2 = renderer.xr.getControllerGrip(1);
-        controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
-        scene.add(controllerGrip2);
+    //Can't find path
+    const woodTexture = textureLoader.load( wood_texture );
+    const floorMaterial = new THREE.MeshBasicMaterial({
+        map: woodTexture,
+        transparent: true,
+        opacity: 1
     });
+
+    floor = new THREE.Mesh(
+        new THREE.PlaneGeometry( meshBoundingBox.max.x - meshBoundingBox.min.x + 10,
+            meshBoundingBox.max.z - meshBoundingBox.min.z + 10,
+            2,
+            2).rotateX(-Math.PI/2),
+        floorMaterial
+    )
+
+    floor.position.x = meshModel.position.x;
+    floor.position.z = meshModel.position.z;
+    floor.position.y = 0;
+    scene.add(floor);
+
+
+    controller1 = renderer.xr.getController(0);
+    controller1.addEventListener('selectstart', onSelectStart);
+    controller1.addEventListener('selectend', onSelectEnd);
+    controller1.addEventListener('connected', function (event) {
+        this.add(buildController(event.data));
+    });
+    controller1.addEventListener('disconnected', function () {
+        this.remove( this.children[ 0 ] );
+    } );
+    scene.add(controller1);
+
+
+    controller2 = renderer.xr.getController(1);
+    controller2.addEventListener('selectstart', () => {
+        moveAlongRay(controller2, 3);
+    });
+    controller2.addEventListener('connected', function (event) {
+        this.add(buildLineTrace(event.data));
+    });
+    controller2.addEventListener('disconnected', function () {
+        this.remove(this.children[0]);
+    });
+    scene.add(controller2);
+
+
+    let controllerModelFactory = new XRControllerModelFactory();
+    controllerGrip1 = renderer.xr.getControllerGrip(0);
+    controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
+    scene.add(controllerGrip1);
+
+    controllerGrip2 = renderer.xr.getControllerGrip(1);
+    controllerGrip2.add(controllerModelFactory.createControllerModel(controllerGrip2));
+    scene.add(controllerGrip2);
 }
 
 function moveAlongRay(controller, distance) {
