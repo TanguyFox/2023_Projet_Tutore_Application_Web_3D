@@ -166,8 +166,6 @@ function buildController( data ) {
 }
 
 
-
-//Error ! 
 function onSelectEnd() {
     this.userData.isSelecting = false;
     if ( INTERSECTION ) {
@@ -220,7 +218,7 @@ function animate_VR(){
             vrRenderSelect();
 
             if(isMoving){
-                moveAlongRay(controller2, 0.01);
+                moveAlongRay(controller2, 0.03);
             }
 
         }
