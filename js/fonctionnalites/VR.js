@@ -240,7 +240,7 @@ function animate_VR(){
             vrRenderSelect();
 
             if(isMoving){
-                moveAlongRay(controller_pressed, 0.06);
+                moveAlongRay(controller_pressed, 0.045);
             }
 
         }
