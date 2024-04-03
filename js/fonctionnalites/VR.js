@@ -18,6 +18,7 @@ let controllerGrip1, controllerGrip2;
 let INTERSECTION, VR_Button, floor, marker, raycaster, baseReferenceSpace;
 const tempMatrix = new THREE.Matrix4();
 let isMoving = false;
+let controller_pressed = null;
 
 function initVR(){
 
@@ -90,8 +91,15 @@ function initialisation(){
 
 
     controller1 = renderer.xr.getController(0);
-    controller1.addEventListener('selectstart', onSelectStart);
-    controller1.addEventListener('selectend', onSelectEnd);
+    controller1.addEventListener('selectstart', () => {
+        controller_pressed = controller1;
+        isMoving = true;
+    });
+    controller1.addEventListener('selectend', () => {
+        isMoving = false;
+    });
+    controller1.addEventListener('squeezestart', onSelectStart);
+    controller1.addEventListener('squeezeend', onSelectEnd);
     controller1.addEventListener('connected', function (event) {
         this.add(buildController(event.data));
     });
@@ -104,11 +112,15 @@ function initialisation(){
 
     controller2 = renderer.xr.getController(1);
     controller2.addEventListener('selectstart', () => {
+        controller_pressed = controller2;
         isMoving = true;
+
     });
     controller2.addEventListener('selectend', () => {
         isMoving = false;
     });
+    controller2.addEventListener('squeezestart', onSelectStart);
+    controller2.addEventListener('squeezeend', onSelectEnd);
     controller2.addEventListener('connected', function (event) {
         this.add(buildLineTrace(event.data));
     });
@@ -220,7 +232,7 @@ function animate_VR(){
             vrRenderSelect();
 
             if(isMoving){
-                moveAlongRay(controller2, 0.03);
+                moveAlongRay(controller_pressed, 0.03);
             }
 
         }
