@@ -17,6 +17,7 @@ let controllerGrip1, controllerGrip2;
 
 let INTERSECTION, VR_Button, floor, marker, raycaster, baseReferenceSpace;
 const tempMatrix = new THREE.Matrix4();
+let isMoving = false;
 
 function initVR(){
 
@@ -60,8 +61,12 @@ function initialisation(){
 
     const textureLoader = new THREE.TextureLoader();
 
-    //Can't find path
-    const woodTexture = textureLoader.load( wood_texture );
+    const woodTexture = textureLoader.load(wood_texture, function (texture) {
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.offset.set(0, 0);
+        texture.repeat.set(1, 1);
+    });
+
     const floorMaterial = new THREE.MeshBasicMaterial({
         map: woodTexture,
         transparent: true,
@@ -94,9 +99,13 @@ function initialisation(){
     scene.add(controller1);
 
 
+
     controller2 = renderer.xr.getController(1);
     controller2.addEventListener('selectstart', () => {
-        moveAlongRay(controller2, 3);
+        isMoving = true;
+    });
+    controller2.addEventListener('selectend', () => {
+        isMoving = false;
     });
     controller2.addEventListener('connected', function (event) {
         this.add(buildLineTrace(event.data));
@@ -117,9 +126,12 @@ function initialisation(){
     scene.add(controllerGrip2);
 }
 
-function moveAlongRay(controller, distance) {
+
+// A corriger
+function moveAlongRay(controller, speed) {
+    if(!isMoving) return;
     const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(controller.quaternion).normalize();
-    const offsetPosition = direction.multiplyScalar(distance);
+    const offsetPosition = direction.multiplyScalar(speed);
     const offsetPositionXR = { x: -offsetPosition.x, y: -offsetPosition.y, z: -offsetPosition.z, w: 1 };
     const offsetRotation = new THREE.Quaternion();
     //ignore error - ça fonctionne dans le navigateur
@@ -189,6 +201,8 @@ function vrRenderSelect(){
 
         if (INTERSECTION) marker.position.copy(INTERSECTION);
 
+        marker.position.y += 0.01;
+
         marker.visible = INTERSECTION !== undefined;
     }
 }
@@ -204,6 +218,11 @@ function animate_VR(){
 
         if(renderer.xr.isPresenting){
             vrRenderSelect();
+
+            if(isMoving){
+                moveAlongRay(controller2, 0.01);
+            }
+
         }
 
         if(ModificationMod){
