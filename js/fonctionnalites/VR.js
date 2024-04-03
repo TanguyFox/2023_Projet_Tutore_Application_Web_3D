@@ -1,15 +1,14 @@
 import * as THREE from "three";
-import {camera, cameraGroup, gridHelper, renderer, scene} from "../vue/Scene3D";
+import {gridHelper, renderer, scene} from "../vue/Scene3D";
 import {XRControllerModelFactory} from "three/addons";
 import {VRButton} from "three/addons/webxr/VRButton.js";
-import {lineModel, meshModel} from "../tool/Element3DGeneraux";
 import * as Scene3D from "../vue/Scene3D";
 import * as Generaux from "../tool/Element3DGeneraux";
 import {ModificationMod} from "../controleurs/Scene3DControleur";
 import * as SecondScene from "../vue/Scene3D";
 import {executeRenderHelper} from "../vue/viewhelper";
 import * as Element3DGeneraux from "../tool/Element3DGeneraux";
-import { TreesGeometry, SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
+import { SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
 import floor_texture from "../../resources/texture/floor_texture.png";
 
 let controller1, controller2;
@@ -140,8 +139,6 @@ function initialisation(){
     scene.add(controllerGrip2);
 }
 
-
-// A corriger
 function moveAlongRay(controller, speed) {
     if(!isMoving) return;
     const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(controller.quaternion).normalize();
@@ -211,12 +208,23 @@ function vrRenderSelect(){
             INTERSECTION = intersects[0].point;
         }
 
-        if (INTERSECTION) marker.position.copy(INTERSECTION);
+    }else if ( controller2.userData.isSelecting === true ) {
+        tempMatrix.identity().extractRotation(controller2.matrixWorld);
 
-        marker.position.y += 0.05;
+        raycaster.ray.origin.setFromMatrixPosition(controller2.matrixWorld);
+        raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
 
-        marker.visible = INTERSECTION !== undefined;
+        const intersects = raycaster.intersectObjects([floor]);
+
+        if (intersects.length > 0) {
+            INTERSECTION = intersects[0].point;
+        }
     }
+
+    if (INTERSECTION) marker.position.copy(INTERSECTION);
+    marker.position.y += 0.05;
+    marker.visible = INTERSECTION !== undefined;
+
 }
 
 //VR
