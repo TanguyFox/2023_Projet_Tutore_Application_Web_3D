@@ -10,7 +10,7 @@ import * as SecondScene from "../vue/Scene3D";
 import {executeRenderHelper} from "../vue/viewhelper";
 import * as Element3DGeneraux from "../tool/Element3DGeneraux";
 import { TreesGeometry, SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
-import wood_texture from "../../resources/texture/wood_texture.png";
+import floor_texture from "../../resources/texture/floor_texture.png";
 
 let controller1, controller2;
 let controllerGrip1, controllerGrip2;
@@ -51,6 +51,7 @@ function initialisation(){
         new THREE.CircleGeometry( 0.25, 32 ).rotateX( - Math.PI / 2 ),
         new THREE.MeshBasicMaterial( { color: 0xbcbcbc } )
     );
+    marker.position.y += 0.05;
     scene.add(marker);
 
 
@@ -61,28 +62,29 @@ function initialisation(){
 
     const textureLoader = new THREE.TextureLoader();
 
-    const woodTexture = textureLoader.load(wood_texture, function (texture) {
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.offset.set(0, 0);
-        texture.repeat.set(1, 1);
-    });
+    const floorTexture = textureLoader.load(floor_texture);
+    floorTexture.magFilter = THREE.NearestFilter;
+    floorTexture.wrapS = THREE.RepeatWrapping;
+    floorTexture.wrapT = THREE.RepeatWrapping;
+
+    floorTexture.repeat.set(1024, 1024);
 
     const floorMaterial = new THREE.MeshBasicMaterial({
-        map: woodTexture,
+        map: floorTexture,
         transparent: true,
         opacity: 1
     });
 
     floor = new THREE.Mesh(
-        new THREE.PlaneGeometry( meshBoundingBox.max.x - meshBoundingBox.min.x + 10,
-            meshBoundingBox.max.z - meshBoundingBox.min.z + 10,
-            2,
-            2).rotateX(-Math.PI/2),
+        new THREE.PlaneGeometry( 1024,
+            1024,
+            1,
+            1).rotateX(-Math.PI/2),
         floorMaterial
     )
 
-    floor.position.x = meshModel.position.x;
-    floor.position.z = meshModel.position.z;
+    // floor.position.x = meshModel.position.x;
+    // floor.position.z = meshModel.position.z;
     floor.position.y = 0;
     scene.add(floor);
 
@@ -199,7 +201,7 @@ function vrRenderSelect(){
 
         if (INTERSECTION) marker.position.copy(INTERSECTION);
 
-        marker.position.y += 0.01;
+        marker.position.y += 0.05;
 
         marker.visible = INTERSECTION !== undefined;
     }
