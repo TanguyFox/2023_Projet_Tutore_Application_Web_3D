@@ -15,7 +15,13 @@ toolbarElements.forEach((e) => {
     }
 )
 
-
+/**
+ * Fonction qui gère les évènements de la toolbar
+ * Si l'objet sélectionné est une sphère, on ne peut pas la redimensionner
+ * On peut seulement la déplacer
+ * On change le mode de transformation de l'objet
+ * @param event
+ */
 function eventToolbar(event) {
     // console.log(event.target.id);
     if(transformControls.object instanceof THREE.Mesh && transformControls.object.geometry.type === "SphereGeometry"){

@@ -1,15 +1,21 @@
 import {OBJExporter, STLExporter} from "three/addons";
 import {meshModel} from "../tool/Element3DGeneraux";
 
+/**
+ * Module gérant l'exportation du fichier STL
+ * @type {HTMLElement}
+ */
+
+
 const exportModal = document.getElementById("exportModal");
-//const exportButton = document.getElementById("exportButton");
 
-
-
+// Fonction permettant d'afficher la fenêtre modale d'exportation
 function displayModal() {
-    exportModal.style.display = "block"
-    let fileName = document.getElementById("filename").innerHTML;
-    document.getElementById("exportedFileName").value = fileName.split(".")[0];
+    exportModal.style.display = "block" // Affichage de la fenêtre modale
+    let fileName = document.getElementById("filename").innerHTML; // Récupération du nom du fichier
+    document.getElementById("exportedFileName").value = fileName.split(".")[0]; // Affichage du nom du fichier dans l'input
+
+        // Fermeture de la fenêtre modale si l'utilisateur clique en dehors de celle-ci
         window.addEventListener("click", function(event) {
         if (exportModal.style.display === "block") {
             if (event.target === exportModal) {
@@ -19,13 +25,16 @@ function displayModal() {
     })
 }
 
+// Fonction permettant d'exporter le fichier STL
 function exportInSTL(scene) {
-    const stlExporter = new STLExporter()
-    const toBinary = document.getElementById("binary");
-    console.log("binaire ? : " + toBinary.checked)
+    const stlExporter = new STLExporter() // Création d'un objet STLExporter (voir three.js/addons/STLExporter)
+    const toBinary = document.getElementById("binary"); // Binaire ?
+
+    // Renvoie d'un blob contenant le fichier STL
     return new Blob([stlExporter.parse(scene, {binary: toBinary.checked})]);
 }
 
+// Fonction permettant d'exporter le fichier OBJ (non utilisée)
 function exportInObj(scene) {
     const objExporter = new OBJExporter();
     //let mesh = scene.children.filter(child => child.isMesh);
@@ -41,11 +50,12 @@ function exportInObj(scene) {
     return blob;
 }*/
 
+// Fonction permettant d'exporter le fichier
+// On peut l'exporter en STL ou en OBJ
 function exportMesh(fileName) {
     let file;
-    // let newScene = clearScene(scene)
     let newScene = meshModel;
-    const fileExtension = document.getElementById("formatSelector").value
+    const fileExtension = document.getElementById("formatSelector").value // Récupération de l'extension du fichier
     switch (fileExtension) {
         case "stl" :
             file = exportInSTL(newScene);
@@ -57,29 +67,20 @@ function exportMesh(fileName) {
             file = exportInGLTF(scene)
         }*/
     }
-    createDowloadLink(file, fileExtension, fileName);
+    createDowloadLink(file, fileExtension, fileName); // Création du lien de téléchargement à partir de l'extension du fichier et de son nom
 }
+
 
 function createDowloadLink(blob, extension, name) {
 
-    const link = document.createElement("a");
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.href = URL.createObjectURL(blob);
-    link.download = name.trim() === "" ? "mesh" + "." + extension : name + "." + extension;
-    link.click()
-    document.body.removeChild(link)
+    const link = document.createElement("a"); // Création d'un élément <a> pour le lien de téléchargement
+    link.style.display = "none"; // On cache le lien
+    document.body.appendChild(link); // On ajoute le lien à la page
+    link.href = URL.createObjectURL(blob); // On crée une URL pour le blob
+    link.download = name.trim() === "" ? "mesh" + "." + extension : name + "." + extension; // On définit le nom du fichier
+    link.click() // On simule un clic sur le lien
+    document.body.removeChild(link) // On supprime le lien
 }
-
-// function clearScene(scene) {
-//     let sceneToExport = new THREE.Scene();
-//    scene.traverse(child => {
-//        if (child.isGroup) {
-//            sceneToExport.add(child)
-//        }
-//    })
-//     return sceneToExport
-// }
 
 export {
     displayModal,

@@ -20,15 +20,14 @@ import {resetInterButton} from "./VisualisationMenu";
  * * @type {HTMLElement}
  */
 
-let menuMD = document.getElementById('menuModification');
-//toolbar pour Rotation, Translation, Scale
-let toolbar = document.getElementById('toolbar');
-const importButton = document.getElementById('import');
-let secondSceneHtml = document.getElementById('scene-switch');
-const stlloader = new STLLoader();
+let menuMD = document.getElementById('menuModification'); // réference au menu de modification
+let toolbar = document.getElementById('toolbar'); // toolbar pour Rotation, Translation, Scale
+const importButton = document.getElementById('import'); // réference au bouton d'import du fichier STL
+let secondSceneHtml = document.getElementById('scene-switch'); // réference au bouton pour passer à la deuxième scène
+const stlloader = new STLLoader(); // loader pour les fichiers STL
+
 
 let wireframe;
-//let material;
 
 
 //Fonction de chargement du fichier STL
@@ -61,16 +60,19 @@ async function initStructure(file) {
     //document.getElementById("nb_vertex").textContent = mesh.faces.length * 3 - 1;
 }
 
+// Fonction d'initialisation de l'interface
 function initHTML() {
-    //const file = event.target.files[0];
-    let input = document.getElementById("inputfile");
-    input.value = '';
-    //reset camera
-    Scene3D.camera.position.set(5, 5, 10);
-    Scene3D.orbitcontrols.target.set(0, 0, 0);
-    document.getElementById("export").style.display = "block"
-    document.getElementById("new-model").style.display = "block"
+
+    // On cache l'interface d'import de fichier
+    let input = document.getElementById("inputfile"); // référence vers le champ d'import de fichier
+    input.value = ''; // reset de la valeur du champ
     importButton.style.display = "none";
+
+    // On affiche la scène 3D
+    Scene3D.camera.position.set(5, 5, 10); //reset camera
+    Scene3D.orbitcontrols.target.set(0, 0, 0);
+    document.getElementById("export").style.display = "block" // affichage du bouton d'export
+    document.getElementById("new-model").style.display = "block" // affichage de changement d'un noveau modèle
     Scene3D.sceneContrainer.style.display = "block";
     toolbar.style.display = "flex";
     menuMD.style.display = "block";
@@ -79,8 +81,11 @@ function initHTML() {
     document.getElementById("infoCoordPoints").innerHTML = "";
 }
 
+//Fonction de réparation des normales des faces
 function repairFacesNormals() {
     const originalNormals = []
+
+    // Sauvegarde des normales des faces
     for (let i = 0; i < generaux.geometry_model.attributes.normal.array.length; i += 9) {
         originalNormals.push(
             generaux.geometry_model.attributes.normal.array[i],
@@ -88,14 +93,20 @@ function repairFacesNormals() {
             generaux.geometry_model.attributes.normal.array[i + 2]
         );
     }
-    // console.log(originalNormals);
+
+    // Recalcul des normales des faces
     generaux.geometry_model.computeVertexNormals();
     countRepairedNormalsFaces(originalNormals);
 }
+
+//Fonction de comptage des faces dont les normales ont été réparées (pour l'interface)
 function countRepairedNormalsFaces(originalNormals){
-    let nbChanged = 0;
+    let nbChanged = 0; // Nombre de faces dont les normales ont été réparées
+    let tolerance = 1e-2; // Tolerance pour la comparaison des normales
+
     let j = 0;
-    let tolerance = 1e-2;
+
+    // Comparaison des anciennes normales avec les nouvelles
     for (let i = 0; i < generaux.geometry_model.attributes.normal.array.length; i += 9) {
         if (
             Math.abs(originalNormals[j] - generaux.geometry_model.attributes.normal.array[i]) > tolerance ||
@@ -103,21 +114,21 @@ function countRepairedNormalsFaces(originalNormals){
             Math.abs(originalNormals[j + 2] - generaux.geometry_model.attributes.normal.array[i + 2]) > tolerance
         ) {
             nbChanged++;
-            // console.log("normal changed");
-            // console.log(originalNormals[j], generaux.geometry_model.attributes.normal.array[i]);
-            // console.log(originalNormals[j+1], generaux.geometry_model.attributes.normal.array[i+1]);
-            // console.log(originalNormals[j+2], generaux.geometry_model.attributes.normal.array[i+2]);
         }
         j += 3;
     }
 
-    document.getElementById("face_mo").textContent = "" + nbChanged;
+    document.getElementById("face_mo").textContent = "" + nbChanged; // Affichage du nombre de faces dont les normales ont été réparées dans l'interface
 }
 
+//Fonction de réinitialisation de la scène
 function resetScene() {
+
     resetProblemPanel();
+
     //S'il y a déjà un model 3D de chargé, on l'enlève
     if (generaux.group) {
+
         //reset Intersection button
         resetInterButton();
 
@@ -131,26 +142,33 @@ function resetScene() {
             modeFaceHtml.dispatchEvent(new Event('change'));
         }
 
+        // Suppression de la boite englobante de l'objet 3D
         if (boundingBoxObject.boundingBox) {
             removeBoundingBox(boundingBoxObject);
         }
 
-        //Deuxième scène
+        //reset Deuxième scène
         SecondScene.scene.remove(SecondScene.group);
         SecondScene.setGroup(null);
     }
 
 }
 
+/**
+ * Fonction de chargement du fichier STL
+ * @param file : fichier STL à charger
+ * @returns {Promise<void>}
+ */
+
 async function loadFile(file) {
 
-    let geometry = await stlloader.loadAsync(URL.createObjectURL(file));
-    loadSpin.hideLoadingScreen();
+    let geometry = await stlloader.loadAsync(URL.createObjectURL(file)); //chargement du fichier STL et récupération de la géométrie créer (voir THREE.BufferGeometry)
+    loadSpin.hideLoadingScreen(); //on cache le spinner de chargement
 
-    loadBar.showProgressBar();
-    generaux.setGeometryModel(geometry);
+    //loadBar.showProgressBar();
+    generaux.setGeometryModel(geometry); //on stocke la géométrie dans la variable globale geometry_model (voir Element3DGeneraux.js)
 
-    // configure the color
+    // Création de l'attribut couleur pour l'objet 3D
     generaux.geometry_model.setAttribute('color', new THREE.BufferAttribute(new Float32Array(generaux.geometry_model.attributes.position.count * 3), 3));
 
     //couleur de mesh
@@ -160,24 +178,23 @@ async function loadFile(file) {
             generaux.color_mesh.r, generaux.color_mesh.g, generaux.color_mesh.b);
     }
 
+    // On centre l'objet 3D dans la scène
     generaux.geometry_model.center();
 
-    // console.log(generaux.geometry_model.attributes.normal.array);
-
+    // On répare les normales des faces
     repairFacesNormals();
 
+    // Création de l'objet 3D au format fil de fer
     wireframe = new THREE.WireframeGeometry(geometry);
 
-    console.log(generaux.meshModel);
-
+    // Ajout de l'objet 3D dans le groupe d'objet 3D (permettant d'avoir plusieurs version de texture de l'objet 3D)
     generaux.groupAsWireframe();
 
+    // Ajout de l'objet 3D dans la scène
     Scene3D.scene.add(generaux.group);
 
     //Deuxième scène
     SecondScene.scene.add(SecondScene.group);
-
-    console.log(generaux.meshModel);
 }
 
 

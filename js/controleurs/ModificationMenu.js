@@ -1,3 +1,7 @@
+/**
+ *  Module de gestion des évènement du menu de modification
+ */
+
 import {modifCoord} from '../fonctionnalites/ModifCoordPoint.js';
 //EVENEMENT SUR LA MODIFICATION DES COORDONNEES D'UN POINT
 
