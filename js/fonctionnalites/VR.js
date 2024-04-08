@@ -1,22 +1,23 @@
 import * as THREE from "three";
-import {camera, cameraGroup, gridHelper, renderer, scene} from "../vue/Scene3D";
+import {gridHelper, renderer, scene} from "../vue/Scene3D";
 import {XRControllerModelFactory} from "three/addons";
 import {VRButton} from "three/addons/webxr/VRButton.js";
-import {lineModel, meshModel} from "../tool/Element3DGeneraux";
 import * as Scene3D from "../vue/Scene3D";
 import * as Generaux from "../tool/Element3DGeneraux";
 import {ModificationMod} from "../controleurs/Scene3DControleur";
 import * as SecondScene from "../vue/Scene3D";
 import {executeRenderHelper} from "../vue/viewhelper";
 import * as Element3DGeneraux from "../tool/Element3DGeneraux";
-import { TreesGeometry, SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
-import wood_texture from "../../resources/texture/wood_texture.png";
+import { SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
+import floor_texture from "../../resources/texture/floor_texture.png";
 
 let controller1, controller2;
 let controllerGrip1, controllerGrip2;
 
 let INTERSECTION, VR_Button, floor, marker, raycaster, baseReferenceSpace;
 const tempMatrix = new THREE.Matrix4();
+let isMoving = false;
+let controller_pressed = null;
 
 function initVR(){
 
@@ -50,6 +51,7 @@ function initialisation(){
         new THREE.CircleGeometry( 0.25, 32 ).rotateX( - Math.PI / 2 ),
         new THREE.MeshBasicMaterial( { color: 0xbcbcbc } )
     );
+    marker.position.y += 0.05;
     scene.add(marker);
 
 
@@ -60,31 +62,43 @@ function initialisation(){
 
     const textureLoader = new THREE.TextureLoader();
 
-    //Can't find path
-    const woodTexture = textureLoader.load( wood_texture );
+    const floorTexture = textureLoader.load(floor_texture);
+    floorTexture.magFilter = THREE.NearestFilter;
+    floorTexture.wrapS = THREE.RepeatWrapping;
+    floorTexture.wrapT = THREE.RepeatWrapping;
+
+    floorTexture.repeat.set(1024, 1024);
+
     const floorMaterial = new THREE.MeshBasicMaterial({
-        map: woodTexture,
+        map: floorTexture,
         transparent: true,
         opacity: 1
     });
 
     floor = new THREE.Mesh(
-        new THREE.PlaneGeometry( meshBoundingBox.max.x - meshBoundingBox.min.x + 10,
-            meshBoundingBox.max.z - meshBoundingBox.min.z + 10,
-            2,
-            2).rotateX(-Math.PI/2),
+        new THREE.PlaneGeometry( 1024,
+            1024,
+            1,
+            1).rotateX(-Math.PI/2),
         floorMaterial
     )
 
-    floor.position.x = meshModel.position.x;
-    floor.position.z = meshModel.position.z;
+    // floor.position.x = meshModel.position.x;
+    // floor.position.z = meshModel.position.z;
     floor.position.y = 0;
     scene.add(floor);
 
 
     controller1 = renderer.xr.getController(0);
-    controller1.addEventListener('selectstart', onSelectStart);
-    controller1.addEventListener('selectend', onSelectEnd);
+    controller1.addEventListener('selectstart', () => {
+        controller_pressed = controller1;
+        isMoving = true;
+    });
+    controller1.addEventListener('selectend', () => {
+        isMoving = false;
+    });
+    controller1.addEventListener('squeezestart', onSelectStart);
+    controller1.addEventListener('squeezeend', onSelectEnd);
     controller1.addEventListener('connected', function (event) {
         this.add(buildController(event.data));
     });
@@ -94,10 +108,18 @@ function initialisation(){
     scene.add(controller1);
 
 
+
     controller2 = renderer.xr.getController(1);
     controller2.addEventListener('selectstart', () => {
-        moveAlongRay(controller2, 3);
+        controller_pressed = controller2;
+        isMoving = true;
+
     });
+    controller2.addEventListener('selectend', () => {
+        isMoving = false;
+    });
+    controller2.addEventListener('squeezestart', onSelectStart);
+    controller2.addEventListener('squeezeend', onSelectEnd);
     controller2.addEventListener('connected', function (event) {
         this.add(buildLineTrace(event.data));
     });
@@ -117,9 +139,10 @@ function initialisation(){
     scene.add(controllerGrip2);
 }
 
-function moveAlongRay(controller, distance) {
+function moveAlongRay(controller, speed) {
+    if(!isMoving) return;
     const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(controller.quaternion).normalize();
-    const offsetPosition = direction.multiplyScalar(distance);
+    const offsetPosition = direction.multiplyScalar(speed);
     const offsetPositionXR = { x: -offsetPosition.x, y: -offsetPosition.y, z: -offsetPosition.z, w: 1 };
     const offsetRotation = new THREE.Quaternion();
     //ignore error - ça fonctionne dans le navigateur
@@ -154,8 +177,6 @@ function buildController( data ) {
 }
 
 
-
-//Error ! 
 function onSelectEnd() {
     this.userData.isSelecting = false;
     if ( INTERSECTION ) {
@@ -187,10 +208,23 @@ function vrRenderSelect(){
             INTERSECTION = intersects[0].point;
         }
 
-        if (INTERSECTION) marker.position.copy(INTERSECTION);
+    }else if ( controller2.userData.isSelecting === true ) {
+        tempMatrix.identity().extractRotation(controller2.matrixWorld);
 
-        marker.visible = INTERSECTION !== undefined;
+        raycaster.ray.origin.setFromMatrixPosition(controller2.matrixWorld);
+        raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+
+        const intersects = raycaster.intersectObjects([floor]);
+
+        if (intersects.length > 0) {
+            INTERSECTION = intersects[0].point;
+        }
     }
+
+    if (INTERSECTION) marker.position.copy(INTERSECTION);
+    marker.position.y += 0.05;
+    marker.visible = INTERSECTION !== undefined;
+
 }
 
 //VR
@@ -204,6 +238,11 @@ function animate_VR(){
 
         if(renderer.xr.isPresenting){
             vrRenderSelect();
+
+            if(isMoving){
+                moveAlongRay(controller_pressed, 0.045);
+            }
+
         }
 
         if(ModificationMod){
