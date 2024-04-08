@@ -11,7 +11,8 @@ import * as Element3DGeneraux from "../tool/Element3DGeneraux";
 import { SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
 import floor_texture from "../../resources/texture/floor_texture.png";
 
-let controller1, controller2;
+
+let controller1, controller2; // controller1 = main gauche, controller2 = main droite
 let controllerGrip1, controllerGrip2;
 
 let INTERSECTION, VR_Button, floor, marker, raycaster, baseReferenceSpace;
@@ -19,14 +20,21 @@ const tempMatrix = new THREE.Matrix4();
 let isMoving = false;
 let controller_pressed = null;
 
+
+/**
+ * Méthode initialisant le mode réalité virtuelle
+ */
 function initVR(){
 
-    VR_Button = VRButton.createButton( renderer );
+    VR_Button = VRButton.createButton( renderer ); // Bouton pour activer la VR
     document.getElementById("VR_mode").appendChild(VR_Button);
 
-    renderer.xr.addEventListener('sessionstart', initialisation);
+    renderer.xr.addEventListener('sessionstart', initialisation); // Initialisation de la scène en VR
 }
 
+/**
+ * Méthode initialisant la scène en VR
+ */
 function initialisation(){
 
     baseReferenceSpace = renderer.xr.getReferenceSpace();
@@ -34,6 +42,7 @@ function initialisation(){
 
     scene.remove(gridHelper);
 
+    // Lumière
     const skylight = new THREE.HemisphereLight( 0xfff0f0, 0x60606, 3 );
     skylight.position.set( 1, 1, 1 );
     scene.add( skylight );
@@ -47,6 +56,7 @@ function initialisation(){
     //couleur du ciel
     scene.background = new THREE.Color( 0xf0f0ff );
 
+    // Marker montrant l'endroit où l'utilisateur veut se téléporter
     marker = new THREE.Mesh(
         new THREE.CircleGeometry( 0.25, 32 ).rotateX( - Math.PI / 2 ),
         new THREE.MeshBasicMaterial( { color: 0xbcbcbc } )
@@ -62,11 +72,13 @@ function initialisation(){
 
     const textureLoader = new THREE.TextureLoader();
 
+    // Sol
     const floorTexture = textureLoader.load(floor_texture);
     floorTexture.magFilter = THREE.NearestFilter;
     floorTexture.wrapS = THREE.RepeatWrapping;
     floorTexture.wrapT = THREE.RepeatWrapping;
 
+    // La texture est répétée 1024 fois dans chaque direction
     floorTexture.repeat.set(1024, 1024);
 
     const floorMaterial = new THREE.MeshBasicMaterial({
@@ -83,8 +95,6 @@ function initialisation(){
         floorMaterial
     )
 
-    // floor.position.x = meshModel.position.x;
-    // floor.position.z = meshModel.position.z;
     floor.position.y = 0;
     scene.add(floor);
 
@@ -129,6 +139,7 @@ function initialisation(){
     scene.add(controller2);
 
 
+    // On ajoute les modèles des contrôleurs dans la scène VR
     let controllerModelFactory = new XRControllerModelFactory();
     controllerGrip1 = renderer.xr.getControllerGrip(0);
     controllerGrip1.add(controllerModelFactory.createControllerModel(controllerGrip1));
@@ -139,9 +150,14 @@ function initialisation(){
     scene.add(controllerGrip2);
 }
 
+/**
+ * Méthode permettant de se déplacer en VR
+ * @param controller - Contrôleur utilisé
+ * @param speed - Vitesse de déplacement
+ */
 function moveAlongRay(controller, speed) {
     if(!isMoving) return;
-    const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(controller.quaternion).normalize();
+    const direction = new THREE.Vector3(0, 0, -1).applyQuaternion(controller.quaternion).normalize(); // Direction du rayon
     const offsetPosition = direction.multiplyScalar(speed);
     const offsetPositionXR = { x: -offsetPosition.x, y: -offsetPosition.y, z: -offsetPosition.z, w: 1 };
     const offsetRotation = new THREE.Quaternion();
@@ -151,15 +167,26 @@ function moveAlongRay(controller, speed) {
     renderer.xr.setReferenceSpace(teleportSpaceOffset);
 }
 
+/**
+ * Méthode permettant de créer un trait pour le contrôleur
+ * montrant la direction du rayon
+ * @param data
+ * @returns {Line}
+ */
 
 function buildLineTrace(data){
-    let geometry = new THREE.BufferGeometry();
-    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( [ 0, 0, 0, 0, 0, - 1 ], 3 ) );
-    geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( [ 0.5, 0.5, 0.5, 0, 0, 0 ], 3 ) );
-    let material = new THREE.LineBasicMaterial( { vertexColors: true, blending: THREE.AdditiveBlending } );
-    return new THREE.Line( geometry, material );
+    let geometry = new THREE.BufferGeometry(); // Géométrie du trait
+    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( [ 0, 0, 0, 0, 0, - 1 ], 3 ) ); // Position du trait
+    geometry.setAttribute( 'color', new THREE.Float32BufferAttribute( [ 0.5, 0.5, 0.5, 0, 0, 0 ], 3 ) ); // Couleur du trait
+    let material = new THREE.LineBasicMaterial( { vertexColors: true, blending: THREE.AdditiveBlending } ); // Matériau du trait
+    return new THREE.Line( geometry, material ); // Création du trait
 }
 
+/**
+ * Méthode permettant de créer un contrôleur
+ * @param data
+ * @returns {Line|Mesh}
+ */
 function buildController( data ) {
     let geometry, material;
     switch ( data.targetRayMode ) {
@@ -176,7 +203,9 @@ function buildController( data ) {
     }
 }
 
-
+/**
+ * Méthode permettant de définir la fin de la sélection et de se téléporter
+ */
 function onSelectEnd() {
     this.userData.isSelecting = false;
     if ( INTERSECTION ) {
@@ -192,15 +221,18 @@ function onSelectStart() {
     this.userData.isSelecting = true;
 }
 
+/**
+ * Méthode permettant de rendre le marker visible
+ */
 function vrRenderSelect(){
     INTERSECTION = undefined;
 
     if ( controller1.userData.isSelecting === true ) {
 
-        tempMatrix.identity().extractRotation(controller1.matrixWorld);
+        tempMatrix.identity().extractRotation(controller1.matrixWorld); // On récupère la rotation du contrôleur
 
         raycaster.ray.origin.setFromMatrixPosition(controller1.matrixWorld);
-        raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix);
+        raycaster.ray.direction.set(0, 0, -1).applyMatrix4(tempMatrix); // On définit la direction du rayon
 
         const intersects = raycaster.intersectObjects([floor]);
 
@@ -221,13 +253,15 @@ function vrRenderSelect(){
         }
     }
 
-    if (INTERSECTION) marker.position.copy(INTERSECTION);
+    if (INTERSECTION) marker.position.copy(INTERSECTION); // On déplace le marker à l'endroit où l'utilisateur veut se téléporter
     marker.position.y += 0.05;
     marker.visible = INTERSECTION !== undefined;
 
 }
 
-//VR
+/**
+ * Méthode permettant de rendre la scène en VR interactive
+ */
 function animate_VR(){
     renderer.setAnimationLoop( function () {
         Scene3D.orbitcontrols.update();
@@ -237,10 +271,10 @@ function animate_VR(){
         }
 
         if(renderer.xr.isPresenting){
-            vrRenderSelect();
+            vrRenderSelect(); // On rend le marker visible
 
             if(isMoving){
-                moveAlongRay(controller_pressed, 0.045);
+                moveAlongRay(controller_pressed, 0.045); // On se déplace
             }
 
         }

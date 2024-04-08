@@ -1,5 +1,12 @@
-import * as THREE from 'three';
+/**
+ * Classe représentant une face d'un maillage
+ */
 
+/**
+ * Constructeur
+ * @param {Edge} edge - Une arête de la face
+ * @param {number} indice - L'indice de la face dans le maillage
+ */
 export class Face {
     constructor(edge, indice) {
         this.edge = edge;
@@ -21,6 +28,11 @@ Face.prototype.degree = function(){
     return count;
 }
 
+/**
+ * INUTILISEE
+ * Renvoie le nombre de trous adjacents à la face
+ * @returns {number}
+ */
 Face.prototype.getAdjHole = function(){
     if (this.edge === null) {
         return [];
@@ -36,6 +48,11 @@ Face.prototype.getAdjHole = function(){
     return adj;
 }
 
+/**
+ * EXPRIMENTAL
+ * Vérifie si la face est bien orientée (dans le sens trigonométrique)
+ * @returns {boolean}
+ */
 Face.prototype.isWellOriented = function(){
     let h1 = this.edge;
     let p1 = h1.vertex.point;
@@ -55,10 +72,20 @@ Face.prototype.isWellOriented = function(){
     return crossProduct > 0;
 }
 
+/**
+ * Compare deux faces
+ * @param {Face} face - La face à comparer
+ * @returns {boolean} - true si les faces sont égales, false sinon
+ */
+
 Face.prototype.compare = function(face){
     return this.edge.compare(face.edge);
 }
 
+/**
+ * Renvoie les faces adjacentes à la face
+ * @returns {[]}
+ */
 Face.prototype.getAdjacentes = function(){
     let faces = [];  
 
@@ -78,6 +105,11 @@ Face.prototype.getAdjacentes = function(){
     return faces;
 }
 
+/**
+ * INUTILISEE
+ * Vérifie si la face a 3 faces adjacentes
+ * @returns {boolean}
+ */
 Face.prototype.has3FaceAdjacentes = function() {
     let faces = this.getAdjacentes();
     let result = false;
@@ -89,10 +121,19 @@ Face.prototype.has3FaceAdjacentes = function() {
     return result;
 }
 
+/**
+ * Renvoie les sommets de la face
+ * @returns {[undefined,undefined,undefined]}
+ */
 Face.prototype.getSommets = function() {
     return [this.edge.headVertex(), this.edge.tailVertex(), this.edge.next.tailVertex()];
 }
 
+/**
+ * INUTILISEE
+ * Renvoie les arêtes sans opposees de la face
+ * @returns {[]}
+ */
 Face.prototype.getBoundaryEdges = function() {
     let edges = [];
     let p = this.edge;

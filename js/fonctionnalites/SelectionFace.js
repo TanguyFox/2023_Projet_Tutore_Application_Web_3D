@@ -1,15 +1,13 @@
 import {scene, transformControls} from "../vue/Scene3D";
-import {boundingBoxObject, color_mesh, geometry_model} from "../tool/Element3DGeneraux";
+import {color_mesh, geometry_model} from "../tool/Element3DGeneraux";
 import {arrowHelper} from "../tool/Raycaster";
 import * as Generaux from "../tool/Element3DGeneraux";
 import * as Raycaster from "../tool/Raycaster";
 import * as Scene3D from "../vue/Scene3D";
 import * as THREE from "three";
-import * as Scene3DControleur from "../controleurs/Scene3DControleur";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
 import {resetMouseDown_PointSelectionne, setMouseClick} from "./ModifCoordPoint";
 import {removeSphere} from "./AjoutPoint";
-import {createBoundingBox} from "../vue/BoundingBoxHandler";
 
 /**
  * Module pour la fonctionnalité de traitement de mode (selection de face)
@@ -18,45 +16,61 @@ import {createBoundingBox} from "../vue/BoundingBoxHandler";
 
 let modeFaceHtml = document.getElementById('face-mode-check');
 let infoCoordPoints = document.querySelector("#infoCoordPoints");
-let meshvA;
-let meshvB;
-let meshvC;
+let meshvA; // point rouge
+let meshvB; // point  bleu
+let meshvC; // point vert
+
+// Créer des sphères pour afficher les points
 let highlightGeometry = new THREE.SphereGeometry(0.1, 16, 16);
-//meshvA couleur: rouge
+
+// Créer point rouge, bleu et vert
+//meshva couleur: rouge
 let highlightMaterial = new THREE.MeshBasicMaterial({color: 0xeb4646});
 meshvA = new THREE.Mesh(highlightGeometry, highlightMaterial);
+
 //meshvb couleur: bleu
 highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42b0f5});
 meshvB = new THREE.Mesh(highlightGeometry, highlightMaterial);
+
 //meshvc couleur: vert
 highlightMaterial = new THREE.MeshBasicMaterial({color: 0x42f58d});
 meshvC = new THREE.Mesh(highlightGeometry, highlightMaterial);
 
+/**
+ * méthode qui gère le changement de mode (sélection de face ou non)
+ * @param event
+ */
 export function handleModeSelect (event){
-    if(!modeFaceHtml.checked && scene.children.includes(arrowHelper)){
+
+    if(!modeFaceHtml.checked && scene.children.includes(arrowHelper)){ // ArrpwerHelper est la flèche qui indique la face sélectionnée
 
         //Supprimer le point jaune
         Scene3D.transformControls.detach();
         resetMouseDown_PointSelectionne();
         removeSphere();
 
+        // Supprimer ArrowHelper
         scene.remove(arrowHelper);
         let colorAttribute = geometry_model.attributes.color;
 
+        // Remettre la couleur de la face sélectionnée à la couleur de base
         if(Generaux.faceIndexAncien != null){
             paintFace(Generaux.faceIndexAncien, colorAttribute, color_mesh);
         }
 
+        // Remettre la couleur de la face sélectionnée à la couleur de base
         if(Generaux.faceIndexSelected != null){
             paintFace(Generaux.faceIndexSelected, colorAttribute, color_mesh);
         }
 
+        // Supprimer les points A, B et C
         if(scene.children.includes(meshvA)){
             document.querySelector("#infoCoordPoints").innerHTML="";
             scene.remove(meshvA);
             scene.remove(meshvB);
             scene.remove(meshvC);
         }
+
         Generaux.setFaceIndexSelected(null);
         Generaux.setFaceIndexAncien(null);
     }else{
@@ -81,7 +95,7 @@ export function afficherPoints3D(transformedPositions){
         // console.log(Scene3D.scene);
     }
 
-    let offset = Generaux.faceIndexSelected * 3;
+    let offset = Generaux.faceIndexSelected * 3; // offset pour les positions des sommets de la face
 
     let vertexA = afficherSinglePoint3d(meshvA, transformedPositions, offset);
     let vertexB = afficherSinglePoint3d(meshvB, transformedPositions, (offset+1));
@@ -89,16 +103,18 @@ export function afficherPoints3D(transformedPositions){
 
     afficherCoordPoints(vertexA, vertexB, vertexC);
 
-    initEventInputCoord();
+    initEventInputCoord(); // Initialiser les événements pour modifier les coordonnées des points
 }
+
+
 export function setTransformedPosition (intersectObject){
     let positionAttribute = Generaux.geometry_model.attributes.position;
-    // let normalAttribute = Generaux.geometry_model.attributes.normal;
-    let matrixWorld = intersectObject.matrixWorld;
+
+    let matrixWorld = intersectObject.matrixWorld; // Matrice du monde de l'objet intersecté
 
     let transformedPositions = [];
-    // let transformedNormals = [];
 
+    // Pour chaque sommet de la face, on applique la matrice du monde pour obtenir la position dans le monde
     for(let i = 0; i < positionAttribute.count; i++){
         let localPosition = new THREE.Vector3(positionAttribute.getX(i), positionAttribute.getY(i), positionAttribute.getZ(i));
         localPosition.applyMatrix4(matrixWorld);
@@ -116,8 +132,7 @@ export function setTransformedPosition (intersectObject){
  */
 export function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
     mesh.geometry.computeBoundingSphere();
-    console.log(mesh);
-    mesh.scale.setScalar(calculRadiusTailleModel()) ;
+    mesh.scale.setScalar(calculRadiusTailleModel()) ; // Ajuster la taille de la sphère
     let vertex = new THREE.Vector3(transformedPosition[offsetValue][0],
         transformedPosition[offsetValue][1], transformedPosition[offsetValue][2]);
     mesh.position.copy(vertex);
@@ -129,27 +144,16 @@ export function afficherSinglePoint3d(mesh, transformedPosition, offsetValue){
 function calculRadiusTailleModel(){
     // 1. Définissez une échelle de référence pour vos sphères
     geometry_model.computeBoundingSphere();
-   /* createBoundingBox(Generaux.meshModel, Generaux.boundingBoxObject, Scene3D.scene)
 
-    geometry_model.computeBoundingBox();
-
-
-    */
     let sphereScale = 0.5; // Vous pouvez ajuster ce facteur en fonction de vos besoins
     let radiusModel = geometry_model.boundingSphere.radius;
     console.log(geometry_model.boundingSphere.radius)
 // 2. Créez des sphères avec un rayon adapté à l'échelle de votre modèle
-   // var sphereRadius = sphereScale / Math.max(boundingBoxObject.scale.x, boundingBoxObject.scale.y, boundingBoxObject.scale.z);
 
-
-
-    let sphereRadius = (radiusModel<=1 )? sphereScale*radiusModel :
+      let sphereRadius = (radiusModel<=1 )? sphereScale*radiusModel :
         (radiusModel>10)? 0.05*radiusModel :
         0.3*radiusModel;
 
-// 2. Calculez le rayon des sphères en fonction de la taille du modèle
-    //let sphereRadius = boundingBoxSize.length() * 0.01; // Utilisation d'un pourcentage de la taille du modèle
-    console.log("sphereRadius : " + sphereRadius);
 // 3. Créez des sphères avec le rayon calculé
     return sphereRadius;
 }
@@ -216,12 +220,12 @@ export function onPointerMove( event ){
     for(let i = 0; i < intersects.length; i ++ ){
 
         if(intersects[i].object.uuid === Generaux.meshModel.uuid){
-            // console.log(intersects[i]);
+
             let n = new THREE.Vector3();
-            n.copy(intersects[i].face.normal);
-            n.transformDirection(intersects[i].object.matrixWorld);
-            Raycaster.arrowHelper.setDirection(n);
-            Raycaster.arrowHelper.position.copy(intersects[i].point);
+            n.copy(intersects[i].face.normal); // copier la normale de la face
+            n.transformDirection(intersects[i].object.matrixWorld); // transformer la normale en direction du monde
+            Raycaster.arrowHelper.setDirection(n); // définir la direction de la flèche
+            Raycaster.arrowHelper.position.copy(intersects[i].point); // définir la position de la flèche
 
             if(Generaux.faceIndexSelected != null){
                 return;
@@ -230,6 +234,7 @@ export function onPointerMove( event ){
             let faceIndex = intersects[i].faceIndex;
             let geometry = intersects[i].object.geometry;
             let colorAttribute = geometry.attributes.color;
+
 
             if(Generaux.faceIndexAncien != null){
                 paintFace(Generaux.faceIndexAncien, colorAttribute, Generaux.color_mesh)
