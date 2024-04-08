@@ -5,6 +5,8 @@ import * as Scene3D from "../vue/Scene3D";
 import {majEdges} from "./ModifCoordPoint";
 import {camera} from "../vue/Scene3D";
 import {Vertex} from "../structure/Vertex";
+import {HalfEdge} from "../structure/HalfEdge";
+import {Face} from "../structure/Face";
 
 
 /*
@@ -37,58 +39,62 @@ export function remplirTrouTotal(tableauDeTrous) {
  */
 function remplirTrouRepartisseur(tableauDeVertex) {
     //let tableau = preparerTableau(tableauDeVertex);
-    let tableau = sensTableau(tableauDeVertex);
+    //let tableau = sensTableau(tableauDeVertex);
+    let tableau = tableauDeVertex;
     console.log(tableau);
     if (tableau.length !== 0) {
         if (tableau.length % 2 === 0) {
             //tableau pair
-            //remplirTrouTableauPair(tableau);
-            remplirTrouAll(tableau, remplirTrouTableauPair2, verifTabPair);
+            remplirTrouTableauPair(tableau);
+            //remplirTrouAll(tableau, remplirTrouTableauPair2, verifTabPair);
         } else {
             //tableau impair
-            //remplirTrouTableauImpair(tableau);
-            remplirTrouAll(tableau, remplirTrouTableauImpair2, verifTabImpair);
+            remplirTrouTableauImpair(tableau);
+            //remplirTrouAll(tableau, remplirTrouTableauImpair2, verifTabImpair);
         }
     }
 
 }
 
 function sensTableau(tableauTrou){
+    console.log("recherche du sens du tableau", tableauTrou);
     let point = tableauTrou[0];
     console.log(point.point);
     let halfedge = mesh.getHalfedgeOfVertexWithoutOpposite(point);
     let i = 1;
-    while (typeof halfedge === "undefined" && i < tableauTrou.length){
+   /* while (typeof halfedge === "undefined" && i < tableauTrou.length){
         point = tableauTrou[i];
         halfedge = mesh.getHalfedgeOfVertexWithoutOpposite(point);
         i++;
-    }
-    console.log(halfedge);
+    }*/
+    console.log(tableauTrou ,halfedge);
     if(typeof halfedge === "undefined"){
         console.log("ERROR : aucune halfedge correspondante à la frontière de ce trou", tableauTrou);
     } else {
-        let ptsDep = halfedge.next.vertex.point;
+        let ptsDep = halfedge.next.vertex;
         if(tableauTrou.includes(ptsDep)){
             let indexPtsDep = tableauTrou.indexOf(ptsDep);
             if(indexPtsDep===1){
-                return tableauTrou;
+                console.log("inversion du tableau")
+                return preparerTableau(tableauTrou);
             }
             if (indexPtsDep===tableauTrou.length-1){
-                return preparerTableau(tableauTrou);
+                console.log("non inversion du tableau")
+                return tableauTrou;
             } else {
                 throw new Error ("impossible de determiner le sens de parcours");
             }
         } else {
-            ptsDep = halfedge.prev.vertex.point
+            ptsDep = halfedge.prev.vertex
             if(!tableauTrou.includes(ptsDep)){
                 throw new Error("ne contient pas le point de depart de la lecture de tableau de trous");
             } else {
                 let indexPtsDep = tableauTrou.indexOf(ptsDep);
                 if(indexPtsDep===1){
-                    return tableauTrou;
+                    return preparerTableau(tableauTrou) ;
                 }
                 if (indexPtsDep===tableauTrou.length-1){
-                    return preparerTableau(tableauTrou);
+                    return tableauTrou;
                 } else {
                     throw new Error ("impossible de determiner le sens de parcours");
                 }
@@ -126,11 +132,82 @@ function remplirTrouAll(tableauDeTrous, fonctionDo, fonctionVerification){
     }
 }
 
+/*function completerStructure(tabUneFace){
+    console.log("Dans completer structure", tabUneFace)
+    let v1 = tabUneFace[0];
+    let v2 = tabUneFace[1];
+    let v3 = tabUneFace[2];
+    let h;
+    let i = 0;
+    do {
+        h  = mesh.getHalfedgeOfVertexWithoutOpposite(tabUneFace[i]);
+        i++;
+    } while (typeof h === 'undefined' && i<tabUneFace.length);
+    if(typeof h === 'undefined'){
+        throw new Error("la face nouvellement créé n'a pas d'opposé")
+    }
+    console.log("halfedge trouvee", h);
+    let pointDep = h.next.vertex;
+    let pointSuivant = h.vertex;
+    let dernierPoint = trouverTroisiemePoint(tabUneFace, pointDep, pointSuivant);
+    let opposeeDirect = new HalfEdge(pointDep);
+    opposeeDirect.opposite = h;
+    h.opposee = opposeeDirect;
+    let h2 = new HalfEdge(pointSuivant);
+    let h3 = new HalfEdge(dernierPoint);
+    console.log("etat de la face avant remplissage : ", opposeeDirect, h2, h3);
+
+    let newFace = new Face(opposeeDirect);
+
+    setnextAndPrev(opposeeDirect, h2, h3);
+    setnextAndPrev(h2, h3, opposeeDirect);
+    setnextAndPrev(h3, opposeeDirect, h2);
+
+    opposeeDirect.face = newFace;
+    h2.face = newFace;
+    h3.face = newFace;
+    console.log("etat de la face après remplissage : ", opposeeDirect, h2, h3);
+    //TODO trouver les halfedges opposees de H2 et H3
+    console.log("remplissage des opposees de h2 et h3");
+    let halfedgeOpposeeDeH2 = mesh.getHalfedgeBetween2VertexWithoutOpposite(h2.vertex, h2.next.vertex);
+    console.log("halfedgeDeH2", halfedgeOpposeeDeH2);
+    if(typeof halfedgeOpposeeDeH2 !== "undefined"){
+        h2.opposite = halfedgeOpposeeDeH2;
+        halfedgeOpposeeDeH2.opposite = h2;
+    }
+
+    let halfedgeOpposeeDeH3 = mesh.getHalfedgeBetween2VertexWithoutOpposite(h3.vertex, h3.next.vertex);
+    console.log("halfedgeDeH3", halfedgeOpposeeDeH3);
+    if(typeof halfedgeOpposeeDeH3 !== "undefined"){
+        h3.opposite = halfedgeOpposeeDeH3;
+        halfedgeOpposeeDeH3.opposite = h3;
+    }
+    console.log("etat de la face après remplissage des opposees : ", opposeeDirect, h2, h3);
+    mesh.faces.push(newFace);
+}*/
+function setnextAndPrev(h1, h2, h3){
+    h1.next = h2;
+    h1.prev = h3;
+}
+
+
+function trouverTroisiemePoint(tableauPoints, point1, point2) {
+
+    for (let i = 0; i < tableauPoints.length; i++) {
+        const currentPoint = tableauPoints[i];
+        // Vérifier si le point courant n'est ni point1 ni point2
+        if (!currentPoint.equals(point1) && !currentPoint.equals(point2)) {
+            return currentPoint;
+        }
+    }
+    // Retourner null si le troisième point n'a pas été trouvé
+    return null;
+}
 /**
  * méthode qui rempli un tableau de trous ayant une longueur paire. Renvoie le tableau de trou restant.
  * @param tableauDeTrous
  */
-/*function remplirTrouTableauPair(tableauDeTrous) {
+function remplirTrouTableauPair(tableauDeTrous) {
     console.log("dans remplissage tableau pair")
     let indexCourant = 0;
     let pointDebutFace = tableauDeTrous[indexCourant];
@@ -158,7 +235,7 @@ function remplirTrouAll(tableauDeTrous, fonctionDo, fonctionVerification){
     if (tableauProchainRemplissage.length >= 3) {
         remplirTrouRepartisseur(tableauProchainRemplissage);
     }
-}*/
+}
 function remplirTrouTableauPair2(tableauDeTrous, tabUneFace, pointDebutFace, indexCourant){
     if (typeof tableauDeTrous[indexCourant + 2] == 'undefined') {
         tabUneFace.push(pointDebutFace, tableauDeTrous[indexCourant + 1], tableauDeTrous[0]);
@@ -181,7 +258,7 @@ function verifTabPair(tableauDeTrous, pointDebutFace){
  * @param tableauDeTrous
  * @returns {*}
  */
-/*function remplirTrouTableauImpair(tableauDeTrous) {
+function remplirTrouTableauImpair(tableauDeTrous) {
     console.log("dans remplissage tableau impair")
     if (tableauDeTrous.length === 3) {
         remplirGeometry(tableauDeTrous);
@@ -207,7 +284,7 @@ function verifTabPair(tableauDeTrous, pointDebutFace){
             remplirTrouRepartisseur(tableauProchainRemplissage);
         }
     }
-}*/
+}
 function remplirTrouTableauImpair2(tableauDeTrous, tabUneFace,pointDebutFace,indexCourant) {
     tabUneFace.push(pointDebutFace, tableauDeTrous[indexCourant + 1], tableauDeTrous[indexCourant + 2]);
     indexCourant += 2;
@@ -220,6 +297,7 @@ function verifTabImpair(tableauDeTrous, pointDebutFace){
 
 
 function remplirGeometry(tableauUneFace) {
+    //completerStructure(tableauUneFace);
     //tableauUneFace = detectSensParcours(tableauUneFace);
     let positions = Array.from(geometry_model.getAttribute("position").array);
     //console.log(positions);
@@ -266,7 +344,7 @@ function repairFacesNormals() {
     }
 }
 
-function detectSensParcours(points) {
+/*function detectSensParcours(points) {
     geometry_model.computeVertexNormals();
     console.log("Detect sens parcours");
     console.log(points);
@@ -283,7 +361,7 @@ function detectSensParcours(points) {
    // let normal = geometry_model.getAttribute('normal');
     /*let valeurNormal = normal.x * v1.x + normal.y * v1.y + normal.z * v1.z;
     console.log("valeur normale : ", valeurNormal);*/
-    let normal = new THREE.Vector3().crossVectors(edge1, edge2).normalize();
+    /*let normal = new THREE.Vector3().crossVectors(edge1, edge2).normalize();
     console.log(normal);
     console.log(normal.dot(v1))
     if(normal.dot(v1) < 0){
@@ -294,5 +372,5 @@ function detectSensParcours(points) {
         console.log("points vers l'extérieur")
         return points;
     }
-}
+}*/
 

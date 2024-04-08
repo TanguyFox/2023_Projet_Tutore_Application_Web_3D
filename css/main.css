@@ -157,6 +157,18 @@ nav li a
     width : max-content;
 }
 
+a:link {
+    color: black;
+    background-color: transparent;
+    text-decoration: none;
+  }
+
+a:visited {
+   color: black;
+   background-color: transparent;
+   text-decoration: none;
+ }
+
 /* Add this CSS rule to disable animation when the modal is initially hidden */
 .modal[style*="display: none;"] {
     animation: none !important;

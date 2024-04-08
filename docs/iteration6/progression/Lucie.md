@@ -70,4 +70,11 @@ la semaine prochaine si possible.
 
 ### Lundi 25/03 
 On voit monsieur Dupont à 11h30 donc d'ici là je vais faire un peu de refactorisation de code pour qu'il soit un peu 
-plus buvable. 
+plus buvable.
+Je mets en place la solution de Monsieur Dupont qui consiste à me servir de la structure de données pour déterminer le 
+sens de parcours du tableau de trou pour créer des faces bien orientées. 
+
+### Mardi 26/03
+Durant cette séance j'ai fais en sorte de remplir la structure de données à chaque création de face 
+car je me sers de cette structure pour déterminer le sens du parcours d'un tableau de trou. 
+J'ai avancé dans cette solution également car j'ai quelques problèmes. 
