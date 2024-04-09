@@ -10,6 +10,7 @@ import {executeRenderHelper} from "../vue/viewhelper";
 import * as Element3DGeneraux from "../tool/Element3DGeneraux";
 import { SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
 import floor_texture from "../../public/resources/texture/floor_texture.png";
+import {removeBoundingBox} from "../vue/BoundingBoxHandler";
 
 
 let controller1, controller2; // controller1 = main gauche, controller2 = main droite
@@ -37,6 +38,7 @@ function initVR(){
  */
 function initialisation(){
 
+    removeBoundingBox(Generaux.boundingBoxObject);
     transformControls.detach();
 
     baseReferenceSpace = renderer.xr.getReferenceSpace();
