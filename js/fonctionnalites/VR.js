@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {gridHelper, renderer, scene} from "../vue/Scene3D";
+import {gridHelper, renderer, scene, transformControls} from "../vue/Scene3D";
 import {XRControllerModelFactory} from "three/addons";
 import {VRButton} from "three/addons/webxr/VRButton.js";
 import * as Scene3D from "../vue/Scene3D";
@@ -36,6 +36,8 @@ function initVR(){
  * Méthode initialisant la scène en VR
  */
 function initialisation(){
+
+    transformControls.detach();
 
     baseReferenceSpace = renderer.xr.getReferenceSpace();
     raycaster = new THREE.Raycaster();
