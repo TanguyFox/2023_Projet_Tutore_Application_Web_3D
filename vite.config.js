@@ -1,5 +1,10 @@
 import {defineConfig} from "vite";
 
 export default defineConfig({
-    base : "/2023_Projet_Tutore_Application_Web_3D"
+    base : "/2023_Projet_Tutore_Application_Web_3D",
+    proxy : {
+        "2023_Projet_Tutore_Application_Web_3D" : "index.html",
+        "/2023_Projet_Tutore_Application_Web_3D" : "documentation.html",
+    }
+
 });
