@@ -1,20 +1,14 @@
 import * as THREE from "three";
 import {
-    afficherPoints3D,
-    afficherSingleCoordPoint,
-    afficherSinglePoint3d,
-    setTransformedPosition
+    afficherSingleCoordPoint
 } from "./SelectionFace";
-import {intersects} from "../controleurs/Scene3DControleur";
 import * as Generaux from "../tool/Element3DGeneraux";
 import * as Scene3D from "../vue/Scene3D";
 import * as Raycaster from "../tool/Raycaster";
-import {int} from "three/nodes";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
-import {geometry_model, groupAsWireframe, mesh, meshModel} from "../tool/Element3DGeneraux";
+import {geometry_model, mesh, meshModel} from "../tool/Element3DGeneraux";
 import {Point} from "../structure/Point";
 import {majEdges} from "./ModifCoordPoint";
-import {camera} from "../vue/Scene3D";
 import * as generaux from "../tool/Element3DGeneraux";
 import {HalfEdge} from "../structure/HalfEdge";
 import {Vertex} from "../structure/Vertex";
@@ -187,13 +181,17 @@ export function removeSphere() {
     }
 }
 
-
+/**
+ * Méthode remplissant la structure de données avec les nouvelles faces
+ * @param newPoint
+ * @param threePoint
+ */
 function remplirStructureDeDonnees(newPoint, threePoint) {
     let faceConcernee = findFaceConcernee(threePoint);
-    //console.log(faces);
 
     //nouveau sommet correspondant au nouveau point
     let newVertex = new Vertex(newPoint);
+
     //les halfedges et vertex de l'ancien triangle
     let h1 = faceConcernee.edge;
     let h2 = h1.next;
@@ -247,15 +245,24 @@ function remplirStructureDeDonnees(newPoint, threePoint) {
 
 }
 
+/**
+ * Méthode trouvant la face concernée par le nouveau point
+ * @param threePoint
+ * @returns {*}
+ */
 function findFaceConcernee(threePoint){
     let face;
-    let faces = mesh.faces;
+    let faces = mesh.faces; //faces du mesh
     let faceConcernee;
+
     for (let i = 0 ; i<faces.length; i++) {
         face = faces[i];
         let p1_research = face.edge.vertex.point;
         let p2_research = face.edge.next.vertex.point;
         let p3_research = face.edge.prev.vertex.point;
+
+        // si les trois points de la face sont les trois points les plus proches du nouveau point
+        // alors on a trouvé la face concernée
         if (includePoint(threePoint, p1_research) &&
             includePoint(threePoint, p2_research) &&
             includePoint(threePoint, p3_research)
@@ -267,11 +274,15 @@ function findFaceConcernee(threePoint){
         }
     }
 }
+
+// set les liens des halfedges
 function setLiensOldHalfedge (halfedge, next, prev, face){
     halfedge.setFace(face);
     halfedge.setNext(next);
     halfedge.setPrev(prev);
 }
+
+// set les liens des halfedges
 function setLiensNewHalfedge(halfedge, next, prev, opposite, face){
     halfedge.setNext(next);
     halfedge.setPrev(prev);

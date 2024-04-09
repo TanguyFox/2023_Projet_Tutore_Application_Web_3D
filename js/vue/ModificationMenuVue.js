@@ -8,6 +8,9 @@ let clicked;
 let valeurTranslateIndicatorPrecedente;
 const indicator = document.querySelector('#indicator');
 
+/**
+ * fonction permettant de changer le pannel affiché
+ */
 function changerPannel(){
     let nom = this.id.replace(/_button/g, '');
     let contenu = document.querySelector(`#${nom}_content`);
@@ -22,6 +25,9 @@ listeButton.forEach((elem) =>
         elem.addEventListener('click', changerPannel)
 );
 
+/**
+ * fonction d'animation de survol de l'indicateur
+ */
 function survolerIndicator(){
     let index = Array.from(listeButton).indexOf(this);
 let nouvelleValeur = 100*index;
@@ -44,6 +50,9 @@ listeButton.forEach((ele) =>
     ele.addEventListener('mouseout', retablirIndicator)
 )
 
+/**
+ * fonction permettant de réinitialiser le pannel d'affichage des problèmes
+ */
 export function resetProblemPanel() {
     document.getElementById("face_mo").innerHTML = "0";
     document.getElementById("nb_trous").innerHTML = "0";

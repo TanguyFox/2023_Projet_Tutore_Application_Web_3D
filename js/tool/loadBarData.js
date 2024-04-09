@@ -1,4 +1,5 @@
 /**
+ * OBSOLETE
  * Module gérant la barre de progression du chargement des données
  */
 

@@ -1,38 +1,36 @@
 import {STLLoader} from 'three/addons/loaders/STLLoader.js'
 import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
 import {TransformControls} from 'three/addons/controls/TransformControls.js';
-import {createBoundingBox, removeBoundingBox} from "./BoundingBoxHandler.js";
 import * as THREE from "three";
 import {initViewHelper} from "./viewhelper";
 import {onPointerMove} from "../fonctionnalites/SelectionFace";
 import {onDoubleClick, onPointerClick} from "../controleurs/Scene3DControleur";
 import {deplacerPoint, mouseUpReinitialisation, setMouseClick} from "../fonctionnalites/ModifCoordPoint";
-import {mesh} from "../tool/Element3DGeneraux";
-import {initEventInputCoord} from "../controleurs/ModificationMenu";
 import {appearMenuContextuel} from "./MenuContextuel";
 import * as VR from "../fonctionnalites/VR.js"
 import {animate_VR} from "../fonctionnalites/VR.js";
 
 /**
- * Affichage de l'objet 3D
+ * Module gérant la scène 3D
  */
 
 //attributs
-let renderer;
-let sceneContrainer;
-let scene;
-let camera;
-let gridHelper;
-let transformControls;
-let orbitcontrols;
+let renderer; // Element qui va afficher la scène
+let sceneContrainer; // div contenant la scène
+let scene; // Scene 3D de Threejs
+let camera; // Camera de la scène
+let gridHelper; // Grille de la scène
+let transformControls; // Element permettant les actions de rotation / translation / scale sur l'objet 3D
+let orbitcontrols; // Element permettant de bouger la caméra autour de l'objet 3D
 
-//width / height Scene / a modifier temps en temps pour la Précision de RayCaster
+//Taille de la fenêtre
 let widthS = window.innerWidth;
 let heightS = window.innerHeight;
 
 //Camera Group - VR
 let cameraGroup = new THREE.Group();
 
+//fonction de création de la scène 3D
 function initScene3D() {
 console.log("initScene3D")
 
@@ -47,22 +45,22 @@ console.log("initScene3D")
 
 //Camera
 //------------------------------------------
-    camera = new THREE.PerspectiveCamera(75, widthS / heightS, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(75, widthS / heightS, 0.1, 1000); //75° de vision, ratio de l'écran, distance de vue min, distance de vue max
 //------------------------------------------
 
-//Renderer {antialias: false} pour améliorer la performance, le change selon les besoins
+//Renderer {antialias: false} pour améliorer la performance, le changer si besoins
     renderer = new THREE.WebGLRenderer({antialias: false});
-    renderer.xr.enabled = true;
+    renderer.xr.enabled = true; // VR
     renderer.setSize(widthS, heightS);
 
-    VR.initVR();
+    VR.initVR(); // Lance le mode VR
 
     cameraGroup.add(camera);
     scene.add(cameraGroup);
 
-    sceneContrainer.appendChild(renderer.domElement);
+    sceneContrainer.appendChild(renderer.domElement); // Ajout de la scène dans le conteneur
 
-//Ambient Light 0x404040
+//Lumière d'ambiance de la scène
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.85);
     scene.add(ambientLight);
 
@@ -89,12 +87,13 @@ console.log("initScene3D")
     console.log(transformControls);
     scene.add(transformControls);
 
-    //viewhelper
+    //Création du repère 3D
     initViewHelper();
 
     return renderer;
 }
 
+//Fonction de reconstruction de la scène 3D
 function rebuildAll(antialiasStat){
     scene.remove(transformControls);
     renderer.domElement.remove();
@@ -146,6 +145,7 @@ function rebuildAll(antialiasStat){
     renderer.domElement.addEventListener('contextmenu', appearMenuContextuel);
 }
 
+//Fonction de changement de la taille de la fenêtre
 function setWidth_Height(width, height) {
     widthS = width;
     heightS = height;

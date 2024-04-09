@@ -8,15 +8,17 @@ import {progressBarMaj} from "./loadBarData";
 import {detecterFacesIntersectees} from "./DetectionIntersection";
 import {setMeshProblems} from "./Element3DGeneraux";
 
+/**
+ * Module s'occupant de la conversion d'un fichier STL en données exploitables par le programme
+ * @param positions - tableau de positions des sommets des faces du fichier STL
+ * @returns {Mesh} - représentation des données du fichier STL
+ */
 export function convertSTLToData(positions) {
 
-    const sommets = new VertexSkipList();
-    const faces = []
-    //let halfedges = []
+    const sommets = new VertexSkipList(); // SkipList pour stocker les sommets
+    const faces = [] // Tableau pour stocker les faces
 
-    console.time("Data filling")
-    console.log("nbFaces : " + positions.length / 9);
-    console.log(positions);
+    // Création des sommets, des arêtes et des faces
     for (let i = 0; i < positions.length; i += 9) {
 
         const currentVertices = [
@@ -25,35 +27,31 @@ export function convertSTLToData(positions) {
             creerSommet(new Point(positions[i + 6], positions[i + 7], positions[i + 8]), sommets)
         ]
 
+        // Création des arêtes
+        // Chaque sommet possède une arête qui lui est associée
         const halfedges = currentVertices.map(v => new HalfEdge(v))
+
+        // On relie les arêtes entre elles
         halfedges.forEach((h, index) => setPrevAndNext(h, halfedges[(index + 2) % 3], halfedges[(index + 1) % 3]))
 
-
+        // On associe les arêtes à leur sommet
         currentVertices.forEach((vertex, index) => {
             vertex.addHalfEdge(halfedges[index])
         })
 
+        // Création de la face
         const face = new Face(halfedges[0], i);
+
+        // On associe la face à ses arêtes
         halfedges.forEach(he => he.setFace(face))
-        //getOppositeEdge(face)
 
         faces.push(face);
-        const progression = (i / positions.length) * 100;
-        if (Math.round(progression) % 10 === 0) progressBarMaj(progression)
+        // const progression = (i / positions.length) * 100;
+        // if (Math.round(progression) % 10 === 0) progressBarMaj(progression)
 
     }
-    console.timeEnd("Data filling")
-    setMeshProblems(sommets.getHalfEdgeProblem())
-    /*badHalfedges.forEach(e =>{
-        console.log('-------');
-        console.log(e.face.indice);
-        console.log("numéro de ligne : " + ((e.face.indice/9)*7+4));
-    }
-    )
+    setMeshProblems(sommets.getHalfEdgeProblem()) // On met à jour les problèmes de topologie
 
-     */
-
-    console.log(faces.length);
     progressBarMaj(100)
 
     //Detection des faces qui s'intersectent | expérimental
@@ -61,11 +59,23 @@ export function convertSTLToData(positions) {
     detecterFacesIntersectees(faces);
     console.timeEnd("Detection des faces intersectées")
 
-    return new Mesh(faces);
+    return new Mesh(faces); // On retourne le maillage de l'ojet 3D
 }
 
+/**
+ * Fonction permettant de créer un sommet à partir d'un point
+ * @param point - point du sommet
+ * @param sommets - SkipList contenant les sommets
+ * @returns {Vertex} - sommet créé
+ */
+
 function creerSommet(point, sommets) {
+
+    // On vérifie si le sommet existe déjà
     let existingVertex = sommets.searchVertex(point)
+
+    // Si le sommet n'existe pas, on le crée
+    // Cela permet de ne pas créer de doublons
     if (existingVertex === null) {
         existingVertex = new Vertex(point)
         sommets.insertVertex(point, existingVertex)
@@ -73,6 +83,12 @@ function creerSommet(point, sommets) {
     return existingVertex
 }
 
+/**
+ * Fonction permettant de relier les arêtes entre elles
+ * @param h - arête à relier
+ * @param hPrev - arête précédente
+ * @param hNext - arête suivante
+ */
 function setPrevAndNext(h, hPrev, hNext) {
     h.setNext(hNext);
     h.setPrev(hPrev);
@@ -80,6 +96,9 @@ function setPrevAndNext(h, hPrev, hNext) {
 
 
 
+// -------------------------------------------------------
+// Ancienne version de la conversion d'un fichier STL
+// OBSOLETE
 
 /*export function convertSTLToDonnees(positions) {
     console.log("RENTREE TOOL");

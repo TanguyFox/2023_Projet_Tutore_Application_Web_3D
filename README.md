@@ -20,5 +20,21 @@ Utiliser ensuite la commande ```npx vite``` à la racine du projet pour lancer l
 
 #### Tester l'application :
 
-Aller sur le lien suivant : [MeshWizard](https://tanguyfox.github.io/2023_Projet_Tutore_Application_Web_3D/)
+Aller sur [MeshWizard](https://tanguyfox.github.io/2023_Projet_Tutore_Application_Web_3D/) pour tester l'application sans avoir à la lancer en local
 
+
+### Reprise du projet :
+
+Ce projet pourrait être repris dans le futur par d'autres étudiants. En effet, nous pouvons encore envisager d'autres améliorations comme :
+
+   - Amélioration de l'algorithme de réparations des trous :
+        - Actuellement, l'algorithme de réparation des trous se contente de créer des triangles entre les points du trou sans prendre en compte la forme générale de l'objet 3D. 
+        Un amélioration envisageable serait d'utiliser l'enveloppe convexe de l'objet 3D (lorsque celle-ci s'applique) afin d'avoir une triangulation plus cohérente par rapport à la forme de l'objet.
+   
+   - Amélioration de la VR :
+     - Actuellement, la VR ne permet que de se déplacer autour de l'objet 3D. 
+     Il pourrait être intéressant de pouvoir manipuler l'objet 3D directement en VR (déplacer des points, créer des triangles, etc).
+     Cependant, il faudrait pour cela soit crée une interface dédié à la VR, soit adapter l'interface actuelle pour qu'elle soit compatible avec la VR.
+     Il faut également prendre en compte la limitation des commandes en VR (nombre de boutons limité sur les contrôleurs).
+   
+   - 

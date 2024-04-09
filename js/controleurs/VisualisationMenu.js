@@ -14,6 +14,7 @@ import * as Genereaux from "../tool/Element3DGeneraux";
 //check mode face
 document.getElementById('face-mode-check').addEventListener('change', handleModeSelect);
 
+// Affichage / supression de la grille lorsque la checkbox est cochée / décochée
 document.getElementById('grid-check').addEventListener('change', function(event){
     if(event.target.checked){
         scene.add(gridHelper);
@@ -22,14 +23,17 @@ document.getElementById('grid-check').addEventListener('change', function(event)
     }
 });
 
+// Activation / désactivation de l'anti-aliasing
 document.getElementById('anti-aliasing-check').addEventListener('change', function(event){
     Scene3D.rebuildAll(event.target.checked);
 });
 
+// Activation / désactivation du maillage de la texture
 document.getElementById('maillage-texture-check').addEventListener('change', function(event){
     event.target.checked ? generaux.groupAsWireframe() : generaux.groupAsPlain();
 });
 
+// Activation / désactivation de l'affichage des faces intersectées
 let inter_button_toggle = true;
 document.getElementById("inter_button").addEventListener("click", function(){
     if(inter_button_toggle){
@@ -47,6 +51,7 @@ document.getElementById("inter_button").addEventListener("click", function(){
     }
 });
 
+// Reset de l'affichage des faces intersectées
 function resetInterButton(){
     document.getElementById("inter_button").textContent = "Afficher les faces intersectées";
     inter_button_toggle = true;
