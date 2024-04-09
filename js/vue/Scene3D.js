@@ -15,7 +15,7 @@ import {animate_VR} from "../fonctionnalites/VR.js";
  */
 
 //attributs
-let renderer; // Element qui va afficher la scène
+let renderer; // Element qui va afficher la scène (utilise WebGL)
 let sceneContrainer; // div contenant la scène
 let scene; // Scene 3D de Threejs
 let camera; // Camera de la scène
