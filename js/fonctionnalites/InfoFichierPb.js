@@ -1,4 +1,4 @@
-import fleche from "../../resources/img/iconsMenu/fleche-droite.png";
+import fleche from "../../public/resources/img/iconsMenu/fleche-droite.png";
 
 /**
  * Module gérant l'affichage des informations sur les fichiers STL dans le menu de modification de l'interface

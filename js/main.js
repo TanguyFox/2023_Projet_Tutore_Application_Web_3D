@@ -1,4 +1,3 @@
-
 import * as Scene3D from "./vue/Scene3D.js";
 import {handleFileSelect} from "./controleurs/ImportSTLfileEvent";
 import {onPointerClick, onDoubleClick} from "./controleurs/Scene3DControleur";

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {gridHelper, renderer, scene} from "../vue/Scene3D";
+import {gridHelper, renderer, scene, transformControls} from "../vue/Scene3D";
 import {XRControllerModelFactory} from "three/addons";
 import {VRButton} from "three/addons/webxr/VRButton.js";
 import * as Scene3D from "../vue/Scene3D";
@@ -9,7 +9,8 @@ import * as SecondScene from "../vue/SecondScene";
 import {executeRenderHelper} from "../vue/viewhelper";
 import * as Element3DGeneraux from "../tool/Element3DGeneraux";
 import { SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
-import floor_texture from "../../resources/texture/floor_texture.png";
+import floor_texture from "../../public/resources/texture/floor_texture.png";
+import {removeBoundingBox} from "../vue/BoundingBoxHandler";
 
 
 let controller1, controller2; // controller1 = main gauche, controller2 = main droite
@@ -36,6 +37,9 @@ function initVR(){
  * Méthode initialisant la scène en VR
  */
 function initialisation(){
+
+    removeBoundingBox(Generaux.boundingBoxObject);
+    transformControls.detach();
 
     baseReferenceSpace = renderer.xr.getReferenceSpace();
     raycaster = new THREE.Raycaster();
