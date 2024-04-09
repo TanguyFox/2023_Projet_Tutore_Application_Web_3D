@@ -52,7 +52,7 @@ export function convertSTLToData(positions) {
     }
     setMeshProblems(sommets.getHalfEdgeProblem()) // On met à jour les problèmes de topologie
 
-    //progressBarMaj(100)
+    progressBarMaj(100)
 
     //Detection des faces qui s'intersectent | expérimental
     console.time("Detection des faces intersectées")
