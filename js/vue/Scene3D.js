@@ -11,7 +11,7 @@ import * as VR from "../fonctionnalites/VR.js"
 import {animate_VR} from "../fonctionnalites/VR.js";
 
 /**
- * Affichage de l'objet 3D
+ * Module gérant la scène 3D
  */
 
 //attributs

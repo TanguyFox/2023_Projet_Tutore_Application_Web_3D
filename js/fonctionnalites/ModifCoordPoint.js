@@ -17,6 +17,9 @@ import {animate, intersects} from "../controleurs/Scene3DControleur";
 //MODIFICATION DEPUIS LE MENU DE MODIFICATION
 let allUuid = [] ;
 
+/**
+ * Méthode permettant de récupérer tous les id des points de la structure de données
+ */
 function getAllUuid (){
     let inputDiv = document.querySelectorAll('.info-point');
     inputDiv.forEach((element) => {
@@ -24,16 +27,19 @@ function getAllUuid (){
     })
 }
 
+/**
+ * Méthode modifiant les coordonnées d'un point de la structure de données
+ * @param event le point cliqué
+ */
 export function modifCoord(event){
     getAllUuid();
-    let divParent = event.target.parentNode;
-    //console.log(divParent);
-    let ancienPoint = recreatePointDivParent(divParent);
-    majNameDiv(event.target);
+    let divParent = event.target.parentNode; // div parent de l'input cliqué
+    let ancienPoint = recreatePointDivParent(divParent); // point à modifier
+    majNameDiv(event.target); // mise à jour du champ name de la division html
     let nouveauPoint = createNewPoint(divParent);
-    setCoord(ancienPoint, nouveauPoint);
-    setPoint3D(ancienPoint, nouveauPoint);
-    setPointColore();
+    setCoord(ancienPoint, nouveauPoint); // modification des coordonnées du point
+    setPoint3D(ancienPoint, nouveauPoint); // mise à jour des coordonnées du point dans la structure 3D
+    setPointColore(); // mise à jour du point coloré
 }
 
 /**
@@ -42,19 +48,21 @@ export function modifCoord(event){
  * @param newPoint les nouvelles coordonnées du point
  */
  function setCoord(ancienPoint, newPoint) {
-    //console.log(mesh);
     let faces = mesh.faces;
-    let nbPointModif = 0;
-    //console.log(ancienPoint);
     faces.forEach((uneFace) => {
         let halfedgeDep = uneFace.edge;
         modifCoordPointOfHalfedge(halfedgeDep, ancienPoint, newPoint);
         modifCoordPointOfHalfedge(halfedgeDep.next, ancienPoint, newPoint);
         modifCoordPointOfHalfedge(halfedgeDep.prev, ancienPoint, newPoint);
     })
-    //console.log("setCoord : " + nbPointModif);
 }
 
+/**
+ * Méthode modifiant les coordonnées d'un point d'une demi-arête
+ * @param halfedge la demi-arête à modifier
+ * @param ancienPoint le point à trouver dans la demi-arête
+ * @param newPoint les nouvelles coordonnées du point
+ */
 function modifCoordPointOfHalfedge(halfedge, ancienPoint, newPoint){
     if(halfedge.vertex.point.equals(ancienPoint)){
         halfedge.vertex.point.set(newPoint);
@@ -63,7 +71,7 @@ function modifCoordPointOfHalfedge(halfedge, ancienPoint, newPoint){
 
 /**
  * Méthode créant un point avec les anciennes valeurs du point modifié
- * @param divParent
+ * @param divParent la div parent du point modifié
  * @returns {Point}
  */
 function recreatePointDivParent(divParent){
@@ -107,18 +115,13 @@ function setPoint3D(targetPoint, newPoint){
         let positions = positionAttribute.array;
         let nbPointsSetted = 0;
         let positionAttributeIndex = 0;
-        //positionAttribute.setXYZ(0, newPoint.x, newPoint.y, newPoint.z);
-        //EDGE
-        //console.log(targetPoint)
+
 
         for(let i = 0; i < positions.length; i += 3){
             let pointCourant = new Point(positions[i], positions[i+1],positions[i+2]);
-           //console.log(pointCourant);
-            //console.log(pointCourant.equals(targetPoint))
             if(pointCourant.equals(targetPoint)){
                 positionAttribute.setXYZ(positionAttributeIndex, newPoint.x, newPoint.y, newPoint.z);
                 nbPointsSetted += 1;
-                //console.log(positionAttribute[positionAttributeIndex])
             }
             positionAttributeIndex++;
         }
@@ -133,8 +136,6 @@ function setPoint3D(targetPoint, newPoint){
         geometry_model.attributes.position = positionAttribute;
         geometry_model.attributes.position.needsUpdate = true;
         removeErrors();
-        //mesh.highlightEdge();
-
     }
 
 
@@ -174,23 +175,32 @@ let isMouseDown = false;
 let pointSelectionne ;
 //let transformedPosition;
 let sauvegardeAncienPoint;
+
+/**
+ * Méthode permettant de sélectionner un point de l'objet 3D au clic de la souris
+ * @param event
+ */
 export function setMouseClick(event){
     getAllUuid();
 
+    // Si le point sélectionné est un point de la sphère alors on ne peut pas le déplacer
     if(Scene3D.transformControls.object instanceof THREE.Mesh && Scene3D.transformControls.object.geometry.type === "SphereGeometry"){
         sauvegardeAncienPoint = new Point(pointSelectionne.position.x,
             pointSelectionne.position.y,  pointSelectionne.position.z);
         return;
     }
 
+    // On récupère les objets intersectés par le rayon
     Raycaster.raycaster.setFromCamera(Raycaster.pointer, Scene3D.camera);
     let intersects = Raycaster.raycaster.intersectObjects(Scene3D.scene.children, true);
 
+    // On parcourt les objets intersectés pour trouver le point sélectionné
     for(let i = 0 ; i < intersects.length; i++){
-        //console.log(intersects[i].object);
+
+
         if(isMesh(intersects[i].object.uuid)){
+
             let meshCourant = intersects[i].object;
-            //console.log(meshCourant);
             isMouseDown = true;
             pointSelectionne = meshCourant;
             sauvegardeAncienPoint = new Point(pointSelectionne.position.x,
@@ -205,20 +215,19 @@ export function setMouseClick(event){
         }
     }
 }
+
+// Fonction permettant de savoir si un objet est un mesh
 function isMesh(uuid){
-    //console.log(allUuid);
-    //console.log(uuid);
-    if(allUuid.includes(uuid)){
-        return true;
-    } else {
-        return false;
-    }
+    return allUuid.includes(uuid);
 }
 
-//document.addEventListener('mousemove', deplacer)
+/**
+ * INUTILISEE
+ * Méthode permettant de déplacer un point de l'objet 3D
+ * @param event
+ */
 export function deplacerPoint(event) {
     if(isMouseDown && (typeof pointSelectionne !== 'undefined')) {
-        //console.log('point sélectionné pouvant être déplacé');
         if (Scene3D.transformControls.object) {
             //console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
 
@@ -226,13 +235,18 @@ export function deplacerPoint(event) {
     }
 }
 
+/**
+ * Méthode permettant de réinitialiser les coordonnées du point sélectionné
+ */
 export function mouseUpReinitialisation(){
-    if ( isMouseDown && (typeof pointSelectionne !== 'undefined')) {
-        //console.log('Nouvelles coordonnées du point :', pointSelectionne.position.x, pointSelectionne.position.y, pointSelectionne.position.z);
+    if ( isMouseDown && (typeof pointSelectionne !== 'undefined')) { // Si le point est sélectionné
+
+        // On crée un nouveau point avec les nouvelles coordonnées
         let newPoint = new Point(pointSelectionne.position.x, pointSelectionne.position.y,  pointSelectionne.position.z);
-        setCoord(sauvegardeAncienPoint, newPoint);
-        setPoint3D(sauvegardeAncienPoint, newPoint);
-        majInputPoint(pointSelectionne, newPoint);
+        setCoord(sauvegardeAncienPoint, newPoint); // On modifie les coordonnées du point dans la structure de données
+        setPoint3D(sauvegardeAncienPoint, newPoint); // On met à jour les coordonnées du point dans la structure 3D
+        majInputPoint(pointSelectionne, newPoint); // On met à jour les coordonnées du point dans le menu de modification
+
         if(!Scene3D.transformControls.object){
             isMouseDown = false;
             pointSelectionne = undefined;
@@ -242,20 +256,29 @@ export function mouseUpReinitialisation(){
 
 }
 
+/**
+ * Méthode permettant de mettre à jour les coordonnées du point dans le menu de modification
+ * @param pointSelectionne le point sélectionné
+ * @param newPoint les nouvelles coordonnées du point
+ */
 function majInputPoint(pointSelectionne, newPoint){
     let div = document.querySelector("[id=\'"+ pointSelectionne.uuid +"\']");
-    //console.log(div);
-    setName_Value(div.children[0], newPoint.x);
-    setName_Value(div.children[1], newPoint.y);
-    setName_Value(div.children[2], newPoint.z);
+
+    setName_Value(div.children[0], newPoint.x); // On met à jour les coordonnées en x du point dans le menu de modification
+    setName_Value(div.children[1], newPoint.y); // On met à jour les coordonnées en y du point dans le menu de modification
+    setName_Value(div.children[2], newPoint.z); // On met à jour les coordonnées en z du point dans le menu de modification
 }
 
+/**
+ * Méthode permettant de mettre à jour le nom et la valeur d'un élément
+ * @param theChildren l'élément à mettre à jour
+ * @param theValue la nouvelle valeur de l'élément
+ */
 function setName_Value(theChildren, theValue){
-    //console.log(theChildren);
-    //console.log(theValue);
     theChildren.name = theValue;
     theChildren.value = theValue;
 }
+
 
 export function resetMouseDown_PointSelectionne(){
     isMouseDown = false;

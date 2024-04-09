@@ -2,11 +2,17 @@ import * as THREE from "three";
 import * as Scene3D from "../vue/Scene3D";
 import * as Generaux from "../tool/Element3DGeneraux";
 
+/**
+ * Module s'occupant de la détection des faces qui s'intersectent
+
+ */
+
 let group_triangles;
 let set_String_triangles;
 
 //Detecter les faces qui s'intersectent - version 3
 function detecterFacesIntersectees(faces){
+
     group_triangles = new THREE.Group();
     set_String_triangles = new Set();
 
@@ -14,7 +20,9 @@ function detecterFacesIntersectees(faces){
     const min = boundingBox.min;
     const max = boundingBox.max;
 
-    const divisions = calculateDivisions(faces.length);
+    const divisions = calculateDivisions(faces.length); //Calculer le nombre de sous-espaces
+
+    //Calculer la taille de chaque sous-espace
     const subSizeX = (max.x - min.x) / divisions;
     const subSizeY = (max.y - min.y) / divisions;
     const subSizeZ = (max.z - min.z) / divisions;
@@ -31,15 +39,19 @@ function detecterFacesIntersectees(faces){
         }
     }
 
+    //Remplir les sous-espaces
     for(let face of faces){
         let sommets = face.getSommets();
 
+        // créer un triangle à partir des sommets de la face
         const triangle = new THREE.Triangle(
             new THREE.Vector3(sommets[0].point.x,sommets[0].point.y,sommets[0].point.z),
             new THREE.Vector3(sommets[1].point.x,sommets[1].point.y,sommets[1].point.z),
             new THREE.Vector3(sommets[2].point.x,sommets[2].point.y,sommets[2].point.z));
 
         let triangleBoundingBox = new THREE.Box3().setFromPoints([triangle.a, triangle.b, triangle.c]);
+
+        // calculer les indices des sous-espaces dans lesquels le triangle se trouve
 
         let startXIndex = Math.floor((triangleBoundingBox.min.x - min.x) / subSizeX);
         let endXIndex = Math.floor((triangleBoundingBox.max.x - min.x) / subSizeX);
@@ -56,6 +68,7 @@ function detecterFacesIntersectees(faces){
         endZIndex = Math.max(0, Math.min(endZIndex, divisions - 1));
 
 
+        // ajouter le triangle à tous les sous-espaces dans lesquels il se trouve
         for (let x = startXIndex; x <= endXIndex; x++) {
             for (let y = startYIndex; y <= endYIndex; y++) {
                 for (let z = startZIndex; z <= endZIndex; z++) {
@@ -65,8 +78,9 @@ function detecterFacesIntersectees(faces){
         }
     }
 
-    console.log(subSpaces)
+    //console.log(subSpaces)
 
+    // parcourir tous les sous-espaces et détecter les intersections entre les triangles
     for (let x = 0; x < subSpaces.length; x++) {
         for (let y = 0; y < subSpaces[x].length; y++) {
             for (let z = 0; z < subSpaces[x][y].length; z++) {
@@ -80,11 +94,7 @@ function detecterFacesIntersectees(faces){
         }
     }
 
-    // Scene3D.scene.add(group_triangles);
-
-    // console.log("set_triangles");
-    // console.log(set_String_triangles);
-
+    // Si des intersections ont été trouvées, afficher le nombre d'intersections et activer le bouton pour les afficher
     if(set_String_triangles.size > 0){
         document.getElementById("nb_inter").textContent = set_String_triangles.size + "";
         document.getElementById("inter_button").disabled = false;
@@ -93,6 +103,7 @@ function detecterFacesIntersectees(faces){
         document.getElementById("inter_button").disabled = true;
     }
 
+    // Réinitialiser les sous-espaces
     for (let x = 0; x < subSpaces.length; x++) {
         for (let y = 0; y < subSpaces[x].length; y++) {
             for (let z = 0; z < subSpaces[x][y].length; z++) {
@@ -141,10 +152,10 @@ function IntersectionEntreDeuxTriangles(triangle1, triangle2){
     if(intersectionTriangleEtLigne(triangle1, [triangle2.c, triangle2.a])){
         generateTriangle(triangle1);
         generateTriangle(triangle2);
-        return;
     }
 }
 
+// Générer un triangle à partir d'un triangle et l'ajouter à la scène
 function generateTriangle(triangle){
     let key_face = `${triangle.a.x},${triangle.a.y},${triangle.a.z},${triangle.b.x},${triangle.b.y},${triangle.b.z},${triangle.c.x},${triangle.c.y},${triangle.c.z}`;
     if(!set_String_triangles.has(key_face)){
@@ -192,23 +203,6 @@ function intersectionTriangleEtLigne(triangle, line){
             let distance = Math.max(pA.distanceTo(intersectionPoint), pB.distanceTo(intersectionPoint));
 
             if(longueur > distance + 1e-2){
-                // console.log("=========================")
-                // console.log("triangle")
-                // console.log(triangle.a);
-                // console.log(triangle.b);
-                // console.log(triangle.c);
-                // console.log("line")
-                // console.log(pA);
-                // console.log(pB);
-                // console.log("intersectionPoint")
-                // console.log(intersectionPoint);
-                // console.log("distance")
-                // console.log(distance);
-                // console.log("longueur")
-                // console.log(longueur);
-                // console.log("=========================")
-                // generateLineAndTriangle(triangle, line);
-                // generateTriangle(triangle);
                 return true;
             }
         }
@@ -216,6 +210,7 @@ function intersectionTriangleEtLigne(triangle, line){
     return false;
 }
 
+// Calculer le nombre de divisions en fonction du nombre de faces
 function calculateDivisions(nb_faces){
     let min = 4;
     let max = 100;
@@ -224,6 +219,7 @@ function calculateDivisions(nb_faces){
     return result;
 }
 
+// Vérifier si deux vecteurs 3D sont égaux
 function isVector3Equals(v1, v2){
     let tolerance = 1e-7;
     return Math.abs(v1.x - v2.x) < tolerance && Math.abs(v1.y - v2.y) < tolerance && Math.abs(v1.z - v2.z) < tolerance;
