@@ -1,0 +1,54 @@
+Vous pouvez retrouver ci-dessous une brève présentation de chaque fichier JS se trouvant dans le dossier `js` :
+
+ameliorations_possible : (Ce dossier contient des fichiers JS qui ne sont pas utilisés dans le projet, mais qui pourraient être utilisés pour améliorer le projet)
+
+    - MeshConvexHull.js : Ce fichier JS permet de créer l'enveloppe convexe d'un objet 3D.
+    Cela pourrait être repris pour améliorer le remplissage des trous.
+
+
+controleurs : (Ce dossier contient les fichiers JS gérant les interactions de l'utilisateur avec l'application)
+
+    - ImportSTLfileEvent.js : Ce fichier JS permet de gérer l'import d'un fichier STL dans l'application.
+    - MenuContextuelControleur.js : Ce fichier JS permet de gérer le menu contextuel de l'application permettant d'ajouter de nouveaux points
+    - ModificationMenu.js : Ce fichier gère les actions du menu de modification de l'objet 3D
+    - Scene3DControleur.js : Ce fichier JS permet de gérer la scène 3D de l'application
+    - ToolBarEvent.js : Ce fichier JS permet de gérer la barre d'actions de la scène 3D (rotation, translation, zoom)
+    - VisualisationMenu.js : Ce fichier gère les actions du menu de visualisation de l'objet 3D
+
+fonctionnalites : (Ce dossier contient les différents fichiers JS gérant les fonctionnalités de l'application)
+
+    - AjoutPoint.js : Ce fichier JS gère l'ajout d'un point sur l'objet 3D
+    - ExportModel.js : Ce fichier JS gère l'export de l'objet 3D au format STL
+    - FrontiereTrous.js : Ce fichier JS gère la détection des trous dans l'objet 3D
+    - InfoFichierPb.js : Ce fichier JS gère l'affichage des endroits à erreurs dans le fichier STL
+    - ModifCoordPoint.js : Ce fichier JS gère la modification des coordonnées d'un point dans l'inteface (+ la structure de données)
+    - RemplissageTrouCirculaire.js : Ce fichier JS gère le remplissage des trous à partir de la structure de données
+    - SelectionFace.js : Ce fichier JS gère la sélection d'une face de l'objet 3D et l'affichage des informations associées
+    - VR.js : Ce fichier JS gère la version réalité virtuelle de l'application
+
+structure : (Ce dossier contient les fichiers JS gérant la structure de données HalfEdge de l'application)
+
+    - Face.js : Ce fichier JS représente une face dans la structure de données
+    - HalfEdge.js : Ce fichier JS représente une demi-arête dans la structure de données
+    - Mesh.js : Ce fichier JS représente le maillage de l'objet 3D dans la structure de données
+    - Point.js : Ce fichier JS représente la position d'un sommet dans la structure de données
+    - Problems.js : Ce fichier JS représente les problèmes de l'objet 3D dans la structure de données
+    - Vertex.js : Ce fichier JS représente un sommet dans la structure de données
+    - VertexSkipList.js : Ce fichier JS représente une structure de données SkipList de sommets dans la structure de données
+
+tool : (Ce dossier contient différents outils permettant de faire fonctionner l'application)
+
+    - DataStructureImplementation.js : Ce fichier JS permet de gérer l'implémentation de la structure de données HalfEdge à partir d'un fichier STL
+    - DetectionIntersection.js : Ce fichier JS permet de gérer la détection d'intersection entre les faces de l'objet 3D à partir de la structure de données
+    - Element3DGeneraux.js : Ce fichier JS permet de gérer les différents éléments commun à l'ensemble de l'application
+    - loadBarData.js : Ce fichier JS permet de gérer l'affichage de la barre de chargement de l'objet 3D dans l'application
+    - loadSpinnerData.js : Ce fichier JS permet de gérer l'affichage du spinner de chargement de l'objet 3D dans l'application
+    - Raycaster.js : Ce fichier JS permet de gérer le raycasting dans la scène 3D de l'application
+
+vue : (Ce dossier contient les fichiers JS gérant l'affichage de l'application)
+
+    - BoundingBoxHandler.js : Ce fichier JS permet de gérer l'affichage de la boîte englobante de l'objet 3D
+    - MenuContextuel.js : Ce fichier JS permet de gérer l'affichage du menu contextuel de l'application
+    - Scene3D.js : Ce fichier JS permet de gérer l'affichage de la scène 3D de l'application
+    - SecondScene.js : Ce fichier JS permet de gérer l'affichage de la seconde scène 3D (visualisation uniquement) de l'application
+    - viewHelper.js : Ce fichier JS permet de gérer l'affichage du repère 3D de la scène dans l'application
