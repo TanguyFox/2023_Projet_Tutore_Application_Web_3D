@@ -6,7 +6,7 @@ import * as Generaux from "../tool/Element3DGeneraux";
 import * as Scene3D from "../vue/Scene3D";
 import * as Raycaster from "../tool/Raycaster";
 import {initEventInputCoord} from "../controleurs/ModificationMenu";
-import {geometry_model, mesh, meshModel} from "../tool/Element3DGeneraux";
+import {geometry_model, mesh, meshModel, meshProblems} from "../tool/Element3DGeneraux";
 import {Point} from "../structure/Point";
 import {majEdges} from "./ModifCoordPoint";
 import * as generaux from "../tool/Element3DGeneraux";
@@ -37,7 +37,7 @@ export function ajoutPoint(menuContextuel) {
     meshModel.geometry = geometry_model;
     Scene3D.transformControls.detach();
     majEdges();
-    mesh.highlightEdge();
+    meshProblems.highlightProblems();
     initEventInputCoord();
     remplirStructureDeDonnees(newPoint, troisPointsProches);
 }

@@ -59,6 +59,8 @@ export function convertSTLToData(positions) {
     detecterFacesIntersectees(faces);
     console.timeEnd("Detection des faces intersectées")
 
+    document.getElementById("nb_vertex").textContent = sommets.size;
+
     return new Mesh(faces); // On retourne le maillage de l'ojet 3D
 }
 

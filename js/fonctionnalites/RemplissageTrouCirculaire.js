@@ -1,4 +1,4 @@
-import {geometry_model, meshModel, mesh} from "../tool/Element3DGeneraux";
+import {geometry_model, meshModel, mesh, color_mesh} from "../tool/Element3DGeneraux";
 import * as generaux from "../tool/Element3DGeneraux";
 import * as THREE from "three";
 import * as Scene3D from "../vue/Scene3D";
@@ -280,6 +280,12 @@ function remplirGeometry(tableauUneFace) {
     positions.push(tableauUneFace[2].point.x, tableauUneFace[2].point.y, tableauUneFace[2].point.z);
 
     geometry_model.setAttribute('position', new THREE.BufferAttribute(new Float32Array(positions), 3));
+    geometry_model.computeVertexNormals();
+    geometry_model.setAttribute('color', new THREE.BufferAttribute(new Float32Array(generaux.geometry_model.attributes.position.count * 3), 3))
+    for(let i = 0; i < generaux.geometry_model.attributes.position.count; i++){
+        generaux.geometry_model.attributes.color.setXYZ(i, color_mesh.r, color_mesh.g, color_mesh.b);
+    }
+
 }
 
 /**

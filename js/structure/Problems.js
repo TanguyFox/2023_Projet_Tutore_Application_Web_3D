@@ -77,47 +77,48 @@ Problems.prototype.highlightProblems = function() {
         group.add(cylinder);
         problemHE++; // On incrémente le nombre de problèmes
     })
-
-    // Si on a 3 arêtes sans opposé, on a un trou qui peut être comblé par un seul triangle
-    if (this.boundaryEdges.length === 3) {
-        group.add(createTriangle(this.boundaryEdges[0].vertex, this.boundaryEdges[1].vertex, this.boundaryEdges[2].vertex));
-        document.getElementById("nb_trous").textContent = "1";
-    } else {
-
-        //Sinon, on identifie les trous et on les comble
-
-        //let holes = this.identifyHoles();
-        //console.log(holes);
-        this.frontiereTrou = getFrontieres(this.boundaryEdges); // On récupère les frontières des trous
-        //console.log(holes);
-        //remplirTrouTotal(holes)
-        let triangles = this.triangulateHoles(this.frontiereTrou); // On fait la triangulation des trous
-        //console.log(triangles);
-        if (triangles !== undefined) {
-
-            // On crée les triangles pour combler les trous dans l'inteface graphique
-            triangles.forEach(t => {
-                let triangle = createTriangle(t[0], t[1], t[2])
-                group.add(triangle);
-            })
-        }
+    this.frontiereTrou = getFrontieres(this.boundaryEdges); // On récupère les frontières des trous
+    document.getElementById("nb_trous").textContent = this.frontiereTrou.length; // On met à jour le nombre de trous sur l'interface
 
 
-        /*let convexHull = new MeshConvexHull(meshModel)
-        let triangles = [];
-        let holes = getFrontieres(this.boundaryEdges);
-        convexHull.displayConvexHull();
-        console.log('convex hull displayed')*/
-        //console.log(triangles);
-    }
+    /* Le code ci-dessous est expérimental et n'est pas utilisé dans la version actuelle de l'application
+     * Il permet de mettre en évidence les faces manquantes sans que celles-ci ne soit réellement réparées
+     * Ses résultats étant peu concluants, il n'est pas utilisé mais pourrait être revu
+
+        // Si on a 3 arêtes sans opposé, on a un trou qui peut être comblé par un seul triangle
+        if (this.boundaryEdges.length === 3) {
+            group.add(createTriangle(this.boundaryEdges[0].vertex, this.boundaryEdges[1].vertex, this.boundaryEdges[2].vertex));
+            document.getElementById("nb_trous").textContent = "1";
+        } else {
+
+            //Sinon, on identifie les trous et on les comble
+
+            //let holes = this.identifyHoles();
+
+            this.frontiereTrou = getFrontieres(this.boundaryEdges); // On récupère les frontières des trous
+
+
+            let triangles = this.triangulateHoles(this.frontiereTrou); // On fait la triangulation des trous
+            //console.log(triangles);
+            if (triangles !== undefined) {
+
+                // On crée les triangles pour combler les trous dans l'inteface graphique
+                triangles.forEach(t => {
+                    let triangle = createTriangle(t[0], t[1], t[2])
+                    group.add(triangle);
+                })
+            }
+
+    }*/
     document.getElementById("nb_hp").innerHTML = problemHE; // On met à jour le nombre de problèmes sur l'interface
     infoFichierMenuModif(this); // On affiche dans l'interface les endroits où le maillage est problématique dans le fichier STL
-    // console.log(group)
 }
 
 /**
- * EXPRIMENTALE
- * Fonction permettant de trianguler les trous du maillage
+ * EXPRIMENTALE / INUTILISEE DANS LA VERSION ACTUELLE
+ * Fonction permettant (en théorie) de trianguler les trous du maillage
+ * Elle s'avère être mise à l'épreuve lorsque le trou est complexe
+ * Elle doit être revu
  * @returns {[]}
  */
 Problems.prototype.triangulateHoles = function (holes) {
