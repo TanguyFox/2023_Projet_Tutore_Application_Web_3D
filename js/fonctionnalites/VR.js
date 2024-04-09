@@ -5,7 +5,7 @@ import {VRButton} from "three/addons/webxr/VRButton.js";
 import * as Scene3D from "../vue/Scene3D";
 import * as Generaux from "../tool/Element3DGeneraux";
 import {ModificationMod} from "../controleurs/Scene3DControleur";
-import * as SecondScene from "../vue/Scene3D";
+import * as SecondScene from "../vue/SecondScene";
 import {executeRenderHelper} from "../vue/viewhelper";
 import * as Element3DGeneraux from "../tool/Element3DGeneraux";
 import { SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
