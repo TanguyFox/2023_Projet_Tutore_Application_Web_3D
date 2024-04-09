@@ -9,7 +9,7 @@ import * as SecondScene from "../vue/SecondScene";
 import {executeRenderHelper} from "../vue/viewhelper";
 import * as Element3DGeneraux from "../tool/Element3DGeneraux";
 import { SkyGeometry } from 'three/addons/misc/RollerCoaster.js';
-import floor_texture from "../../resources/texture/floor_texture.png";
+import floor_texture from "../../public/resources/texture/floor_texture.png";
 
 
 let controller1, controller2; // controller1 = main gauche, controller2 = main droite

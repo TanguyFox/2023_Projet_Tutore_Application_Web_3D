@@ -23,7 +23,6 @@ toolbarElements.forEach((e) => {
  * @param event
  */
 function eventToolbar(event) {
-    // console.log(event.target.id);
     if(transformControls.object instanceof THREE.Mesh && transformControls.object.geometry.type === "SphereGeometry"){
         transformControls.setMode("translate");
         return;

@@ -84,7 +84,7 @@ body{background:#E3DFD2;box-shadow: inset 0 0 20vmin 0 #585247;}*/
 }
 #menuContextuel a:nth-child(5) div{
     background-color: white;
-    background-image: url('../resources/img/menuContextuel/croix.png');
+    background-image: url('../public/resources/img/menuContextuel/croix.png');
     background-size: 50%;
     background-repeat: no-repeat;
     background-position: center;

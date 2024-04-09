@@ -6,6 +6,8 @@ import * as Generaux from "../tool/Element3DGeneraux.js";
 import * as Raycaster from "../tool/Raycaster.js";
 import {executeRenderHelper, viewhelper} from "../vue/viewhelper";
 import {paintFace, afficherPoints3D, setTransformedPosition} from "../fonctionnalites/SelectionFace";
+import "./ToolBarEvent.js";
+
 
 
 /**
